@@ -1,2 +1,2 @@
 # Explorer
-A placeholder for the Neotoma Explorer.
+Neotoma Explorer issue tracker and code repository.
