@@ -1,0 +1,181 @@
+
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    overflow:hidden;
+}
+ 
+ body {
+    font-family: arial, sans;
+    font-size: 11px;
+   /*width:400px;
+    margin: 40px auto;
+    */
+  }
+
+  h1 {
+    margin-left: 20px;
+  }
+
+  svg {
+    border: 1px none #f0f;
+  }
+
+  .axis line,
+  .axis path {
+    fill: none;
+    stroke: black;
+    /*stroke: lightgrey; */
+    /*stroke-dasharray: 2px 3px;*/
+
+    shape-rendering: crispEdges;
+  }
+
+  /*axis border*/
+  .axis path.domain {
+    stroke: black;
+    stroke-dasharray: none;
+  }
+  /*yaxis baseline value*/
+  .y.axis .baseline {
+    stroke: red;
+    stroke-dasharray: none;
+  }
+
+/* set plot color based on EcoGroup */
+  .trsh {
+    fill: #877F13;
+    stroke: #aaa;
+    stroke-width: 1;
+    stroke-opacity: 0.5;
+
+    /*fillHex = #737D26;*/
+          
+  }
+
+  .uphe {
+    fill: #C4A64D;
+    stroke: #aaa;
+    stroke-width: 1;
+    stroke-opacity: 0.5;
+    /*fillHex = #A99E46;*/
+          
+  }
+
+  .vacr {
+    fill: #BF3E21;
+    stroke: #aaa;
+    stroke-width: 1;
+    stroke-opacity: 0.5;
+    /*fillHex = #3F522B;*/
+          
+  }
+
+  .bnth {
+    fill: #01665E;
+    stroke: #aaa;
+    stroke-width: 1;
+    stroke-opacity: 0.5;
+  }
+
+  .nekt {
+    fill: #9970AB;
+    stroke: #aaa;
+    stroke-width: 1;
+    stroke-opacity: 0.5;
+  }
+
+  .ocod {
+    fill: #8C510A;
+    stroke: #aaa;
+    stroke-width: 1;
+    stroke-opacity: 0.5;
+  }
+
+  /*purple*/
+  .diat {
+    fill: #D94801;
+    stroke: #aaa;
+    stroke-width: 1;
+    stroke-opacity: 0.5;
+    /*fillHex = #3F522B;*/
+  }
+
+  .exaggerate-5x {
+    fill-opacity: 0.4;
+  }
+
+  div.tooltip {   
+    position: absolute;           
+    text-align: left;                             
+    padding: 2px;             
+    font: 12px sans-serif;        
+    background: white;   
+    border: 1px solid black;
+    z-index: 5000;
+}
+
+.taxa-group {
+  float: left;
+  /*width: 80px;  */
+
+}
+
+h3 {
+  width: 100px;
+    text-align: center;
+    margin: 0 0 0 60px;
+    height: 20px;
+}
+
+.hdr_label_div {
+  overflow: hidden;
+}
+
+.top text,.bottom .even text {
+  display: none;
+}
+
+.x-axis-label {
+  clear:both;
+  width: 120px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 6px;
+  font-size: 16px;
+}
+
+.y-axis-label {
+  text-anchor: middle;
+}
+
+.hide {
+  display: none;
+}
+
+#demo-label {
+    display: inline-block;
+    margin-left: 60px;
+}
+
+#diagrammer, #diagrammer text {
+   padding: 0;
+   font-family: arial, sans;
+   font-size: 11px;
+}
+
+#diagrammer {
+  height: 306px;
+}
+
+.taxa-labels {
+  font-family: arial, sans;
+   font-size: 11px;
+}
+
+#diagramPane {
+  overflow: auto;
+}
+
+            

@@ -1,0 +1,18 @@
+iconFn	DatasetType
+G.png	geochronologic
+L.png	loss-on-ignition
+P.png	pollen
+PM.png	plant macrofossil
+V.png	vertebrate fauna
+M.png	macroinvertebrate
+Ps.png	pollen surface sample
+I.png	insect
+O.png	ostracode
+W.png	water chemistry
+D.png	diatom
+Os.png	ostracode surface sample
+Ds.png	diatom surface sample
+GC.png	geochemistry
+S.png	physical sedimentology
+C.png	charcoal
+T.png	testate amoebae

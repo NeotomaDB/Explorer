@@ -1,0 +1,18 @@
+﻿<div id="advancedTaxaForm">
+    <table>
+        <tr class="fixht">
+            <td>Taxa group</td>
+            <td class="col2"><div data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="style:'width:240px;', required:false, searchAttr:'TaxaGroup', invalidMessage:'Taxa group not found'" data-dojo-attach-point="taxaGroup"></div></td>
+        </tr>
+        <tr class="fixht">
+            <td>Search for</td>
+            <td class="col2"><div data-dojo-type="dijit/form/TextBox" data-dojo-props="style:'width:204px;', required:false" data-dojo-attach-point="searchText" ></div><button data-dojo-type="dijit/form/Button" data-dojo-attach-event="onClick:goClick">Go</button></td>
+        </tr>
+        <tr class="fixht2">
+            <td colspan="2">
+                <div data-dojo-type="neotoma/widget/MultipleTaxaGrid" class="advancedTaxaGrid" style="height:200px;;width:315px;overflow:auto;" data-dojo-attach-point="multipleTaxaGrid"></div>
+           </td>
+        </tr>
+    </table>
+    <div data-dojo-id="advancedTaxaStandby" data-dojo-type="dojox/widget/Standby" data-dojo-props="target:'selectedTaxaGrid'"></div>
+</div>

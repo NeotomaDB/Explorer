@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html>
+<html> 
+  <head> 
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=7,IE=9" />
+    <!--The viewport meta tag is used to improve the presentation and behavior of the samples on iOS devices-->
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no"/>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>Print</title> 
+
+    <link rel="stylesheet" href="/dojo/1.9.3/dijit/themes/claro/claro.css"/>
+    <style>
+        * {
+            outline: none !important;
+        }
+        body, html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: Verdana, Arial, Helvetica, sans-serif;
+        }
+
+        .claro {
+            font-family: Verdana,Arial,Helvetica,sans-serif;
+            font-size: .8em; /*.9 is default?*/
+            color: #131313;
+        }
+
+        .title {
+            width: 500px;
+            font-size: 24pt;
+            margin: 10px 8px 0 8px;
+        }
+        #mapPane {
+            margin: 0 0 0 0;
+        }
+        #map {
+            height: 100%;
+        }
+
+        .nonModal_underlay {
+            display: none
+        }
+    </style> 
+    <script>
+        dojoConfig = {
+            isDebug: 1,
+            async: 1,
+            packages: [
+                { name: 'dgrid', location: '/dojo/dgrid' },
+                { name: 'xstyle', location: '/dojo/xstyle' },
+                { name: 'put-selector', location: '/dojo/put-selector' }
+            ]
+        };
+    </script>
+    <!--<script src="//ajax.googleapis.com/ajax/libs/dojo/1.9.0/dojo/dojo.js"></script>-->
+    <script src="/dojo/1.9.3/dojo/dojo.js"></script>
+    <script>
+        try {
+            require(["dojo/parser", "dijit/layout/ContentPane", "dijit/form/CheckBox", "dijit/form/Button", "dijit/form/TextBox", "dijit/InlineEditBox", "dojo/domReady!"],
+                function (parser) {
+                    try {
+                        parser.parse().then(
+                            function () {
+                                try {
+                                    if (window.opener) {
+                                        // add map to page
+                                        //window.opener.mapData.placeAt(mapTitle.domNode, "after");
+                                        window.opener.mapData.placeAt(mapTitle.domNode, "after");
+                                    } else {
+                                        alert("Can't find Neotoma Explorer window to get map data.");
+                                    }
+                                } catch (e) {
+                                    alert("Error printing map: " + e.message);
+                                }
+                            },
+                            function (resp) {
+                                alert("Error in print.html.parse.then: " + resp);
+                            }
+                            
+                        );
+                    } catch (e) {
+                        alert("Error in parsing function in print.html: " + e.message)
+                    }
+                }
+            );
+        } catch(e) {
+            alert("error in js in print.html: " + e.message);
+        }
+    </script>
+  </head> 
+  
+  <body class="claro">
+      <div class="title" data-dojo-id="mapTitle" data-dojo-type="dijit/InlineEditBox" data-dojo-props="editor:'dijit/form/TextBox', noValueIndicator:'Click to enter title'"></div>
+  </body> 
+</html>

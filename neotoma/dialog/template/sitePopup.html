@@ -1,0 +1,28 @@
+﻿<div class="dijitDialog" role="dialog" aria-labelledby="${id}_title" style="width:320px">
+	<div data-dojo-attach-point="titleBar" class="dijitDialogTitleBar">
+		<span data-dojo-attach-point="titleNode" class="dijitDialogTitle" id="${id}_title" role="heading" level="1"></span>
+        <span data-dojo-attach-point="closeButtonNode" class="dijitDialogCloseIcon" data-dojo-attach-event="ondijitclick: onCancel" title="${buttonCancel}" role="button" tabIndex="-1">
+			<span data-dojo-attach-point="closeText" class="closeText" title="${buttonCancel}">x</span>
+		</span>
+	</div>
+	<div data-dojo-attach-point="containerNode" class="dijitDialogPaneContent">
+        <div data-dojo-type="dijit/Toolbar" class="sitePopupToolbar">
+            <button type="button" name="zoomToSite" title="Zoom to site" data-dojo-props="showLabel:false, iconClass:'zoomToSiteToolbarButtonIcon'" data-dojo-type="dijit/form/Button" data-dojo-attach-event="onClick:toolbarClick"></button>
+            <button type="button" name="boundingBox" title="Show site's bounding box" data-dojo-props="showLabel:false, iconClass:'boundingBoxToolbarButtonIcon'" data-dojo-type="dijit/form/Button" data-dojo-attach-event="onClick:toolbarClick" data-dojo-attach-point="bboxButton"></button>
+            <button type="button" name="addAllDatasets" title="Add all datasets to tray" data-dojo-props="showLabel:false, iconClass:'addDatasetToolbarButtonIcon'" data-dojo-type="dijit/form/Button" data-dojo-attach-event="onClick:toolbarClick"></button>
+        </div>
+<!--        <div data-dojo-type="dijit/layout/ContentPane" data-dojo-attach-point="siteData" style="max-height:250px;overflow:auto;"></div>-->
+        <div data-dojo-type="dijit/layout/ContentPane" data-dojo-attach-point="siteData"></div>
+        <!--<div data-dojo-type="dijit/layout/ContentPane" data-dojo-attach-point="gridPane" style="max-height:200px;width:310px;overflow:auto;">
+            <div data-dojo-type="neotoma/widget/SiteDatasetsGrid" class="siteDatasetsGrid" style="height:auto; width:275px;" data-dojo-attach-point="siteDatasetsGrid"></div>
+        </div>-->
+
+        <div data-dojo-type="neotoma/widget/SiteDatasetsGrid" class="siteDatasetsGrid" style="height:auto;" data-dojo-attach-point="siteDatasetsGrid"></div>
+        
+	    <div data-dojo-type="dijit/layout/ContentPane" class="dijitDialogPaneActionBar" data-dojo-attach-point="combineActionBar">
+            <div data-dojo-attach-point="siteCountDisplay" data-dojo-type="dijit/layout/ContentPane" style="float:left;"></div>
+            <button name="previous" data-dojo-type="dijit/form/Button" data-dojo-props="label:'<'" data-dojo-attach-event="onClick:actionBarClick"></button>
+            <button name="next" data-dojo-type="dijit/form/Button" data-dojo-props="label:'>'" data-dojo-attach-event="onClick:actionBarClick"></button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,1 @@
+﻿AdvancedTaxa and MultipleTaxa are teh same forms. MutlipleTaxa is used in the basic search form and AdvancedTaxa is used by the advanced form.

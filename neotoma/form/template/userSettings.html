@@ -1,0 +1,17 @@
+﻿<div>
+    <div data-dojo-type="dijit/layout/AccordionContainer">
+        <div data-dojo-type="dijit/layout/AccordionPane" title="Search Form">
+           <span style="display: block; margin-left: -5px; margin-bottom: 4px">Default search form</span>
+            <input type="radio" data-dojo-type="dijit/form/RadioButton" data-dojo-attach-point="rbBasic" name="defaultForm" value="basic"/><label for="rbBasic">Basic</label>
+            <br />
+            <input type="radio" data-dojo-type="dijit/form/RadioButton" data-dojo-attach-point="rbAdvanced" name="defaultForm" value="advanced"/><label for="rbAdvanced">Advanced</label>
+            <p>
+                Advanced form height
+                <input id="spinFormHt"
+                       data-dojo-type="dijit/form/NumberSpinner"
+                       data-dojo-props="intermediateChanges:true, smallDelta:50, constraints:{min:400,max:850, places:0}, style:'width:60px', value:400"
+                       data-dojo-attach-event="onChange:spinHtChange" />
+            </p>
+        </div>
+    </div>
+</div>

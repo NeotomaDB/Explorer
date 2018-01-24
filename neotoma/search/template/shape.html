@@ -1,0 +1,17 @@
+﻿<div>
+    <div data-dojo-type="dijit/Toolbar" data-dojo-attach-point="drawToolbar" class="shape" style="width:250px;overflow:hidden">
+        <button type="button" data-dojo-type="dijit/form/Button" data-dojo-props="label:'Select with a box', showLabel:false, iconClass:'boxIcon'" data-dojo-attach-point="drawBox" data-dojo-attach-event="onClick:boxClick"></button>
+        <button type="button" data-dojo-type="dijit/form/Button" data-dojo-props="label:'Select with a polygon', showLabel:false, iconClass:'polygonIcon'" data-dojo-attach-point="drawPolygon" data-dojo-attach-event="onClick:polygonClick"></button>
+        <button type="button" data-dojo-type="dijit/form/Button" data-dojo-props="label:'Select with point and buffer', showLabel:false, iconClass:'pointIcon'" data-dojo-attach-point="drawPoint" data-dojo-attach-event="onClick:pointClick"></button>
+        <span id="bufferSpan">
+            <span id="bufferLabel" data-dojo-attach-point="bufferLabel" style="color:lightgray">Buffer </span><input type="text" data-dojo-type="dijit/form/TextBox" data-dojo-props="disabled:true" data-dojo-attach-point="bufferDistance" style="width:40px;" />
+            <select data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="disabled:true" data-dojo-attach-point="bufferUnits" style="width:40px;">
+                <option value="km" selected="selected">km</option>
+                <option value="mi">mi</option>
+                <option value="m">m</option>
+                <option value="ft">ft</option>
+            </select>
+        </span>
+        <button type="button" data-dojo-type="dijit/form/Button" data-dojo-props="label:'Clear all features from the map', showLabel:false, iconClass:'clearIcon'" data-dojo-attach-point="clearFeatures" data-dojo-attach-event="onClick:clearClick"></button>
+    </div>
+</div>

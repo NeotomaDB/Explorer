@@ -1,0 +1,34 @@
+﻿<div>
+        <!--<button type="button" title="Open search form" name="toolbar.search" data-dojo-type="dijit/form/Button" data-dojo-props="showLabel:false, iconClass:'searchIcon'" data-dojo-attach-event="onClick:toolbarClick">Search</button>-->
+        <button type="button" title="Open search form" name="toolbar.searchNew" data-dojo-type="dijit/form/Button" data-dojo-props="showLabel:false, iconClass:'searchIcon'" data-dojo-attach-event="onClick:toolbarClick">Search New</button>
+       <!-- <button type="button" title="Open spatial search form" name="toolbar.spatialSearch" data-dojo-type="dijit/form/Button" data-dojo-props="showLabel:false, iconClass:'spatialSearchIcon'" data-dojo-attach-event="onClick:toolbarClick">Spatial Search</button>-->
+        <div data-dojo-type="dijit/ToolbarSeparator"></div>
+        <button type="button" title="View current search layers" name="toolbar.searchesList" data-dojo-type="dijit/form/Button" data-dojo-props="showLabel:false, iconClass:'currentSearchesIcon'" data-dojo-attach-event="onClick:toolbarClick">Current Searches</button>
+        <button type="button" title="View saved datasets tray" name="toolbar.datasetTray" data-dojo-type="dijit/form/Button" data-dojo-props="showLabel:false, iconClass:'datasetsTrayIcon'" data-dojo-attach-event="onClick:toolbarClick">Dataset Tray</button>
+        <div data-dojo-type="dijit/ToolbarSeparator"></div>    
+        <button type="button" title="Display modern vertebrate species range on map" name="toolbar.modernRanges" data-dojo-type="dijit/form/Button" data-dojo-props="showLabel:false, iconClass:'modernRangeIcon'" data-dojo-attach-event="onClick:toolbarClick">Modern Ranges</button>
+        <button type="button" title="Display glacial boundaries and lakes on map" name="toolbar.glacial" data-dojo-type="dijit/form/Button" data-dojo-props="showLabel:false, iconClass:'glacialIcon'" data-dojo-attach-event="onClick:toolbarClick">Glacial</button>
+        <div data-dojo-type="dijit/ToolbarSeparator"></div>
+        <div title="View/change base map" name="toolbar.map" data-dojo-type="neotoma/widget/BaseLayerButton" data-dojo-props="showLabel:false, iconClass:'mapIcon'" data-dojo-attach-event="onClick:toolbarClick"></div>
+        <button type="button" title="View search results in tables" data-dojo-type="dijit/form/Button" name="toolbar.table" data-dojo-props="showLabel:false, iconClass:'tableIcon'" data-dojo-attach-event="onClick:toolbarClick">Table</button>
+        <div data-dojo-type="dijit/ToolbarSeparator"></div>
+        <button type="button" title="Print current map extent or results table" data-dojo-type="dijit/form/Button" name="toolbar.print" data-dojo-props="showLabel:false, iconClass:'printIcon'" data-dojo-attach-event="onClick:print">Print</button>
+        <button type="button" title="View user guide" data-dojo-type="dijit/form/Button" id="toolbar.help" data-dojo-props="showLabel:false, iconClass:'helpIcon'" onclick="window.open('./help/Neotoma%20Explorer.html', 'help');">Help</button>
+        
+        <button type="button" name="toolbar.about" data-dojo-type="dijit/form/Button" data-dojo-props="showLabel:true" data-dojo-attach-event="onClick:toolbarClick" style="float:right;">About</button>
+        <div title="Set user options" data-dojo-type="dijit/form/DropDownButton" data-dojo-props="showLabel:false, iconClass:'userSettingsIcon'" style="float:right;">
+            <div data-dojo-type="dijit/TooltipDialog" data-dojo-attach-point="settingTTDialog" data-dojo-attach-event="onShow:settingsShow, onHide:settingsHide">
+                <div data-dojo-type="neotoma/form/UserSettings" data-dojo-attach-point="settingsForm" style="height:300px;width:275px;"></div>
+                <button type="button" data-dojo-type="dijit/form/Button" data-dojo-attach-event="onClick:settingsCloseClick">Close</button>
+            </div>
+        </div>
+        <div title="Access Embargoed Data" data-dojo-type="dijit/form/DropDownButton" data-dojo-props="showLabel:false, iconClass:'keyIcon'" style="float:right;">
+            <div data-dojo-type="dijit/TooltipDialog" data-dojo-attach-point="tokensTTDialog" data-dojo-attach-event="onShow:tokensShow, onHide:tokensHide">
+                <div data-dojo-type="neotoma/form/Tokens" data-dojo-attach-point="tokensForm" style="height:300px;width:275px;"></div>
+                <button type="button" data-dojo-type="dijit/form/Button" data-dojo-attach-event="onClick:tokensCloseClick">Close</button>
+            </div>
+        </div>       
+        
+        
+        <a id="datasetDownloadLink" style="display:none;">download</a>
+</div>

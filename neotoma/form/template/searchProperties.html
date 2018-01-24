@@ -1,0 +1,33 @@
+﻿<div>
+    <table>
+        <tr class="fixht">
+            <td class="col3">Name</td>
+            <td class="col2"><div id="searchName" data-dojo-type="dijit/form/TextBox" data-dojo-props="style:'width:205px;'" data-dojo-attach-point="searchName"></div></td>
+        </tr>
+        <tr>
+            <td class="col3">Shape</td>
+            <td class="col2">
+                <div data-dojo-type="dijit/layout/ContentPane" data-dojo-attach-point="shapeToolbar" data-dojo-props="style:'margin:0; padding:0'">
+                    <div data-dojo-type="neotoma/widget/GroupToggleButton" data-dojo-props="groupName:'shapes', name:'Circle', iconClass:'circleIcon', showLabel:false">Circle</div>
+                    <div data-dojo-type="neotoma/widget/GroupToggleButton" data-dojo-props="groupName:'shapes', name:'Square', iconClass:'squareIcon', showLabel:false">Square</div>
+                    <div data-dojo-type="neotoma/widget/GroupToggleButton" data-dojo-props="groupName:'shapes', name:'Star', iconClass:'starIcon', showLabel:false">Star</div>
+                    <div data-dojo-type="neotoma/widget/GroupToggleButton" data-dojo-props="groupName:'shapes', name:'Triangle', iconClass:'triangleIcon', showLabel:false">Triangle</div>
+                </div>
+            </td>
+        </tr>
+        <tr class="fixht3">
+            <td class="col3">Size</td>
+            <td class="col2">
+                <div data-dojo-type="dijit/layout/ContentPane" data-dojo-attach-point="sizeToolbar" data-dojo-props="style:'margin:0; padding:0'">
+                    <div data-dojo-type="neotoma/widget/GroupToggleButton" data-dojo-props="groupName:'sizes', name:'Small', iconClass:'smallIcon', showLabel:false">Small</div>
+                    <div data-dojo-type="neotoma/widget/GroupToggleButton" data-dojo-props="groupName:'sizes', name:'Medium', iconClass:'mediumIcon', showLabel:false">Medium</div>
+                    <div data-dojo-type="neotoma/widget/GroupToggleButton" data-dojo-props="groupName:'sizes', name:'Large', iconClass:'largeIcon', showLabel:false">Large</div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="col3" style="vertical-align: top;">Color</td>
+            <td class="col2"><div data-dojo-type="dijit/ColorPalette" data-dojo-props="palette:'7x10'" data-dojo-attach-point="colorPalette"></div></td>
+        </tr>
+    </table>
+</div>

@@ -1,0 +1,12 @@
+﻿<div>
+    <div data-dojo-type="dijit/layout/AccordionContainer">
+        <div data-dojo-type="dijit/layout/AccordionPane" title="Embargo Access">
+            <p>
+                <input type="text" data-dojo-type="dijit/form/TextBox" data-dojo-props="placeHolder:'New Token'" data-dojo-attach-point="newToken"/>
+                <button type="button" data-dojo-type="dijit/form/Button" data-dojo-attach-event="onClick:addTokenClick">Add</button>
+            </p>
+        
+            <div data-dojo-type="neotoma/widget/AccessTokensGrid" data-dojo-attach-point="tokensGrid" class="accessTokensGrid" style="height:125px;"></div>
+        </div>
+    </div>
+</div>

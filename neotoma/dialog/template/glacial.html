@@ -1,0 +1,45 @@
+﻿<div class="dijitDialog" role="dialog" aria-labelledby="${id}_title">
+	<div data-dojo-attach-point="titleBar" class="dijitDialogTitleBar">
+		<span data-dojo-attach-point="titleNode" class="dijitDialogTitle" id="${id}_title" role="heading" level="1"></span>
+		<span data-dojo-attach-point="closeButtonNode" class="dijitDialogCloseIcon" data-dojo-attach-event="ondijitclick: onCancel" title="${buttonCancel}" role="button" tabIndex="-1">
+			<span data-dojo-attach-point="closeText" class="closeText" title="${buttonCancel}">x</span>
+		</span>
+	</div>
+	<div data-dojo-attach-point="containerNode" class="dijitDialogPaneContent">
+<!--        <div style="margin: 8px">
+            <input type="text" data-dojo-type="dijit/form/NumberTextBox" data-dojo-props="style:'width:55px;', constraints:{places:0}, placeHolder:'oldest', invalidMessage:'Value must be an integer', value:20000" data-dojo-attach-point="ageOlder" /> to
+            <input type="text" data-dojo-type="dijit/form/NumberTextBox" data-dojo-props="style:'width:55px;', constraints:{places:0}, placeHolder:'youngest', invalidMessage:'Value must be an integer', value:0" data-dojo-attach-point="ageYounger"/> yr BP
+        </div>-->
+        <div style="margin: 8px">
+            Time
+            <select data-dojo-type="dijit/form/FilteringSelect"
+                    data-dojo-props="required:false, searchAttr:'calAge', invalidMessage:'Layer not found', placeHolder:'Select start'"
+                    data-dojo-attach-point="glacialAge" data-dojo-attach-event="onChange:glacialAgeChanged" style="width:100px;">
+            </select>
+            yr BP
+        </div>
+        <div style="margin: 8px">
+            Transparency
+            <div
+                style="width:170px;margin-top: 5px"
+                name="horizontalSlider"
+                data-dojo-type="dijit/form/HorizontalSlider"
+                data-dojo-props="value:30"
+                data-dojo-attach-point="horizontalSlider"
+                minimum: 0
+                maximum:100
+                discreteValues:21
+                intermediateChanges:true
+                showButtons:false
+                data-dojo-attach-event="onChange:sliderChanged">
+            </div>
+        </div>
+        <div data-dojo-type="dijit/layout/ContentPane" class="dijitDialogPaneActionBar">
+            <button name="reverse" data-dojo-type="dijit/form/Button" data-dojo-props="showLabel:false, iconClass:'st_reverse'" title="Animate from younger to older" data-dojo-attach-event="onClick:actionBarClick"></button>
+            <button name="forward" data-dojo-type="dijit/form/Button" data-dojo-props="showLabel:false, iconClass:'st_play'" title="Animate from older to younger" data-dojo-attach-event="onClick:actionBarClick"></button>
+            <button name="pause" data-dojo-type="dijit/form/Button" data-dojo-props="showLabel:false, iconClass:'st_pause'" title="pause" data-dojo-attach-event="onClick:actionBarClick"></button>
+            <!--<button name="refresh" data-dojo-type="dijit/form/Button" data-dojo-attach-event="onClick:actionBarClick">Refresh</button>-->
+        </div>
+        <div data-dojo-attach-point="glacialLayerStandby" data-dojo-type="dojox/widget/Standby"></div>
+	</div>
+</div>

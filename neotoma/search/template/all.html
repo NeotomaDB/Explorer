@@ -1,0 +1,50 @@
+﻿<div class="dijitDialog" role="dialog" aria-labelledby="${id}_title" style="width:440px;">
+	<div data-dojo-attach-point="titleBar" class="dijitDialogTitleBar">
+		<span data-dojo-attach-point="titleNode" class="dijitDialogTitle" id="${id}_title" role="heading" level="1"></span>
+		<span data-dojo-attach-point="closeButtonNode" class="dijitDialogCloseIcon" data-dojo-attach-event="ondijitclick: onCancel" title="${buttonCancel}" role="button" tabIndex="-1">
+			<span data-dojo-attach-point="closeText" class="closeText" title="${buttonCancel}">x</span>
+		</span>
+	</div>
+	<div data-dojo-attach-point="containerNode" class="dijitDialogPaneContent">
+        <div data-dojo-type="dijit/Toolbar" class="sitePopupToolbar">
+            <button type="button" name="basicSearch" title="Basic search" data-dojo-props="showLabel:true, iconClass:'basicSearchButtonIcon'" data-dojo-type="dijit/form/Button" data-dojo-attach-event="onClick:toolbarClick">Basic</button>
+            <button type="button" name="advancedSearch" title="Advanced search" data-dojo-props="showLabel:true, iconClass:'advSearchButtonIcon'" data-dojo-type="dijit/form/Button" data-dojo-attach-event="onClick:toolbarClick">Advanced</button>
+            <button type="button" name="toggleSections" title="Expand/Collapse all sections" data-dojo-props="showLabel:false, iconClass:'toggleButtonIcon'" data-dojo-type="dijit/form/Button" data-dojo-attach-event="onClick:toolbarClick"></button>
+            <button type="button" name="clearAll" title="Clear all" data-dojo-props="showLabel:false, iconClass:'clearAllButtonIcon'" data-dojo-type="dijit/form/Button" data-dojo-attach-event="onClick:toolbarClick"></button>
+        </div>
+        <div data-dojo-type="dijit/layout/StackContainer" data-dojo-attach-point="forms">
+            <div data-dojo-type="dijit/layout/ContentPane" data-dojo-attach-point="basicPane"> 
+                <div data-dojo-type="neotoma/search/Basic" data-dojo-attach-point="basicForm"></div>  
+            </div>
+            <div data-dojo-type="dijit/layout/ContentPane" data-dojo-attach-point="advancedPane">
+                <table class="advSearch">
+                    <tr class="fixht">
+                        <td class="col1">Dataset type</td>
+                        <td class="col2">
+                            <select data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="style:'width:198px', required:false, searchAttr:'DatasetType', invalidMessage:'Not a valid dataset type.'" data-dojo-attach-point="datasetType" data-dojo-attach-event="onChange:datasetTypeChanged"></select>
+                        </td>
+                    </tr>
+                </table>
+                <div data-dojo-type="dijit/TitlePane" data-dojo-props="title:'Taxa', open:true" data-dojo-attach-point="taxaTitlePane" >
+                    <div data-dojo-type="neotoma/search/Taxa" data-dojo-attach-point="taxaPane"></div>
+                </div>
+                <div data-dojo-type="dijit/TitlePane" data-dojo-props="title:'Time', open:false" data-dojo-attach-point="timeTitlePane">
+                    <div data-dojo-type="neotoma/search/Time" data-dojo-attach-point="timePane"></div>
+                </div>
+                <div data-dojo-type="dijit/TitlePane" data-dojo-props="title:'Space', open:false" data-dojo-attach-point="spaceTitlePane">
+                    <div data-dojo-type="neotoma/search/Space" data-dojo-attach-point="spacePane"></div>
+                </div>
+                <div data-dojo-type="dijit/TitlePane" data-dojo-props="title:'Metadata', open:false" data-dojo-attach-point="metadataTitlePane">
+                    <div data-dojo-type="neotoma/search/Metadata" data-dojo-attach-point="metadataPane"></div>
+                </div>
+            </div>
+        </div>
+            
+        <div data-dojo-type="dijit/layout/ContentPane" class="dijitDialogPaneActionBar">
+            <span style="float:left;margin: 0 10px;padding-top:3px">Search name</span>
+            <input type="text" data-dojo-type="dijit/form/TextBox" data-dojo-attach-point="searchName" style="float:left;" />
+            <button style="margin-right:5px" type="button" data-dojo-type="dijit/form/Button" data-dojo-attach-point="searchButton" data-dojo-attach-event="onClick:searchClick">Search</button>
+        </div>
+        <div data-dojo-type="dojox/widget/Standby" data-dojo-props="target:'userSearchesNewForm'" data-dojo-attach-point="searchStandby"></div>
+	</div>
+</div>

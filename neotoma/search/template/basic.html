@@ -1,0 +1,55 @@
+﻿<div>
+    <table>
+        <!--<tr class="fixht">
+            <td class="col1">Taxa group</td>
+            <td class="col2"><div data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="style:'width:280px;', required:false, searchAttr:'TaxaGroup', placeHolder:'All', invalidMessage:'Data type not found'" data-dojo-attach-point="dataType" data-dojo-attach-event="onChange:dataTypeChanged"></div></td>
+        </tr>-->
+        <tr class="fixht">
+            <td class="col1">Age range</td>
+            <td class="col2">
+                <div data-dojo-type="dijit/form/NumberTextBox" data-dojo-props="style:'width:75px;', constraints:{places:0}, placeHolder:'oldest', invalidMessage:'Value must be an integer'" data-dojo-attach-point="ageOlder" data-dojo-attach-event="onChange:ageChanged, onFocus:ageFocused"></div> to
+                <div data-dojo-type="dijit/form/NumberTextBox" data-dojo-props="style:'width:75px;', constraints:{places:0}, placeHolder:'youngest', invalidMessage:'Value must be an integer'" data-dojo-attach-point="ageYounger" data-dojo-attach-event="onChange:ageChanged, onFocus:ageFocused"></div> yr BP
+            </td>
+            <td>
+                <button type="button" data-dojo-type="dijit/form/Button" data-dojo-props="iconClass:'advancedTaxaIcon', showLabel:false, title:'Open age scale and period options'" data-dojo-attach-point="ageScaleAndPeriodBtn" data-dojo-attach-event="onClick:ageScaleAndPeriodClick"></button>
+            </td>
+        </tr>
+        <tr class="fixht">
+            <td class="col1">Taxon</td>
+            <td class="col2">
+                <div data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="style:'width:216px;', required:false, searchAttr:'TaxonName', hasDownArrow: false, invalidMessage:'Taxon name not found'" data-dojo-attach-point="allTaxa" data-dojo-attach-event="onChange:taxonChanged,onClick:_taxonClicked,onKeyPress:handleEnter"></div>
+            </td>
+            <td>
+                <button type="button" data-dojo-type="dijit/form/Button" data-dojo-props="iconClass:'advancedTaxaIcon', showLabel:false, title:'Select multiple taxa names'" data-dojo-attach-point="multipleTaxaBtn" data-dojo-attach-event="onClick:multipleTaxaClick"></button>
+            </td>
+        </tr>
+        <tr class="fixht abundance hide">
+            <td class="abundance hide col1">Abundance</td>
+            <td class="col2">
+                <div class="abundance hide" data-dojo-id="abundanceSelect" data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="style:'width:80px;', required:false, searchAttr:'text'" data-dojo-attach-point="abundance"></div>
+            </td>
+        </tr>
+    </table>
+    <div data-dojo-attach-point="agesTTDialog" data-dojo-type="dijit/TooltipDialog" data-dojo-attach-event="onBlur:closeAgesTTDialog, onShow:openAgesTTDialog" style="display:none;">
+        <table class="ageLookup">
+            <tr class="fixht">
+                <td class="col1">Age scale</td>
+                <td class="col2">
+                    <div class="agecontrols" data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="style:'width:260px;', required:false, searchAttr:'RelativeAgeScale', invalidMessage:'Age scale not found'" data-dojo-attach-point="ageScale" data-dojo-attach-event="onChange:ageScaleChanged"></div>
+                </td>
+            </tr>
+            <tr class="fixht">
+                <td class="col1">Period</td>
+                <td class="col2">
+                    <div class="agecontrols" data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="style:'width:260px;', required:false, searchAttr:'RelativeAge', invalidMessage:'Period not found', query:function(row) {if ((row.CalAgeYounger != null) || (row.CalAgeOlder != null)) { return true; }}" data-dojo-attach-point="period" data-dojo-attach-event="onChange:periodChanged"></div>
+                </td>
+            </tr>
+        </table>
+        <button class="btnSpace" type="button" data-dojo-type="dijit/form/Button" data-dojo-props="label:'Close'" data-dojo-attach-event="onClick:closeAgesTTDialog"></button>
+    </div>
+    <div data-dojo-attach-point="multipleTaxaDialog" data-dojo-type="dijit/TooltipDialog" data-dojo-attach-event="onBlur:multipleTaxaDialogClose" style="display:none;">
+        <div data-dojo-type="neotoma/search/MultipleTaxa" data-dojo-attach-point="multipleTaxaPane"></div>
+        <button type="button" data-dojo-type="dijit/form/Button" data-dojo-props="label:'Close'" data-dojo-attach-event="onClick:multipleTaxaDialogClose"></button>
+    </div>
+    <div data-dojo-type="dojox/widget/Standby" data-dojo-props="target:'simpleSearchForm'" data-dojo-attach-point="searchStandby"></div>
+</div>

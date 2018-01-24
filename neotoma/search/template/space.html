@@ -1,0 +1,66 @@
+﻿<div>
+    <table>
+        <tr class="fixht">
+            <td class="colSF1">Altitude</td>
+            <td class="colSF2">
+                <input type="text" data-dojo-attach-point="minAltitude" data-dojo-type="dijit/form/NumberTextBox" data-dojo-props="style:'width:75px;', required:false, placeholder:'minimum', constraints:{places:0}, invalidMessage:'Value must be an integer'" data-dojo-attach-event="onKeyPress:handleEnter"/> to
+                <input type="text" data-dojo-attach-point="maxAltitude" data-dojo-type="dijit/form/NumberTextBox" data-dojo-props="style:'width:75px;', required:false, placeholder:'maximum', constraints:{places:0}, invalidMessage:'Value must be an integer'" data-dojo-attach-event="onKeyPress:handleEnter"/> m
+            </td>
+        </tr>
+        <tr>
+            <td class="colSF1">Location</td>
+        </tr>
+        <tr>
+            <td class="colSF2 padIndent" colspan="2">
+                <input type="radio" name="searchType" checked data-dojo-attach-point="searchExtent" value="spatial" data-dojo-type="dijit/form/RadioButton" data-dojo-attach-event="onChange:searchExtentChanged" /> search by extent
+                <br />
+                <input type="radio" name="searchType" data-dojo-attach-point="searchGeopolitical" value="geopolitical" data-dojo-type="dijit/form/RadioButton" data-dojo-attach-event="onChange:searchGeopoliticalChanged"/> search by geopolitical unit
+            </td>
+        </tr>
+    </table>
+    <div data-dojo-type="dijit/layout/StackContainer" data-dojo-attach-point="stack" style="height:45px; overflow:hidden;">
+        <div data-dojo-type="dijit/layout/ContentPane" data-dojo-attach-point="extentSelect" style="height:45px;overflow:hidden;padding-left:16px">
+            <table class="sub space">
+                <tr class="fixht">
+                    <td class="colSF1">Extent</td>
+                    <td class="colSF2">
+                        <select data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="required:false, placeholder:''" data-dojo-attach-point="selectionType" data-dojo-attach-event="onChange:selectionTypeChanged">
+                            <option value="global">global</option>
+                            <option value="extent">current map extent</option>
+                            <option value="shape">draw shape</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr class="fixht">
+                    <td class="colSF1"></td>
+                    <td class="colSF2">
+                        <div data-dojo-type="neotoma/search/Shape" data-dojo-attach-point="shapeToolbar" class="hide"></div>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+        <div data-dojo-type="dijit/layout/ContentPane" data-dojo-attach-point="geopoliticalSelect" style="overflow:hidden;padding-left:16px">
+            <table class="sub geopol">
+                <tr class="fixht">
+                    <td class="colSF1">Country</td>
+                    <td class="colSF2">
+                        <select data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="required:false, searchAttr:'GeoPoliticalName', invalidMessage:'Geopolitical unit not found'" data-dojo-attach-point="geopoliticalUnit1" data-dojo-attach-event="onChange:unit1Changed"></select>
+                    </td>
+                </tr>
+                <tr class="fixht">
+                    <td class="colSF1">State/Prov</td>
+                    <td class="colSF2">
+                        <select data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="required:false, searchAttr:'GeoPoliticalName', invalidMessage:'Geopolitical unit not found'" data-dojo-attach-point="geopoliticalUnit2" data-dojo-attach-event="onChange:unit2Changed"></select>
+                    </td>
+                </tr>
+                <tr class="fixht">
+                    <td class="colSF1">Local division</td>
+                    <td class="colSF2">
+                        <select data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="required:false, searchAttr:'GeoPoliticalName', invalidMessage:'Geopolitical unit not found'" data-dojo-attach-point="geopoliticalUnit3"></select>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,25 @@
+﻿<div class="dijitDialog" role="dialog" aria-labelledby="${id}_title">
+	<div data-dojo-attach-point="titleBar" class="dijitDialogTitleBar">
+		<span data-dojo-attach-point="titleNode" class="dijitDialogTitle" id="${id}_title" role="heading" level="1"></span>
+		<span data-dojo-attach-point="closeButtonNode" class="dijitDialogCloseIcon" data-dojo-attach-event="ondijitclick: onCancel" title="${buttonCancel}" role="button" tabIndex="-1">
+			<span data-dojo-attach-point="closeText" class="closeText" title="${buttonCancel}">x</span>
+		</span>
+	</div>
+	<div data-dojo-attach-point="containerNode" class="dijitDialogPaneContent">
+        <div>
+            Default search form
+            <br /><input type="radio" data-dojo-type="dijit/form/RadioButton" data-dojo-attach-point="rbBasic" name="defaultForm" value="basic" checked/><label for="rbBasic">Basic</label>
+            <br /><input type="radio" data-dojo-type="dijit/form/RadioButton" data-dojo-attach-point="rbAdvanced" name="defaultForm" value="advanced"/><label for="rbAdvanced">Advanced</label>
+        </div>
+
+        Search form height:
+        <button type="button" name="incHeight" title="Increase form height" data-dojo-props="showLabel:true" data-dojo-type="dijit/form/Button" data-dojo-attach-event="onClick:heightClick">+</button>
+        <button type="button" name="decHeight" title="Decrease form height" data-dojo-props="showLabel:true" data-dojo-type="dijit/form/Button" data-dojo-attach-event="onClick:heightClick">-</button>
+
+        <!--<div data-dojo-type="dijit/layout/ContentPane" class="dijitDialogPaneActionBar">
+            <button name="reverse" data-dojo-type="dijit/form/Button" data-dojo-props="showLabel:false, iconClass:'st_reverse'" title="Animate from younger to older" data-dojo-attach-event="onClick:actionBarClick"></button>
+            <button name="forward" data-dojo-type="dijit/form/Button" data-dojo-props="showLabel:false, iconClass:'st_play'" title="Animate from older to younger" data-dojo-attach-event="onClick:actionBarClick"></button>
+            <button name="pause" data-dojo-type="dijit/form/Button" data-dojo-props="showLabel:false, iconClass:'st_pause'" title="pause" data-dojo-attach-event="onClick:actionBarClick"></button>
+        </div>-->
+	</div>
+</div>

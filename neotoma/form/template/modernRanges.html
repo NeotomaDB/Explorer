@@ -1,0 +1,16 @@
+﻿<div id="modernRangePane">
+    <div class="uiNote">
+        Currently, only select vertebrate species are available.
+    </div>
+    <table>
+        <tr class="fixht">
+            <td>Species</td>
+            <td class="col2"><div data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="style:'width:280px;', required:false, searchAttr:'name', invalidMessage:'Taxon name not found'" data-dojo-attach-point="species" data-dojo-attach-event="onChange:speciesChanged"></div></td>
+        </tr>
+        <tr class="fixht">
+            <td>Display</td>
+            <td class="col2"><div data-dojo-type="dijit/form/CheckBox" data-dojo-attach-point="display" data-dojo-attach-event="onChange:displayChanged"></div></td>
+        </tr>
+    </table>
+    <div data-dojo-attach-point="modernRangeStandby" data-dojo-type="dojox/widget/Standby" data-dojo-props="target:'modernRangePane'"></div>
+</div>

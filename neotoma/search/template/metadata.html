@@ -1,0 +1,53 @@
+﻿<div>
+    <table class="meta">
+        <tr class="fixht">
+            <td class="colSF1">Deposit setting</td>
+            <td class="colSF2">
+                <input type="text" data-dojo-type="dijit/form/TextBox" data-dojo-props="required:false, placeholder:''" data-dojo-attach-point="depositionalEnvironment" data-dojo-attach-event="onKeyPress:handleEnter, onFocus:depositionalEnvironmentFocused"/>
+                <button type="button" data-dojo-type="dijit/form/Button" data-dojo-props="iconClass:'advancedTaxaIcon', showLabel:false, title:'Select depositional environment'" data-dojo-attach-point="advancedDepEnvt" data-dojo-attach-event="onClick:advancedDepEnvtClick"></button>
+            </td>
+        </tr>
+        <tr class="fixht">
+            <td class="colSF1">Collection type</td>
+            <td class="colSF2"><select data-dojo-type="neotoma/widget/FilteringSelect" data-dojo-props="required:false, placeholder:'', searchAttr:'CollType', invalidMessage:'Collection type not found'" data-dojo-attach-point="collectionType" data-dojo-attach-event="onKeyPress:handleEnter"></select></td>
+        </tr>
+        <tr class="fixht">
+            <td class="colSF1">Database</td>
+            <td class="colSF2"><select data-dojo-type="neotoma/widget/FilteringSelect" data-dojo-props="required:false, placeholder:'', searchAttr:'DatabaseName', invalidMessage:'Database not found'" data-dojo-attach-point="database" data-dojo-attach-event="onKeyPress:handleEnter"></select></td>
+        </tr>
+        <tr class="fixht">
+            <td class="colSF1">Sample keyword</td>
+            <td class="colSF2"><select data-dojo-type="neotoma/widget/FilteringSelect" data-dojo-props="required:false, placeholder:'', searchAttr:'Keyword', invalidMessage:'Keyword not found'" data-dojo-attach-point="sampleKeyword" data-dojo-attach-event="onKeyPress:handleEnter"></select></td>
+        </tr>
+        <tr class="fixht">
+            <td class="colSF1">Site name</td>
+            <td class="colSF2"><input type="text" data-dojo-type="dijit/form/TextBox" data-dojo-props="required:false, placeholder:'', invalidMessage:'Site name not found'" data-dojo-attach-point="siteName" data-dojo-attach-event="onKeyPress:handleEnter"/></td>
+        </tr>
+        <tr class="fixht">
+            <td class="colSF1">Person name</td>
+            <td class="colSF2"><select data-dojo-type="neotoma/widget/FilteringSelect" data-dojo-props="required:false, placeholder:'', searchAttr:'ContactName', invalidMessage:'Person not found'" data-dojo-attach-point="personName" data-dojo-attach-event="onKeyPress:handleEnter"></select></td>
+        </tr>
+        <tr class="fixht">
+            <td class="col1">Date submitted</td>
+            <td class="col2">
+                <select data-dojo-type="neotoma/widget/FilteringSelect" data-dojo-attach-point="submitDate" data-dojo-attach-event="onChange:submitDateChanged, onFocus:submitDateFocused">
+                    <option selected value="any">Any</option>
+                    <option value="week">Last Week</option>
+                    <option value="month">Last Month</option>
+                    <option value="year">Last Year</option>
+                    <option value="custom">Custom</option>
+                </select>
+                <!--<input type="text" data-dojo-type="dijit/form/DateTextBox" data-dojo-props="style:'width:110px;', required:false, placeholder:'', contraints:{datePattern:'MM/DD/YYYY'}" data-dojo-attach-point="submitDate" data-dojo-attach-event="onKeyPress:handleEnter"/>-->
+                <button type="button" class="hide" data-dojo-type="dijit/form/Button" data-dojo-props="iconClass:'calendarIcon', showLabel:false, title:'Select submission date'" data-dojo-attach-point="submitDateCalendarBtn" data-dojo-attach-event="onClick:submitDateCalendarClick"></button>
+            </td>
+        </tr>
+    </table>
+    <div data-dojo-attach-point="advancedDepEnvtTTDialog" data-dojo-type="dijit/TooltipDialog" data-dojo-attach-event="onBlur:advancedDepEnvtTTDialogClose" style="display:none;">
+        <div data-dojo-type="neotoma/search/DepEnvt" data-dojo-attach-point="advancedDepEnvtPane"></div>
+        <button type="button" data-dojo-type="dijit/form/Button" data-dojo-props="label:'Close'" data-dojo-attach-event="onClick:advancedDepEnvtTTDialogClose"></button>
+    </div>
+    <div data-dojo-attach-point="calendarTTDialog" data-dojo-type="dijit/TooltipDialog" data-dojo-attach-event="onBlur:calendarTTDialogClose" style="display:none;">
+        <div data-dojo-type="dijit/CalendarLite" data-dojo-attach-point="submitDateCalendar"></div>
+        <button class="btnSpace" type="button" data-dojo-type="dijit/form/Button" data-dojo-props="label:'Close'" data-dojo-attach-event="onClick:calendarTTDialogClose"></button>
+    </div>
+</div>

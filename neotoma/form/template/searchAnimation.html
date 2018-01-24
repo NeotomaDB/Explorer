@@ -1,0 +1,25 @@
+﻿<div>
+    <div>
+        <div id="ageDiv"></div>
+    </div>
+    <div
+        data-dojo-type="dijit/form/HorizontalSlider"
+        data-dojo-props="value:0, minimum: 0,maximum:100, discreteValues:21, intermediateChanges:true, showButtons:true"
+        data-dojo-attach-point="agesSlider"
+        style="margin:0px 0px 4px 0px;">
+            <ol data-dojo-type="dijit/form/HorizontalRuleLabels" container="topDecoration"
+                style="height:1em;font-size:75%;color:gray;"
+                data-dojo-attach-point="sliderLabels"
+                data-dojo-props="labels:[1000,50]">
+            </ol>
+    </div>
+    <div style="margin-top: 10px">
+        Time step
+        <select data-dojo-type="dijit/form/FilteringSelect" data-dojo-attach-point="step" data-dojo-attach-event="onChange:updateAnimation" style="width:60px;">
+            <option value="250">250</option>
+            <option selected value="500">500</option>
+            <option value="1000">1000</option>
+        </select>
+        years
+    </div>
+</div>

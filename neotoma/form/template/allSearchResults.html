@@ -1,0 +1,20 @@
+﻿<div>
+    <div data-dojo-type="dijit/layout/ContentPane" style="height:100%;">
+        <div data-dojo-type="neotoma/widget/AllSearchesGrid" data-dojo-attach-point="allSearchesList" class="searchesGrid" style="height:99%;overflow:auto;"></div>
+    </div>
+    <div data-dojo-type="dijit/layout/ContentPane" style="height:100%;overflow:hidden;">
+        <table>
+            <tr class="fixht">
+                <td class="col1">Search name</td>
+                <td class="col2"><div data-dojo-type="dijit/form/TextBox" data-dojo-props="style:'width:240px;', required:true" data-dojo-attach-point="searchName" ></div></td>
+            </tr>
+            <tr class="fixht">
+                <td class="col1">Operation</td>
+                <td class="col2">
+                    <input type="radio" data-dojo-type="dijit/form/RadioButton" data-dojo-attach-point="rbAND" name="operator" value="AND" checked/><label for="rbAnd">AND</label>
+                    <input type="radio" data-dojo-type="dijit/form/RadioButton" data-dojo-attach-point="rbOR" name="operator" value="OR"/><label for="rbOr">OR</label>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

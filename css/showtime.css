@@ -1,0 +1,42 @@
+.st_reset {
+    background-image: url("../resources/images/control_start_blue.png");
+    background-repeat: no-repeat;
+    width: 16px;
+    height: 16px;
+    text-align: center;
+}
+.st_pause {
+    background-image: url("../resources/images/control_pause_blue.png");
+    background-repeat: no-repeat;
+    width: 16px;
+    height: 16px;
+    text-align: center;
+}
+.st_play {
+    background-image: url("../resources/images/control_play_blue.png");
+    background-repeat: no-repeat;
+    width: 16px;
+    height: 16px;
+    text-align: center;
+}
+.st_reverse {
+    background-image: url("../resources/images/control_reverse_blue.png");
+    background-repeat: no-repeat;
+    width: 16px;
+    height: 16px;
+    text-align: center;
+}
+.st_stop {
+    background-image: url("../resources/images/control_stop_blue.png");
+    background-repeat: no-repeat;
+    width: 16px;
+    height: 16px;
+    text-align: center;
+}
+.st_advanceframe {
+    background-image: url("../resources/images/control_end_blue.png");
+    background-repeat: no-repeat;
+    width: 16px;
+    height: 16px;
+    text-align: center;
+}

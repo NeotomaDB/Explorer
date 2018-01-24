@@ -1,0 +1,78 @@
+﻿<div>
+    <table>
+        <tr class="fixht">
+            <td class="colSF1">Taxon name</td>
+            <td class="colSF2">
+                <select data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="style:'width:195px',required:false, searchAttr:'TaxonName', hasDownArrow: false, invalidMessage:'Not a valid taxon name.'" data-dojo-attach-point="taxonName"  data-dojo-attach-event="onChange:taxonNameChanged, onFocus: taxonNameFocused"></select>
+                <button type="button" data-dojo-type="dijit/form/Button" data-dojo-props="iconClass:'advancedTaxaIcon', showLabel:false, title:'Open advanced taxa form.'" data-dojo-attach-point="advancedTaxa" data-dojo-attach-event="onClick:advancedTaxaClick"></button>
+            </td>
+        </tr>
+        <tr class="fixht">
+            <td class="colSF1 padIndent" colspan="2">
+                <input type="checkbox" value="taphonomy" data-dojo-type="dijit/form/CheckBox" data-dojo-attach-point="includeTaphonomy" data-dojo-attach-event="onChange:includeTaphonomyChanged" /> <label id="elementTaphonomyLabel" for="includeTaphonomy" title="Add some help info here">Elements and taphonomy</label>
+                <br />
+                <input type="checkbox" value="intersects" data-dojo-type="dijit/form/CheckBox" data-dojo-attach-point="includeAbundance" data-dojo-attach-event="onChange:includeAbundanceChanged"/> <label id="abundanceLabel" for="includeAbundance">Abundance/density</label>
+            </td>
+        </tr>
+    </table>
+    <div data-dojo-type="dijit/layout/StackContainer" data-dojo-props="isLayoutContainer:true, doLayout:true" data-dojo-attach-point="stack" style="height:0;">
+<!--        <div data-dojo-type="dijit/layout/ContentPane" data-dojo-attach-point="emptyPane">   
+        </div>-->
+        <div data-dojo-type="dijit/layout/ContentPane" data-dojo-attach-point="taphonomyPane" style="height:0;overflow:hidden;display:none;padding-left:14px">
+            <table class="sub tax">
+                <tr class="fixht">
+                    <td class="colSF1">Element type</td>
+                    <td class="colSF2">
+                        <select data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="required:false, searchAttr:'ElementType', invalidMessage:'Not a valid element type.'" data-dojo-attach-point="elementType" data-dojo-attach-event="onChange:elementTypeChanged"></select>
+                        <button type="button" data-dojo-type="dijit/form/Button" data-dojo-props="iconClass:'advancedTaxaIcon', showLabel:false, title:'Select multiple element types.'" data-dojo-attach-point="elementTypesBtn" data-dojo-attach-event="onClick:elementTypesBtnClick"></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Taphonomy</td>
+                </tr>
+                <tr class="fixht">
+                    <td class="colSF1 txtIndent">system</td>
+                    <td class="colSF2">
+                        <select data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="required:false, searchAttr:'TaphonomicSystem', invalidMessage:'Not a valid taphonomic system.'" data-dojo-attach-point="taphonomicSystem" data-dojo-attach-event="onChange:taphonomicSystemChanged"></select>
+                    </td>
+                </tr>
+                <tr class="fixht">
+                    <td class="colSF1 txtIndent">type</td>
+                    <td class="colSF2">
+                        <select data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="required:false, searchAttr:'TaphonomicType', invalidMessage:'Not a valid taphonomic type.'" data-dojo-attach-point="taphonomicType" data-dojo-attach-event="onChange:taphonomicTypeChanged"></select>
+                        <button type="button" data-dojo-type="dijit/form/Button" data-dojo-props="iconClass:'advancedTaxaIcon', showLabel:false, title:'Select multiple taphonomic types.'" data-dojo-attach-point="taphonomicTypesBtn" data-dojo-attach-event="onClick:taphonomicTypesBtnClick"></button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div data-dojo-type="dijit/layout/ContentPane" data-dojo-attach-point="abundancePane" style="height:0;overflow:hidden;display:none;padding-left:14px">
+            <table class="sub">
+                <tr class="fixht">
+                    <td class="colSF1">Abundance</td>
+                    <td class="colSF2">
+                        <select data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="required:false, searchAttr:'text', invalidMessage:'Not a valid abundance.'" data-dojo-attach-point="abundance"></select>
+                        <!--<button type="button" data-dojo-type="dijit/form/Button" data-dojo-props="iconClass:'advancedTaxaIcon', showLabel:false, title:'Open advanced taxa form.'" data-dojo-attach-event=""></button>-->
+                    </td>
+                </tr>
+            </table>
+            <!--<div>
+                For multiple taxa, apply abundance to
+                <br />
+                <input type="radio" name="applyAbundance" checked="checked" value="sum" data-dojo-type="dijit/form/RadioButton" data-dojo-props="checked:true" data-dojo-attach-point="applySum" /> sum of all taxa counts
+                <input type="radio" name="applyAbundance" value="individual" data-dojo-type="dijit/form/RadioButton" data-dojo-attach-point="applyIndividual" /> individual taxa counts
+            </div>-->
+        </div>
+    </div>
+    <div data-dojo-attach-point="advancedTaxaTTDialog" data-dojo-type="dijit/TooltipDialog" data-dojo-attach-event="onBlur:advancedTaxaTTDialogClose" style="display:none;">
+        <div data-dojo-type="neotoma/search/AdvancedTaxa" data-dojo-attach-point="advancedTaxaPane"></div>
+        <button type="button" data-dojo-type="dijit/form/Button" data-dojo-props="label:'Close'" data-dojo-attach-event="onClick:closeAdvancedTaxaTTDialog"></button>
+    </div>
+    <div data-dojo-attach-point="elementTypesTTDialog" data-dojo-type="dijit/TooltipDialog" data-dojo-attach-event="onBlur:elementTypesTTDialogClose, onShow:elementTypesTTDialogShow, onHide:elementTypesTTDialogHide" style="display:none;">
+        <div data-dojo-type="neotoma/widget/ElementTypesGrid" class="advancedTaxaGrid" style="height:200px;width:200px;overflow:auto;" data-dojo-attach-point="elementTypesGrid"></div>
+        <button class="btnSpace" type="button" data-dojo-type="dijit/form/Button" data-dojo-props="label:'Close'" data-dojo-attach-event="onClick:closeElementTypesTTDialog"></button>
+    </div>
+    <div data-dojo-attach-point="taphonomicTypesTTDialog" data-dojo-type="dijit/TooltipDialog" data-dojo-attach-event="onBlur:taphonomicTypesTTDialogClose, onShow:taphonomicTypesTTDialogShow, onHide:taphonomicTypesTTDialogHide" style="display:none;">
+        <div data-dojo-type="neotoma/widget/TaphonomicTypesGrid" class="advancedTaxaGrid" style="height:200px;width:200px;overflow:auto;" data-dojo-attach-point="taphonomicTypesGrid"></div>
+        <button class="btnSpace" type="button" data-dojo-type="dijit/form/Button" data-dojo-props="label:'Close'" data-dojo-attach-event="onClick:closeTaphonomicTypesTTDialog"></button>
+    </div>
+</div>

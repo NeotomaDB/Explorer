@@ -1,0 +1,18 @@
+﻿<div class="dijitDialog" role="dialog" aria-labelledby="${id}_title" style="width: 300px">
+	<div data-dojo-attach-point="titleBar" class="dijitDialogTitleBar">
+		<span data-dojo-attach-point="titleNode" class="dijitDialogTitle" id="${id}_title" role="heading" level="1"></span>
+        <span data-dojo-attach-point="closeButtonNode" class="dijitDialogCloseIcon" data-dojo-attach-event="ondijitclick: onCancel" title="${buttonCancel}" role="button" tabIndex="-1">
+			<span data-dojo-attach-point="closeText" class="closeText" title="${buttonCancel}">x</span>
+		</span>
+	</div>
+	<div data-dojo-attach-point="containerNode" class="dijitDialogPaneContent">
+        <div data-dojo-type="neotoma/form/SearchAnimation" style="height:auto;" data-dojo-attach-point="searchAnimationForm"></div>
+        <div data-dojo-type="dijit/layout/ContentPane" class="dijitDialogPaneActionBar" data-dojo-attach-point="navActionBar">
+            <button data-dojo-type="dijit/form/Button" data-dojo-props="showLabel:false, iconClass:'st_reset', name:'showtime.reset'" title="reset" data-dojo-attach-event="onClick:playerClick">reset</button>
+            <button data-dojo-type="dijit/form/Button" data-dojo-props="showLabel:false, iconClass:'st_play', name:'showtime.play'" title="play" data-dojo-attach-event="onClick:playerClick">play</button>
+            <button data-dojo-type="dijit/form/Button" data-dojo-props="showLabel:false, iconClass:'st_pause', name:'showtime.pause'" title="pause" data-dojo-attach-event="onClick:playerClick">pause</button>
+            <button data-dojo-type="dijit/form/Button" data-dojo-props="showLabel:false, iconClass:'st_stop', name:'showtime.stop'" title="stop" data-dojo-attach-event="onClick:playerClick">stop</button>
+            <!--<button data-dojo-type="dijit/form/Button" data-dojo-props="showLabel:false, iconClass:'st_advanceframe', name:'showtime.advanceframe'" data-dojo-attach-event="onClick:playerClick">pause</button>-->
+        </div>
+    </div>
+</div>

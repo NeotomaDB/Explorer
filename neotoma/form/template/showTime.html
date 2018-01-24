@@ -1,0 +1,47 @@
+﻿<div>
+    <label for="allTaxa">Taxon</label>
+    <select data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="style:'width:270px;', required:false, searchAttr:'name', placeHolder:'Select a taxon'" data-dojo-attach-point="allTaxa" data-dojo-attach-event="onChange:taxonChanged"></select>
+    <div id="settingsPane">
+<!--        <div>
+            Min.%: <input data-dojo-type="dijit/form/NumberSpinner" value="3" data-dojo-props="smallDelta:1, constraints:{min:0,max:100,places:0}" data-dojo-attach-point="minimum" style="width:50px;"/>
+            Max.%: <input data-dojo-type="dijit/form/NumberSpinner" value="35" data-dojo-props="smallDelta:1, constraints:{min:0,max:100,places:0}" data-dojo-attach-point="maximum" style="width:50px;"/>
+        </div>
+        <div>
+            Time Slice: <input data-dojo-type="dijit/form/NumberSpinner" value="1000" data-dojo-props="smallDelta:250, constraints:{min:250,max:1000,places:0}" data-dojo-attach-point="timeSlice" style="width:60px;"/>
+            Speed: <input data-dojo-type="dijit/form/NumberSpinner" value="5" data-dojo-props="smallDelta:1, constraints:{min:3,max:10,places:0}" data-dojo-attach-point="speed" style="width:50px;"/>
+        </div>-->
+        <table>
+            <tr>
+                <td>
+                    Min.%:
+                </td>
+                <td>
+                    <input data-dojo-type="dijit/form/NumberSpinner" value="3" data-dojo-props="smallDelta:1, constraints:{min:0,max:100,places:0}" data-dojo-attach-point="minimum" style="width:50px;"/>
+                </td>
+                <td>
+                    Max.%:
+                </td>
+                <td>
+                    <input data-dojo-type="dijit/form/NumberSpinner" value="35" data-dojo-props="smallDelta:1, constraints:{min:0,max:100,places:0}" data-dojo-attach-point="maximum" style="width:50px;"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Time Slice:
+                </td>
+                <td>
+                    <input data-dojo-type="dijit/form/NumberSpinner" value="1000" data-dojo-props="smallDelta:250, constraints:{min:250,max:1000,places:0}" data-dojo-attach-point="timeSlice" style="width:60px;"/>
+                </td>
+                <td>
+                    Speed:
+                </td>
+                <td>
+                    <input data-dojo-type="dijit/form/NumberSpinner" value="5" data-dojo-props="smallDelta:1, constraints:{min:3,max:10,places:0}" data-dojo-attach-point="speed" style="width:50px;"/>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="message"></div>
+    <!--<div data-dojo-type="dojox/widget/Standby" data-dojo-attach-point="resultsStandby" data-dojo-props="target:'detailsGrid'"></div>-->
+    <div data-dojo-attach-point="messageToaster" data-dojo-type="dojox/widget/Toaster" data-dojo-props="positionDirection:'tr-left', duration:4000"></div>
+</div>

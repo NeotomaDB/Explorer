@@ -1,0 +1,507 @@
+* {
+    outline: none !important;
+}
+body, html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+
+.claro {
+    font-family: Verdana,Arial,Helvetica,sans-serif;
+    font-size: .75em; /*.9 is default? was .8*/
+    color: #131313;
+}
+
+a:link, a:visited {
+    text-decoration:none;
+}
+a:hover, a:active {
+    text-decoration:underline;
+}
+
+#content {
+    height: 100%;
+}
+#topPane {
+    padding: 0;
+}
+#toolbar1 {
+    background-color: #D8E4F2;
+    padding: 5px 5px 5px 200px;
+}
+#toolbar1 #toolbar\.about {
+    margin: 7px 2px 7px 2px;
+}
+#logo {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+}
+#mapPane {
+    height: 100%;
+    padding: 0;
+}
+#map {
+    height: 100%;
+}
+
+.nonModal_underlay {
+    display: none
+}
+
+.searchIcon {
+    background-image: url("../resources/images/find.png");
+    background-repeat: no-repeat;
+    width: 32px;
+    height: 32px;
+    text-align: center;
+}
+.modernRangeIcon {
+    background-image: url("../resources/images/poly_32.png");
+    background-repeat: no-repeat;
+    width: 32px;
+    height: 32px;
+    text-align: center;
+}
+.mapIcon {
+    background-image: url("../resources/images/map.png");
+    background-repeat: no-repeat;
+    width: 32px;
+    height: 32px;
+    text-align: center;
+}
+.tableIcon {
+    background-image: url("../resources/images/table.png");
+    background-repeat: no-repeat;
+    width: 32px;
+    height: 32px;
+    text-align: center;
+}
+.printIcon {
+    background-image: url("../resources/images/printer.png");
+    background-repeat: no-repeat;
+    width: 32px;
+    height: 32px;
+    text-align: center;
+}
+.helpIcon {
+    background-image: url("../resources/images/help.png");
+    background-repeat: no-repeat;
+    width: 32px;
+    height: 32px;
+    text-align: center;
+}
+.advancedTaxaIcon {
+    background-image: url("../resources/images/gear_in.png");
+    background-repeat: no-repeat;
+    width: 16px;
+    height: 16px;
+}
+.currentSearchesIcon {
+    background-image: url("../resources/images/layerList.png");
+    background-repeat: no-repeat;
+    width: 32px;
+    height: 32px;
+}
+.datasetsTrayIcon {
+    background-image: url("../resources/images/datasetTray.png");
+    background-repeat: no-repeat;
+    width: 32px;
+    height: 32px;
+}
+.smallIcon {
+    background-image: url("../resources/images/small.png");
+    background-repeat: no-repeat;
+    width: 16px;
+    height: 16px;
+    text-align: center;
+}
+.mediumIcon {
+    background-image: url("../resources/images/medium.png");
+    background-repeat: no-repeat;
+    width: 16px;
+    height: 16px;
+    text-align: center;
+}
+.largeIcon {
+    background-image: url("../resources/images/large.png");
+    background-repeat: no-repeat;
+    width: 16px;
+    height: 16px;
+    text-align: center;
+}
+.circleIcon {
+    background-image: url("../resources/images/circle.png");
+    background-repeat: no-repeat;
+    width: 16px;
+    height: 16px;
+    text-align: center;
+}
+.squareIcon {
+    background-image: url("../resources/images/square.png");
+    background-repeat: no-repeat;
+    width: 16px;
+    height: 16px;
+    text-align: center;
+}
+.triangleIcon {
+    background-image: url("../resources/images/triangle.png");
+    background-repeat: no-repeat;
+    width: 16px;
+    height: 16px;
+    text-align: center;
+}
+.starIcon {
+    background-image: url("../resources/images/star.png");
+    background-repeat: no-repeat;
+    width: 16px;
+    height: 16px;
+    text-align: center;
+}
+
+/*for SimpleSearch and SearchProperties form control alignment */
+.dijitToggleButton {
+    margin: 0;
+}
+.fixht {
+    height: 33px;
+}
+.col1 {
+    min-width: 80px;
+}
+.col2 {
+    padding-left: 5px;
+}
+.col3 {
+    min-width: 45px;
+}
+.fixht3 {
+    height: 40px;
+}
+
+.dgrid {
+    height: auto;
+}
+.dgrid .dgrid-header {
+    font-size: 10px;
+}
+.dgrid-row-odd {
+    background: #F2F5F9;
+}
+
+.field-SiteID {
+    width: 65px;
+}
+.field-DatasetID {
+    width:75px;
+}
+.field-SiteName {
+    width: 200px;
+}
+.field-LatitudeNorth {
+    width: 75px;
+}
+.field-LongitudeWest {
+    width: 75px;
+}
+.field-AgeOldest {
+    width: 75px;
+}
+.field-AgeYoungest {
+    width: 85px;
+}
+
+/*for grid in advanced taxa widget*/
+.field-selCol {
+    width: 30px;
+}
+.fixht2 {
+    height: 220px;
+}
+
+/* site pop-up*/
+.sitepop .col1 {
+    min-width: 80px;
+    font-weight: bold;
+    color: #898A8B;
+    vertical-align: top;
+}
+.sitepop .col2 {
+    padding-left: 5px;
+    padding-bottom: 5px;
+    vertical-align: top;
+    word-wrap: break-word;
+    max-width: 165px;
+    min-width: 165px;
+}
+
+.sitepop.dsToggle {
+    display: inline;
+    float: left;
+}
+.sitepop.dsToggle div {
+    display: inline;
+    padding: 0;
+    cursor: pointer;
+    font-size: .9em;
+    color: #808080;
+    vertical-align: top;
+}
+.sitepop.dsToggle .dstActive {
+    font-weight: bold;
+    color: #555454;
+}
+
+.mini, .mini div {
+    padding: 0;
+    border: 0;
+ }
+.mini button, button.mini {
+    width: 18px;
+    height: 16px;
+    cursor: pointer;
+    padding: 0;
+    border: 0;
+}
+button.mini {
+    float: right;
+}
+.mini.dsAddAll {
+    height: 14px;
+    background: url("../resources/images/folder_add14.png") no-repeat center;
+}
+.mini button.dsView {
+    background: url("../resources/images/eye16.png") no-repeat center;
+}
+.mini button.dsAdd, .dsAdd {
+    background: url("../resources/images/add16.png") no-repeat center;
+}
+.mini button.dsRemove {
+    background: url("../resources/images/erase12.png") no-repeat center;
+}
+.mini button.dsSave {
+    background: url("../resources/images/disk.png") no-repeat center;
+}
+.mini button.dsEmail {
+    background: url("../resources/images/email_open.png") no-repeat center;
+}
+.mini .dijitTooltipContainer, .mini .dijitTooltipContents.dijitTooltipFocusNode {
+    padding: 0;
+}
+.mini .dijitTooltipConnector {
+    display: none;
+}
+.mini .dijitToolbar {
+    border: 0;
+    background-color: transparent;
+    background-image: none;
+    padding: 2px;
+}
+
+/* chron metadata */
+.chronmeta .lbl, .stratDiagram tr.lbl {
+    font-weight: bold;
+    color: #898A8B;
+    height: 28px;
+    vertical-align: bottom;
+}
+
+/* stratigraphic diagram left pane */
+.stratDiagram tr {
+    vertical-align: top;
+}
+.stratDiagram td.c1 {
+    padding-left: 5px;
+}
+.spacer {
+    margin: 10px 0 25px 0;
+}
+
+/* site metadata */
+.claro h3 {
+    color: #757575;
+}
+.sitemeta {
+    margin-left: 10px;
+}
+.sitemeta .col1 {
+    font-weight: bold;
+    color: #898A8B;
+    width: 80px;
+    vertical-align: top;
+}
+.sitemeta .col2 {
+    padding-left: 10px;
+    max-width: 500px;
+    vertical-align: top;
+}
+
+/* publications */
+p.cite {
+    max-width: 700px;
+    padding-left: 3em;
+    text-indent: -3em;  /* hanging indent */
+    margin-left: 10px;
+}
+
+/* specific widths for columns in dataset samples grid*/
+.wideCols {
+    height: auto;
+}
+.wideCols .dgrid-row {
+    height: 22px;
+}
+.wideCols .dgrid-cell {
+    width: 80px; /* force all columns to have SOME width */
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.wideCols .field-name {
+    width: 125px;
+}
+.wideCols .field-group {
+    width: 95px;
+}
+.wideCols .field-element {
+    width: 70px;
+}
+.wideCols .field-units {
+    width: 60px;
+}
+.wideCols .field-context {
+    width: 60px;
+}
+
+/*.headerGrid {
+    position: absolute;
+    top: 5px;
+    height: 185px;
+    left: 5px;
+    right: 5px;
+    padding: 1px 15px 1px 15px;
+}*/
+
+
+#loader {
+    background: none repeat scroll 0 0 #FFFFFF;
+    height: 100%;
+    left: 0;
+    margin: 0;
+    opacity: 0.98;
+    padding: 0;
+    position: absolute;
+    top: 0;
+    vertical-align: middle;
+    width: 100%;
+    z-index: 999;
+}
+#loadingContent {
+    font-family: Verdana, Geneva, Arial, sans-serif;
+    color: black;
+    position: absolute;
+    top: 43%;
+    left: 43%;
+    width: 240px;
+    height: 70px;
+    visibility: visible;
+    z-index: 1000;
+}
+
+.hide {
+    visibility: hidden;
+}
+
+.dijitToolbar.searchToolbar {
+    margin-top: -10px;
+    margin-left: -8px;
+    margin-right: -8px;
+    padding: 6px 4px;
+}
+.myDialogs {
+    -webkit-border-radius: 5px;
+    border-radius:5px 5px 8px 8px;
+}
+.siteDatasetsGrid {
+    margin:0 15px;
+    overflow:hidden;
+}
+.siteDatasetsGrid .field-DatasetType {
+    width: 22px;
+}
+.siteDatasetsGrid .field-DatasetID {
+    width: 170px;
+}
+.siteDatasetsGrid .dgrid-scroller {
+    position: relative;
+    overflow: hidden;
+}
+.siteDatasetsGrid .dgrid-header-scroll {
+    display: none;
+}
+.siteDatasetsGrid .dgrid-header {
+    right: 0;
+}
+
+.selectedDatasetsGrid .field-DatasetType {
+    width: 22px;
+}
+div.selectedDatasets {
+    margin-top: 10px;
+}
+.selectedDatasets label {
+    margin-right: 8px;
+}
+
+.selectedDatasetsGrid .dgrid-cell, .siteDatasetsGrid .dgrid-cell {
+    border: none;
+}
+
+.dijitToasterContent {
+    background: none repeat scroll 0 0 #ffffd7;
+    border-radius:0 0 0 10px;
+    border-style: solid;
+    border-width:0 0 1px 1px;
+    border-bottom-color: #6b6b6b;
+    border-left-color: #6b6b6b;
+    border-top-color: transparent;
+    border-right-color: transparent;
+    color: black;
+}
+
+<<<<<<< local
+.searchesGrid .field-selCol {
+    width: 20px;
+=======
+.searchesGrid {
+    width:100%;
+}
+.searchesGrid .dgrid-cell {
+    /*width: 80px; /* force all columns to have SOME width */
+    text-overflow: ellipsis;
+    /*white-space: nowrap;*/
+}
+
+.searchesGrid .field-name {
+    width: 150px;
+>>>>>>> other
+}
+.searchesGrid .field-id {
+    width: 15px;
+}
+.searchesGrid .field-name {
+    width: 150px;
+}
+
+.searchesGrid .dgrid-scroller {
+    position: relative;
+    overflow: hidden;
+}
+.searchesGrid .dgrid-header-scroll {
+    display: none;
+}
+.searchesGrid .dgrid-header {
+    right: 0;
+}

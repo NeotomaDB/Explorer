@@ -1,0 +1,41 @@
+﻿<div>
+    <table>
+        <tr class="fixht">
+            <td class="col1">Age range</td>
+            <td class="col2">
+                <input type="text" data-dojo-type="dijit/form/NumberTextBox" data-dojo-props="style:'width:75px;', constraints:{places:0}, placeHolder:'oldest', invalidMessage:'Value must be an integer'" data-dojo-attach-point="ageOlder" name="ageOlder" data-dojo-attach-event="onFocus:ageFocused"/> to
+                <input type="text" data-dojo-type="dijit/form/NumberTextBox" data-dojo-props="style:'width:75px;', constraints:{places:0}, placeHolder:'youngest', invalidMessage:'Value must be an integer'" data-dojo-attach-point="ageYounger" name="ageYounger" data-dojo-attach-event="onFocus:ageFocused"/> yr BP
+                <button type="button" data-dojo-type="dijit/form/Button" data-dojo-props="iconClass:'advancedTaxaIcon', showLabel:false, title:'Open age scale and period options'" data-dojo-attach-point="advancedAges" data-dojo-attach-event="onClick:advancedAgesClick"></button>
+            </td>
+        </tr>
+        <tr class="fixht">
+            <td class="col1 padIndent" colspan="2">
+                <input type="radio" name="resultsType" checked value="contains" data-dojo-type="dijit/form/RadioButton" data-dojo-attach-point="resultsContain" /> completely contains result age range
+                <br />
+                <input type="radio" name="resultsType" value="intersects" data-dojo-type="dijit/form/RadioButton" data-dojo-attach-point="resultsIntersect" /> intersects result age range
+            </td>
+        </tr>
+        <tr class="fixht">
+            <td class="col1 padIndent" colspan="2">
+               <input type="checkbox" name="exactlyDated" data-dojo-type="dijit/form/CheckBox" data-dojo-attach-point="exactlyDated" /> only return directly dated specimens
+            </td>
+        </tr>
+    </table>
+    <div data-dojo-attach-point="agesTTDialog" data-dojo-type="dijit/TooltipDialog" data-dojo-attach-event="onBlur:agesTTDialogClose" style="display:none;">
+        <table class="ageLookup">
+            <tr class="fixht">
+                <td class="col1">Age scale</td>
+                <td class="col2">
+                    <div class="agecontrols" data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="style:'width:260px;', required:false, searchAttr:'RelativeAgeScale', invalidMessage:'Age scale not found'" data-dojo-attach-point="ageScale" data-dojo-attach-event="onChange:ageScaleChanged"></div>
+                </td>
+            </tr>
+            <tr class="fixht">
+                <td class="col1">Period</td>
+                <td class="col2">
+                    <div class="agecontrols" data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="style:'width:260px;', required:false, searchAttr:'RelativeAge', invalidMessage:'Period not found', query:function(row) {if ((row.CalAgeYounger != null) || (row.CalAgeOlder != null)) { return true; }}" data-dojo-attach-point="period" data-dojo-attach-event="onChange:periodChanged"></div>
+                </td>
+            </tr>
+        </table>
+        <button class="btnSpace" type="button" data-dojo-type="dijit/form/Button" data-dojo-props="label:'Close'" data-dojo-attach-event="onClick:agesTTDialogClose"></button>
+    </div>
+</div>

@@ -1,0 +1,134 @@
+﻿<!DOCTYPE html>
+<html> 
+  <head> 
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=7,IE=9" />
+    <!--The viewport meta tag is used to improve the presentation and behavior of the samples on iOS devices-->
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no"/>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>Print Table</title> 
+
+    <link rel="stylesheet" href="/dojo/1.9.3/dijit/themes/claro/claro.css"/>
+    <style>
+        * {
+            outline: none !important;
+        }
+        body, html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: Verdana, Arial, Helvetica, sans-serif;
+        }
+
+        .claro {
+            font-family: Verdana,Arial,Helvetica,sans-serif;
+            font-size: .8em; /*.9 is default?*/
+            color: #131313;
+        }
+
+        .title {
+            width: 500px;
+            font-size: 24pt;
+            margin: 10px 8px 0 8px;
+        }
+
+        table {
+            border-collapse:collapse;
+            margin: 8px;
+        }
+        table, td, th {
+            border: 1px solid black;
+        }
+        th {
+            font-size: 1.0em; /*.9 is default?*/
+            padding: 1px 2px 1px 2px;
+            background-color: lightgray;
+            text-align:left;
+        }
+        
+    </style> 
+    <script>
+        dojoConfig = {
+            isDebug: 1,
+            async: 1
+        };
+    </script>
+    <!--<script src="//ajax.googleapis.com/ajax/libs/dojo/1.9.0/dojo/dojo.js"></script>-->
+    <script src="/dojo/1.9.3/dojo/dojo.js"></script>
+    <script>
+        try {
+            require(["dojo/parser", "dijit/layout/ContentPane", "dijit/form/CheckBox", "dijit/form/Button", "dijit/form/TextBox", "dijit/InlineEditBox", "dojo/domReady!"],
+                function (parser) {
+                    try {
+                        parser.parse();
+                    } catch (e) {
+                        alert("Error in parsing function in printTable.html: " + e.message)
+                    }
+                }
+            );
+        } catch(e) {
+            alert("error in js in printTable.html: " + e.message);
+        }
+
+        function loaded() {
+            require(["dijit/registry", "dojo/dom-construct", "dojo/_base/array", "dojo/dom", "dojo/dom-class"],
+                function (registry, domConstruct, array, dom, domClass) {
+                    if (window.opener) {
+                        try {
+                            //alert("got opener");
+                            //alert("# records: " + opener.printData.length);
+                            //// add title
+                            //if (title) {
+                            //    printTitle.set("value", title);
+                            //}
+
+                            // create table
+                            //var table = domConstruct.create("table", { style: { overflow: "hidden" } });
+                            var table = domConstruct.create("table");
+                            var row = null;
+
+                            // add class to table
+                            //domClass.add(table, "printTable");
+
+                            // create header row
+                            row = domConstruct.create("tr", null, table);
+                            var dataRow1 = opener.printData[0];
+                            for (columnName in dataRow1) {
+                                if (dataRow1.hasOwnProperty(columnName)) {
+                                    domConstruct.place(domConstruct.create("th", { innerHTML: columnName }), row);
+                                }
+                            }
+
+                            // add all rows
+                            array.forEach(opener.printData,
+                                function (dataRow) {
+                                    row = domConstruct.create("tr", null, table);
+                                    for (columnName in dataRow) {
+                                        if (dataRow.hasOwnProperty(columnName)) {
+                                            domConstruct.place(domConstruct.create("td", { innerHTML: dataRow[columnName] }), row);
+                                        }
+                                    }
+                                }
+                            );
+
+                            // add table to page
+                            domConstruct.place(table, printTitle.domNode, "after");
+                        } catch (e) {
+                            alert("Error printing table: " + e.message);
+                        }
+                    } else {
+                        alert("Can't find the Neotoma Explorer window to get the table data.");
+                    }
+                }
+            );
+            
+        }
+        //function print() {
+        //    window.print();
+        //}
+    </script>
+  </head> 
+  <body class="claro" onload="loaded();">
+      <div data-dojo-id="printTitle" class="title" data-dojo-type="dijit/InlineEditBox" data-dojo-props="editor:'dijit/form/TextBox', noValueIndicator:'Click to enter title'"></div>
+  </body> 
+</html>

@@ -1,0 +1,23 @@
+﻿<div class="dijitDialog" role="dialog" aria-labelledby="${id}_title">
+	<div data-dojo-attach-point="titleBar" class="dijitDialogTitleBar">
+		<span data-dojo-attach-point="titleNode" class="dijitDialogTitle" id="${id}_title"
+				role="heading" level="1"></span>
+		<span data-dojo-attach-point="closeButtonNode" class="dijitDialogCloseIcon" data-dojo-attach-event="ondijitclick: onCancel" title="${buttonCancel}" role="button" tabIndex="-1">
+			<span data-dojo-attach-point="closeText" class="closeText" title="${buttonCancel}">x</span>
+		</span>
+	</div>
+	<div data-dojo-attach-point="containerNode" class="dijitDialogPaneContent">
+        <div data-dojo-type="neotoma/form/AllSearchResults" data-dojo-attach-point="allSearchResults" style="width:375px;height:300px;"></div>
+        <div data-dojo-type="dijit/layout/ContentPane" class="dijitDialogPaneActionBar" data-dojo-attach-point="searchesActionBar">
+            <!--<button name="animate" data-dojo-type="dijit/form/Button" data-dojo-attach-event="onClick:searchesActionBarClick">Animate</button>-->
+            <button name="combine" data-dojo-type="dijit/form/Button" data-dojo-attach-event="onClick:searchesActionBarClick">Combine</button>
+            <button name="saveAll" data-dojo-type="dijit/form/Button" data-dojo-attach-event="onClick:searchesActionBarClick">Save all</button>
+            <button name="removeAll" data-dojo-type="dijit/form/Button" data-dojo-attach-event="onClick:searchesActionBarClick">Remove all</button>
+        </div>
+        <div data-dojo-type="dijit/layout/ContentPane" class="dijitDialogPaneActionBar" data-dojo-attach-point="combineActionBar" style="display:none;">
+            <button name="ok" data-dojo-type="dijit/form/Button" data-dojo-attach-event="onClick:combineActionBarClick">OK</button>
+            <button name="back" data-dojo-type="dijit/form/Button" data-dojo-attach-event="onClick:combineActionBarClick">Back</button>
+        </div>
+        <a id="downloadLink" style="display:none;">Download</a>
+	</div>
+</div>
