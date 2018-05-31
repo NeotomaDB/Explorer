@@ -87,6 +87,7 @@
                                     { DatasetType: "physical sedimentology", image: "S.png" },
                                     { DatasetType: "charcoal", image: "C.png" },
                                     { DatasetType: "testate amoebae", image: "T.png" },
+                                    { DatasetType: "testate amoebae surface sample", image: "Ts.png" },
                                     { DatasetType: "Energy dispersive X-ray spectroscopy (EDS/EDX)", image: "GC.png" },
                                     { DatasetType: "X-ray diffraction (XRD)", image: "GC.png" },
                                     { DatasetType: "X-ray fluorescence (XRF)", image: "GC.png" }
