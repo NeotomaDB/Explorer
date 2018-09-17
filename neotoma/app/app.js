@@ -342,7 +342,7 @@
                             } catch(e) {
                                 alert("new error: " + e.message);
                             } 
-
+                            /*DEPRECATED
                             // try to get IP location
                             if (idsPassed === false) {
                                 script.get("//freegeoip.net/json/", { jsonp: "callback" }).then(
@@ -363,6 +363,7 @@
                                    })
                                );
                             }
+                            */
                            
 
                             // switch to gphy

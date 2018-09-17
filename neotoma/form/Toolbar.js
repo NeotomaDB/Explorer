@@ -1,5 +1,13 @@
-﻿define(["dojo/_base/declare", "dijit/Toolbar", "dijit/_TemplatedMixin", "dijit/_WidgetsInTemplateMixin", "dojo/text!./template/toolbar.html", "dojo/_base/lang", "dojo/topic", "dojo/_base/array", "dijit/registry", "dojo/dom-class", "dojo/dom-geometry", "dojo/request/script", "dojo/dom-construct", "neotoma/util/export", "neotoma/app/neotoma", "dojo/on", "dojo/_base/config", "dijit/popup", "dojo/has", "dijit/form/Button", "dijit/Toolbar", "neotoma/widget/BaseLayerButton", "neotoma/form/UserSettings", "neotoma/form/Tokens", "dijit/form/DropDownButton", "dijit/TooltipDialog"],
-    function (declare, Toolbar, _TemplatedMixin, _WidgetsInTemplateMixin, template, lang, topic, array, registry, domClass, domGeometry, script, domConstruct, exExport, neotoma, on, config, popup, has) {
+﻿define(["dojo/_base/declare", "dijit/Toolbar", "dijit/_TemplatedMixin", "dijit/_WidgetsInTemplateMixin",
+ "dojo/text!./template/toolbar.html", "dojo/_base/lang", "dojo/topic", "dojo/_base/array", "dijit/registry",
+  "dojo/dom-class", "dojo/dom-geometry", "dojo/request/script", "dojo/dom-construct", "neotoma/util/export",
+   "neotoma/app/neotoma", "dojo/on", "dojo/_base/config", "dijit/popup", "dojo/has","dojo/request/xhr", "dijit/form/Button",
+    "dijit/Toolbar", "neotoma/widget/BaseLayerButton", "neotoma/form/UserSettings", "neotoma/form/Tokens",
+     "dijit/form/DropDownButton", "dijit/TooltipDialog"],
+    function (declare, Toolbar, _TemplatedMixin, _WidgetsInTemplateMixin,
+     template, lang, topic, array, registry,
+      domClass, domGeometry, script, domConstruct, exExport,
+       neotoma, on, config, popup, has, xhr) {
         // define function for when modern range loads
         var modernRangeLoaded = function (response) {
             try {
@@ -340,7 +348,14 @@
                                         filter: "<filter><PropertyIsEqualTo><PropertyName>sciname</PropertyName><Literal>" + speciesName + "</Literal></PropertyIsEqualTo></filter>"
                                     };
 
-                                    script.get(config.wfsEndPoint, { jsonp: "callback", query: params }).then(lang.hitch(scope, modernRangeLoaded));
+                                    xhr.get(config.wfsEndPoint,{
+                                        handleAs: "json",
+                                        headers: {
+                                            'content-type': 'application/json'
+                                        }, 
+                                        query: params 
+                                        }).then(lang.hitch(scope, modernRangeLoaded));
+                                    //script.get(config.wfsEndPoint, { jsonp: "callback", query: params }).then(lang.hitch(scope, modernRangeLoaded));
                                 });
 
                                 // listen for modern ranges to be shown and hidden
