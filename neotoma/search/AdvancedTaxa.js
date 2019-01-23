@@ -164,7 +164,7 @@
                         })
                     );
                 } catch (e) {
-                    alert("Error in search/AdvanvedTaxa.postCreate: " + e.message);
+                    alert("Error in search/AdvancedTaxa.postCreate: " + e.message);
                 } 
             },
             onShow: function () {

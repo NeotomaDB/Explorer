@@ -586,7 +586,8 @@
 
 
                 // check that there is a width and a height
-                var buf = 0.00004;
+                // add quarter degree buffer to set usable map extent
+                var buf = 0.125;
                 if (miny === maxy) {
                     miny -= buf;
                     maxy += buf;
