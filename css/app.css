@@ -15,7 +15,7 @@ body, html {
     color: #131313;
 }
 .claro .dijitTooltipContents {
-    max-width: 300px;
+    /*max-width: 300px;*/
     line-height: 1.7;
 }
 a:link, a:visited {

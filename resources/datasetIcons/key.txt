@@ -16,3 +16,4 @@ GC.png	geochemistry
 S.png	physical sedimentology
 C.png	charcoal
 T.png	testate amoebae
+Ts.png	testate amoebae surface sample

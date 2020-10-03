@@ -141,6 +141,8 @@
                             if (response.data.length > 0) {
                                 // populate store
                                 this._set("store", new Memory({ idProperty: "GeoPoliticalID", data: response.data }));
+                                //sort results
+                                this.set("fetchProperties", {sort: [{ attribute: "GeoPoliticalName", descending: false }]});
                             } else {
                                 this.set("placeHolder", "No sub units");
                             }
@@ -172,6 +174,8 @@
                             if (response.data.length > 0) {
                                 // populate store
                                 this._set("store", new Memory({ idProperty: "GeoPoliticalID", data: response.data }));
+                                //sort results
+                                this.set("fetchProperties", {sort: [{ attribute: "GeoPoliticalName", descending: false }]});
                             } else {
                                 this.set("placeHolder", "No sub units");
                             }
@@ -266,6 +270,8 @@
                             if (response.success) {
                                 // populate store
                                 this._set("store", new Memory({ idProperty: "GeoPoliticalID", data: response.data }));
+                                //sort results
+                                this.set("fetchProperties", {sort: [{ attribute: "GeoPoliticalName", descending: false }]});
                             } else {
                                 alert("response error loading first level of geopolitical units: " + response.message);
                             }

@@ -1,4 +1,4 @@
-﻿define(["dojo/_base/lang", "dojo/topic", "dijit/registry","neotoma/app/neotoma", "amagimap/util/url", "dojo/_base/array", "dojo/_base/Color", "dojo/colors"],
+define(["dojo/_base/lang", "dojo/topic", "dijit/registry","neotoma/app/neotoma", "amagimap/util/url", "dojo/_base/array", "dojo/_base/Color", "dojo/colors"],
     function (lang, topic, registry, neotoma, urlUtil, array, Color, colors) {
         var dropCancel = function (e) {
             if (e.preventDefault) e.preventDefault(); // required by FF + Safari
@@ -342,7 +342,7 @@
                             } catch(e) {
                                 alert("new error: " + e.message);
                             } 
-                            /*DEPRECATED
+					/*DEPRECATED
                             // try to get IP location
                             if (idsPassed === false) {
                                 script.get("//freegeoip.net/json/", { jsonp: "callback" }).then(
@@ -363,8 +363,7 @@
                                    })
                                );
                             }
-                            */
-                           
+                           */
 
                             // switch to gphy
                             setTimeout(

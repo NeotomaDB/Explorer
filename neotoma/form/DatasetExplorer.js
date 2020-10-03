@@ -1,4 +1,4 @@
-﻿define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin", "dojo/text!./template/datasetExplorer.html", "dijit/_WidgetsInTemplateMixin",
+define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin", "dojo/text!./template/datasetExplorer.html", "dijit/_WidgetsInTemplateMixin",
    "dojo/request/script", "dojo/_base/lang", "dijit/Tooltip", "dgrid/OnDemandGrid", "dgrid/Grid", "neotoma/widget/_StoreMixin", "dgrid/extensions/DijitRegistry",
    "dojo/store/Memory", "dgrid/ColumnSet", "dgrid/extensions/ColumnResizer", "dojo/dom-style", "dojo/dom-construct", "dojo/dom-class", "dojo/dom-attr", "dojo/on", 
    "dojo/number", "dijit/registry", "dojo/dom", "dojo/has", "dojo/_base/array", "neotoma/util/export", "dojo/aspect", "dojo/_base/config", "dojo/topic", "dojo/when", "dojo/Deferred",
@@ -1876,11 +1876,26 @@
                         topic.publish("diagrammer/ShowStandby");
 
                         // get data for datasetid
-                        xhr.get("https://tilia.neotomadb.org/Retrieve",
-                               {
+                        /*
+					xhr.get("https://tilia.neotomadb.org/Retrieve",
+					{
                                    handleAs: "json",
                                    query: {
                                        method: "GetDatasetTopTaxaData",
+                                       DATASETID: id,
+                                       TOPX: 10,
+                                       GROUPTAXA: grpParam
+                                   },
+                                   headers: {
+                                       "X-Requested-With": null
+                                   }
+                               }
+                           )
+					*/
+				     xhr.get("https://wnapi.neotomadb.org/oxcal/getdatasettoptaxadata",		
+                               {
+                                   handleAs: "json",
+                                   query: {                                       
                                        DATASETID: id,
                                        TOPX: 10,
                                        GROUPTAXA: grpParam

@@ -254,10 +254,8 @@
                             if (response.success) {
                                 // populate store
                                 this._set("store", new Memory({ idProperty: "DatabaseID", data: response.data }));
-                                // sort store
-                                var sort = { sort: [{ attribute: "DatabaseName", descending: false }] }
-                                //this.set("query", sort);
-                                //var data = grid.get("store").query({}, sort);
+                                //sort results
+                                this.set("fetchProperties", {sort: [{ attribute: "DatabaseName", descending: false }]});
                             } else {
                                 alert("response error setting constituent databases: " + response.message);
                             }
