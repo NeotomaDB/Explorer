@@ -287,11 +287,11 @@
                                             // need to attach site object to dataset
                                             dataset.site =
                                                 {
-                                                    Latitude: atts.Latitude,
-                                                    Longitude: atts.Longitude,
-                                                    SiteDescription: atts.SiteDescription,
-                                                    SiteID: atts.SiteID,
-                                                    SiteName: atts.SiteName
+                                                    Latitude: atts.latitude,
+                                                    Longitude: atts.longitude,
+                                                    SiteDescription: atts.sitedescription,
+                                                    SiteID: atts.siteid,
+                                                    SiteName: atts.sitename
                                                 };
 
                                             // publish a topic to insert into datasets store. 

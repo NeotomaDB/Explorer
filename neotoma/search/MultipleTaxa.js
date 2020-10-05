@@ -37,7 +37,7 @@
                             if (response.success) {
                                 // populate filtering select
                                 this.multipleTaxaGrid.set("store", new Memory({
-                                    idProperty: "TaxonID",
+                                    idProperty: "taxonid",
                                     data: response.data
                                 }));
                                 this.multipleTaxaGrid.resize();
@@ -104,7 +104,7 @@
                 if (filterFunction) {
                     this.taxaGroup.set("store",
                         new Memory({
-                            idProperty: "TaxaGroupID",
+                            idProperty: "taxagroupid",
                             data: this.taxaGroupStore.query(filterFunction)
                         })
                     );
@@ -130,7 +130,7 @@
                         if (response.success) {
                             // create taxaGroupStore
                             this.taxaGroupStore = new Memory({
-                                idProperty: "TaxaGroupID",
+                                idProperty: "taxagroupid",
                                 data: response.data
                             });
 

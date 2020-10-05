@@ -1,5 +1,14 @@
-define(["dojo/_base/declare", "dijit/Toolbar", "dijit/_TemplatedMixin", "dijit/_WidgetsInTemplateMixin", "dojo/text!./template/toolbar.html", "dojo/_base/lang", "dojo/topic", "dojo/_base/array", "dijit/registry", "dojo/dom-class", "dojo/dom-geometry", "dojo/request/script", "dojo/dom-construct", "neotoma/util/export", "neotoma/app/neotoma", "dojo/on", "dojo/_base/config", "dijit/popup", "dojo/has","dojo/request/xhr", "dijit/form/Button", "dijit/Toolbar", "neotoma/widget/BaseLayerButton", "neotoma/form/UserSettings", "neotoma/form/Tokens", "dijit/form/DropDownButton", "dijit/TooltipDialog"],
-    function (declare, Toolbar, _TemplatedMixin, _WidgetsInTemplateMixin, template, lang, topic, array, registry, domClass, domGeometry, script, domConstruct, exExport, neotoma, on, config, popup, has, xhr) {
+﻿define(["dojo/_base/declare", "dijit/Toolbar", "dijit/_TemplatedMixin", "dijit/_WidgetsInTemplateMixin",
+ "dojo/text!./template/toolbar.html", "dojo/_base/lang", "dojo/topic", "dojo/_base/array",
+  "dijit/registry", "dojo/dom-class", "dojo/dom-geometry", "dojo/request/script", "dojo/dom-construct",
+   "neotoma/util/export", "neotoma/app/neotoma", "dojo/on", "dojo/_base/config", "dijit/popup",
+    "dojo/has","dojo/request/xhr", "dijit/form/Button", "dijit/Toolbar", "neotoma/widget/BaseLayerButton",
+     "neotoma/form/UserSettings", "neotoma/form/Tokens", "dijit/form/DropDownButton", "dijit/TooltipDialog"],
+    function (declare, Toolbar, _TemplatedMixin, _WidgetsInTemplateMixin,
+     template, lang, topic, array,
+      registry, domClass, domGeometry, script, domConstruct,
+       exExport, neotoma, on, config, popup,
+        has, xhr) {
         // define function for when modern range loads
         var modernRangeLoaded = function (response) {
             try {
@@ -253,6 +262,7 @@ define(["dojo/_base/declare", "dijit/Toolbar", "dijit/_TemplatedMixin", "dijit/_
                                 dojo.config.app.allSearchResults = dlg.allSearchResults;
 
                                 // listen for a search to be turned on/off on the map
+                            
                                 topic.subscribe("neotoma/search/SearchVisibilityChanged", function () {
                                     var layerName = arguments[0];
                                     var visible = arguments[1];
@@ -264,7 +274,7 @@ define(["dojo/_base/declare", "dijit/Toolbar", "dijit/_TemplatedMixin", "dijit/_
                                     var layer = layers[0];
                                     layer.setVisibility(visible);
                                 });
-
+                              
                                 // listen for a search to be deleted
                                 topic.subscribe("neotoma/search/SearchDeleted", function (searchId) {
                                     try {
@@ -339,7 +349,8 @@ define(["dojo/_base/declare", "dijit/Toolbar", "dijit/_TemplatedMixin", "dijit/_
                                         typename: 'cei:faunranges',
                                         filter: "<filter><PropertyIsEqualTo><PropertyName>sciname</PropertyName><Literal>" + speciesName + "</Literal></PropertyIsEqualTo></filter>"
                                     };
-						    xhr.get(config.wfsEndPoint,{
+
+                                    xhr.get(config.wfsEndPoint,{
                                         handleAs: "json",
                                         headers: {
                                             'content-type': 'application/json'

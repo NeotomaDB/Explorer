@@ -551,7 +551,7 @@
                 var numDatasets = 0;
                 array.forEach(search.sites,
                     function (site) {
-                        numDatasets += site.Datasets.length;
+                        numDatasets += site.datasets.length;
                     }
                 );
                 if (numDatasets > maxDatasets) {
@@ -562,16 +562,16 @@
                 //alert("# sites: " + search.sites.length);
                 array.forEach(search.sites,
                     function (site) {
-                        array.forEach(site.Datasets,
+                        array.forEach(site.datasets,
                             function (dataset) {
                                 // add site to dataset if needed
                                 if (!dataset.hasOwnProperty("site")) {
                                     dataset["site"] = {
-                                        SiteID: site.SiteID,
-                                        SiteName: site.SiteName,
-                                        SiteDescription: site.SiteDescription,
-                                        Latitude: site.Latitude, // llchange
-                                        Longitude: site.Longitude // llchange
+                                        SiteID: site.siteid,
+                                        SiteName: site.sitename,
+                                        SiteDescription: site.sitedescription,
+                                        Latitude: site.latitude, // llchange
+                                        Longitude: site.longitude // llchange
                                     };
                                 }
                                 topic.publish("explorer/dataset/AddToTray", dataset, false);

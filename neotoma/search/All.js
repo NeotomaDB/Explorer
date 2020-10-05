@@ -186,7 +186,7 @@
                                     array.forEach(response.data,
                                         function (site) {
                                             numSites += 1;
-                                            numDatasets += site.Datasets.length;
+                                            numDatasets += site.datasets.length;
                                         }
                                     );
                                     var siteStr = "sites";
@@ -256,7 +256,7 @@
                     { jsonp: "callback" }
                 ).then(lang.hitch(this.datasetType, function (response) {
                     if (response.success) {
-                        this._set("store", new Memory({ idProperty: "DatasetTypeID", data: response.data }));
+                        this._set("store", new Memory({ idProperty: "datasettypeid", data: response.data }));
                     } else {
                         alert("error in search/All.postCreate loading dataset types: " + response.message);
                     }

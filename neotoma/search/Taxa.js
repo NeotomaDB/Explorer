@@ -152,7 +152,7 @@
                                 return;
                             } else {
                                 var rec = form.datasetType.get("store").get(datasetTypeId);
-                                if ((rec.DatasetType !== "pollen") && (rec.DatasetType !== "pollen surface sample")) {
+                                if ((rec.datasettype !== "pollen") && (rec.datasettype !== "pollen surface sample")) {
                                     alert("Please select a 'pollen' or 'pollen surface sample' dataset type and taxon before including abundance.");
                                     this.includeAbundance.set("value", false);
                                     return;
@@ -190,8 +190,8 @@
                         { jsonp: "callback", query: { taphonomicSystemId: val } }
                     ).then(lang.hitch(this, function (response) {
                         if (response.success) {
-                            this.taphonomicType._set("store", new Memory({ idProperty: "TaphonomicTypeID", data: response.data }));
-                            this.taphonomicTypesGrid.set("store", new Memory({ idProperty: "TaphonomicTypeID", data: response.data }));
+                            this.taphonomicType._set("store", new Memory({ idProperty: "taphonomictypeid", data: response.data }));
+                            this.taphonomicTypesGrid.set("store", new Memory({ idProperty: "taphonomictypeid", data: response.data }));
                         } else {
                             alert("error in search/Taxa.taphonomicSystemChanged loading types: " + response.message);
                         }
@@ -328,12 +328,12 @@
 
                         // set the element types for this taxa group 
                         script.get(config.appServicesLocation + "/ElementTypes",
-                            { jsonp: "callback", query: { taxonId: val } }
+                            { jsonp: "callback", query: { taxonid: val } }
                         ).then(lang.hitch(this, function (response) {
                             if (response.success) {
                                 try {
                                     // set the filteringSelect's store
-                                    this.elementType._set("store", new Memory({ idProperty: "ElementTypeID", data: response.data }));
+                                    this.elementType._set("store", new Memory({ idProperty: "elementtypeid", data: response.data }));
 
                                     // try to restore previous selection
                                     if (currentId) {
@@ -341,7 +341,7 @@
                                     }
 
                                     // set the elementTypesGrid store
-                                    this.elementTypesGrid.set("store", new Memory({ idProperty: "ElementTypeID", data: response.data }));
+                                    this.elementTypesGrid.set("store", new Memory({ idProperty: "elementtypeid", data: response.data }));
                                     //this.elementTypesGrid.renderArray(response.data);
                                 } catch (e) {
                                     alert("error in search/Taxa setting element types from taxonNameChanged: " + e.message);
@@ -354,7 +354,7 @@
                         // see if abundance is needed
                         if (taxon) {
                             var abundanceGroups = ["VPL", "BRY", "FUN", "UPA"];
-                            if (abundanceGroups.indexOf(taxon.TaxaGroupID) !== -1) {;
+                            if (abundanceGroups.indexOf(taxon.taxagroupid) !== -1) {;
                                 //// enable abundance radio button
                                 //this.includeAbundance.set({
                                 //    disabled: false,
@@ -619,12 +619,12 @@
                 // set the element types for this taxa group 
                 if (taxaGroupId) {
                     script.get(config.appServicesLocation + "/ElementTypes",
-                        { jsonp: "callback", query: { taxaGroupId: taxaGroupId } }
+                        { jsonp: "callback", query: { taxagroupid: taxaGroupId } }
                     ).then(lang.hitch(this, function (response) {
                         if (response.success) {
                             try {
                                 // set the filteringSelect's store
-                                this.elementType._set("store", new Memory({ idProperty: "ElementTypeID", data: response.data }));
+                                this.elementType._set("store", new Memory({ idProperty: "elementtypeid", data: response.data }));
 
                                 // try to restore previous selection
                                 if (currentId) {
@@ -632,7 +632,7 @@
                                 }
 
                                 // set the elementTypesGrid store
-                                this.elementTypesGrid.set("store", new Memory({ idProperty: "ElementTypeID", data: response.data }));
+                                this.elementTypesGrid.set("store", new Memory({ idProperty: "elementtypeid", data: response.data }));
                                 //this.elementTypesGrid.renderArray(response.data);
                             } catch (e) {
                                 alert("error in search/Taxa setting element types from _setTaxaGroupIdAttr: " + e.message);
@@ -666,7 +666,7 @@
                     this.advancedTaxaPane.setFilter(null);
                 } else {
                     var filterFunction = function (item) {
-                        if (item.DatasetTypeIDs.indexOf(datasetTypeID) !== -1) {
+                        if (item.datasettypeids.indexOf(datasetTypeID) !== -1) {
                             return true;
                         }
                     };
@@ -677,7 +677,7 @@
                     }
                     this.taxonName._set("store",
                         new Memory({
-                            idProperty:"TaxonID",
+                            idProperty:"taxonid",
                             data: this.allTaxaStore.query(filterFunction)
                         })
                    );
@@ -686,15 +686,15 @@
                     var taxaGroupIds = [];
                     array.forEach(this.taxonName.get("store").data,
                         function (taxon) {
-                            if (taxaGroupIds.indexOf(taxon.TaxaGroupID) === -1) {
-                                taxaGroupIds.push(taxon.TaxaGroupID);
+                            if (taxaGroupIds.indexOf(taxon.taxagroupid) === -1) {
+                                taxaGroupIds.push(taxon.taxagroupid);
                             }
                         }
                     );
 
                     // set filter on taxa groups in advanced taxa form
                     this.advancedTaxaPane.setFilter(function (item) {
-                        if (taxaGroupIds.indexOf(item.TaxaGroupID) !== -1) {
+                        if (taxaGroupIds.indexOf(item.taxagroupid) !== -1) {
                             return true;
                         }
                     });
@@ -713,7 +713,7 @@
                 });
 
                 // set store
-                this.taphonomicSystem._set("store", new Memory({ idProperty: "TaphonomicSystemID", data: data }));
+                this.taphonomicSystem._set("store", new Memory({ idProperty: "taphonomicsystemid", data: data }));
 
                 // clear type
                 this.taphonomicType.set(
@@ -757,7 +757,7 @@
                     { jsonp: "callback" }
                 ).then(lang.hitch(this, function (response) {
                     if (response.success) {
-                        this.allTaxaStore = new Memory({ idProperty: "TaxonID", data: response.data });
+                        this.allTaxaStore = new Memory({ idProperty: "taxonid", data: response.data });
                         this.taxonName._set("store", this.allTaxaStore);
                     } else {
                         alert("error in search/TaxaAge.postCreate loading taxa: " + response.message);

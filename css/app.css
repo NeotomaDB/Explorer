@@ -15,7 +15,7 @@ body, html {
     color: #131313;
 }
 .claro .dijitTooltipContents {
-    /*max-width: 300px;*/
+   /* max-width: 300px;*/
     line-height: 1.7;
 }
 a:link, a:visited {
@@ -256,16 +256,16 @@ a img {
     background: #F2F5F9;
 }
 
-.field-SiteID {
+.field-siteid {
     width: 65px;
 }
-.field-DatasetID {
+.field-datasetid {
     width:70px;
 }
-.field-DatasetType {
+.field-datasettype {
     width:27px;
 }
-.field-SiteName {
+.field-sitename {
     width: 200px;
 }
 /*.field-LatitudeNorth {
@@ -275,16 +275,16 @@ a img {
     width: 75px;
 }*/
 /*llChange*/
-.field-Latitude {
+.field-latitude {
     width: 75px;
 }
-.field-Longitude {
+.field-longitude {
     width: 75px;
 }
-.field-AgeOldest {
+.field-ageoldest {
     width: 75px;
 }
-.field-AgeYoungest {
+.field-ageyoungest {
     width: 85px;
 }
 
@@ -542,10 +542,10 @@ p.cite {
     max-height: 200px;
     overflow-y: auto !important;
 }
-.siteDatasetsGrid .field-DatasetType {
+.siteDatasetsGrid .field-datasettype {
     width: 22px;
 }
-.siteDatasetsGrid .field-DatasetID {
+.siteDatasetsGrid .field-datasetid {
     width: 170px;
 }
 .siteDatasetsGrid .dgrid-scroller {
@@ -559,7 +559,7 @@ p.cite {
     right: 0;
 }
 
-.selectedDatasetsGrid .field-DatasetType {
+.selectedDatasetsGrid .field-datasettype {
     width: 22px;
 }
 div.selectedDatasets {

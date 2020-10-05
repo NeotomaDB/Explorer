@@ -15,7 +15,7 @@
             },
             depEnvtNodeClick: function (item) {
                 topic.publish("explorer/search/newDepEnvt", this.tree.get("selectedItems"));
-                //console.log("clicked on " + item.DepEnvt + " ID: " + item.DepEnvtID);
+                //console.log("clicked on " + item.DepEnvt + " ID: " + item.depenvtid);
             },
             clear: function() {
                 //this.tree.set("model", null);
@@ -34,7 +34,7 @@
                 // create store with model for tree
                 this.store = new JsonRest({
                     target: config.appServicesLocation + "/DepositionalEnvironments/",
-                    idProperty: "DepEnvtID",
+                    idProperty: "depenvtid",
                     mayHaveChildren: function (object) {
                         // see if it has a children property
                         var hasChildren = "children" in object;
@@ -46,7 +46,7 @@
                     },
                     getChildren: function (object, onComplete, onError) {
                         // retrieve the full copy of the object
-                        this.get(object.DepEnvtID).then(
+                        this.get(object.depenvtid).then(
                             function (fullObject) {
                                 // copy to the original object so it has the children array as well.
                                 object.children = fullObject.children;

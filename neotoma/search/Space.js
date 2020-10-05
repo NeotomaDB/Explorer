@@ -140,9 +140,7 @@
                             // populate store if there are records, otherwise show message
                             if (response.data.length > 0) {
                                 // populate store
-                                this._set("store", new Memory({ idProperty: "GeoPoliticalID", data: response.data }));
-                                //sort results
-                                this.set("fetchProperties", {sort: [{ attribute: "GeoPoliticalName", descending: false }]});
+                                this._set("store", new Memory({ idProperty: "geopoliticalid", data: response.data }));
                             } else {
                                 this.set("placeHolder", "No sub units");
                             }
@@ -173,9 +171,7 @@
                             // populate store if there are records, otherwise show message
                             if (response.data.length > 0) {
                                 // populate store
-                                this._set("store", new Memory({ idProperty: "GeoPoliticalID", data: response.data }));
-                                //sort results
-                                this.set("fetchProperties", {sort: [{ attribute: "GeoPoliticalName", descending: false }]});
+                                this._set("store", new Memory({ idProperty: "geopoliticalid", data: response.data }));
                             } else {
                                 this.set("placeHolder", "No sub units");
                             }
@@ -269,9 +265,7 @@
                         try {
                             if (response.success) {
                                 // populate store
-                                this._set("store", new Memory({ idProperty: "GeoPoliticalID", data: response.data }));
-                                //sort results
-                                this.set("fetchProperties", {sort: [{ attribute: "GeoPoliticalName", descending: false }]});
+                                this._set("store", new Memory({ idProperty: "geopoliticalid", data: response.data }));
                             } else {
                                 alert("response error loading first level of geopolitical units: " + response.message);
                             }

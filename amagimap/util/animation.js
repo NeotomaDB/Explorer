@@ -65,8 +65,8 @@
                                 atts = feature.attributes;
                                 
                                 // find bins for this feature
-                                ageYoungest = atts.AgeYoungest || atts.MinAge;
-                                ageOldest = atts.AgeOldest || atts.MaxAge;
+                                ageYoungest = atts.ageyoungest || atts.minage;
+                                ageOldest = atts.ageoldest || atts.maxage;
                                 foundBins = array.filter(bins,
                                     function (bin) {
                                         if (!((bin.max < ageYoungest) || (bin.min > ageOldest))) {
@@ -82,7 +82,7 @@
                                 // set feature style from parent layer
                                 newFeature.style = layerStyle;
                                 if (foundBins.length === 0) {
-                                    //console.log("There were no bins found. There should be one. ageOldest: " + atts.AgeOldest + " ageYoungest: " + atts.AgeYoungest);
+                                    //console.log("There were no bins found. There should be one. ageOldest: " + atts.ageoldest + " ageYoungest: " + atts.ageyoungest);
                                 } else {
                                     /// add each bin center to feature's binIds
                                     array.forEach(foundBins,
@@ -128,8 +128,8 @@
                                atts = feature.attributes;
 
                                // check ages
-                               thisMinAge = atts.AgeYoungest || atts.MinAge;
-                               thisMaxAge = atts.AgeOldest || atts.MaxAge;
+                               thisMinAge = atts.ageyoungest || atts.minage;
+                               thisMaxAge = atts.ageoldest || atts.maxage;
                                if (thisMinAge == null) {
                                    // see if a pollen surface sample
                                    if (atts.datasets.indexOf("pollen surface sample")) {
@@ -201,8 +201,8 @@
                                 skipFeature = false;
 
                                 // get feature ages to find bins
-                                ageYoungest = atts.AgeYoungest || atts.MinAge;
-                                ageOldest = atts.AgeOldest || atts.MaxAge;
+                                ageYoungest = atts.ageyoungest || atts.minage;
+                                ageOldest = atts.ageoldest || atts.maxage;
                                 if (ageYoungest == null) {
                                     // see if a pollen surface sample
                                     if (atts.datasets.indexOf("pollen surface sample")) {
@@ -238,7 +238,7 @@
                                     // set feature style from parent layer
                                     newFeature.style = layerStyle;
                                     if (foundBins.length === 0) {
-                                        //console.log("There were no bins found. There should be one. ageOldest: " + atts.AgeOldest + " ageYoungest: " + atts.AgeYoungest);
+                                        //console.log("There were no bins found. There should be one. ageOldest: " + atts.ageoldest + " ageYoungest: " + atts.ageyoungest);
                                     } else {
                                         /// add each bin center to feature's binIds
                                         array.forEach(foundBins,

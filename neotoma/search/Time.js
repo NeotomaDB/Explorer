@@ -69,14 +69,14 @@
                 // populate taxa store
                 //topic.publish("neotoma/search/StartBusy");
                 script.get(config.appServicesLocation + "/RelativeAges",
-                    { jsonp: "callback", query: { ageScaleId: ageScaleId } }
+                    { jsonp: "callback", query: { agescaleid: ageScaleId } }
                 ).then(lang.hitch(this, function (response) {
                     try {
                         //topic.publish("neotoma/search/StopBusy");
                         if (response.success) {
                             // set store
                             this.period.set("store", new Memory({
-                                idProperty: "RelativeAgeID",
+                                idProperty: "relativeageid",
                                 data: response.data
                             }));
                             // clear any previous displayed value
@@ -105,8 +105,8 @@
 
                 // put ages in form
                 if (results) {
-                    this.ageYounger.set("value", results.CalAgeYounger);
-                    this.ageOlder.set("value", results.CalAgeOlder);
+                    this.ageYounger.set("value", results.calageyounger);
+                    this.ageOlder.set("value", results.calageolder);
                     //config.ageSet = true;
                 }
             },
@@ -119,12 +119,12 @@
 
                 // populate age scales
                 script.get(config.dbServicesLocation + "/RelativeAgeScales",
-                        { jsonp: "callback", query: { sort: "RelativeAgeScale" } }
+                        { jsonp: "callback", query: { sort: "relativeagescale" } }
                     ).then(lang.hitch(this.ageScale, function (response) {
                         try {
                             if (response.success) {
                                 // populate store
-                                this._set("store", new Memory({ idProperty: "RelativeAgeScaleID", data: response.data }));
+                                this._set("store", new Memory({ idProperty: "relativeagescaleid", data: response.data }));
                             } else {
                                 alert("server error in search/Time.postCreate loading age scales" + response.message);
                             }

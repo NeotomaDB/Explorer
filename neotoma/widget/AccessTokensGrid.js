@@ -1,4 +1,4 @@
-﻿define(["dojo/_base/declare", "dgrid1/onDemandGrid", "dgrid/extensions/DijitRegistry", "dojo/dom-construct", "dojo/topic", "dojo/_base/lang"],
+﻿define(["dojo/_base/declare", "dgrid1/OnDemandGrid", "dgrid/extensions/DijitRegistry", "dojo/dom-construct", "dojo/topic", "dojo/_base/lang"],
     function (declare, onDemandGrid, DijitRegistry, domConstruct, topic, lang) {
         return declare([onDemandGrid,DijitRegistry], {
             columns: {

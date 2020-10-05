@@ -1,4 +1,4 @@
-define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin", "dojo/text!./template/datasetExplorer.html", "dijit/_WidgetsInTemplateMixin",
+﻿define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin", "dojo/text!./template/datasetExplorer.html", "dijit/_WidgetsInTemplateMixin",
    "dojo/request/script", "dojo/_base/lang", "dijit/Tooltip", "dgrid/OnDemandGrid", "dgrid/Grid", "neotoma/widget/_StoreMixin", "dgrid/extensions/DijitRegistry",
    "dojo/store/Memory", "dgrid/ColumnSet", "dgrid/extensions/ColumnResizer", "dojo/dom-style", "dojo/dom-construct", "dojo/dom-class", "dojo/dom-attr", "dojo/on", 
    "dojo/number", "dijit/registry", "dojo/dom", "dojo/has", "dojo/_base/array", "neotoma/util/export", "dojo/aspect", "dojo/_base/config", "dojo/topic", "dojo/when", "dojo/Deferred",
@@ -54,17 +54,17 @@ define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin
                        if (chron) {
                            var content = ["<table class='chronmeta'>"];
                            content.push("<tr class='lbl'><td>Name</td></tr>");
-                           content.push("<tr><td>" + chron.ChronologyName + "</td></tr>");
+                           content.push("<tr><td>" + chron.chronologyname + "</td></tr>");
                            content.push("<tr class='lbl'><td>Age type</td></tr>");
-                           content.push("<tr><td>" + chron.AgeType + "</td></tr>");
+                           content.push("<tr><td>" + chron.agetype + "</td></tr>");
                            //content.push("<tr><td>Depth: " + chron.MinDepth + "-" + chron.MaxDepth + "</td></tr>");
                            //content.push("<tr><td>Age: " + chron.MinAge + "-" + chron.MaxAge + "</td></tr>"); // from samples
                            content.push("<tr class='lbl'><td>Reliable age range <img src='resources/images/miniQuest.png' id='ageRangeHelp' class='miniHelp'></td></tr>");
-                           content.push("<tr><td>" + chron.AgeOlder + " to " + chron.AgeYounger + "</td></tr>"); // from chron
+                           content.push("<tr><td>" + chron.ageolder + " to " + chron.ageyounger + "</td></tr>"); // from chron
                            content.push("<tr class='lbl'><td>Age model</td></tr>");
-                           content.push("<tr><td>" + chron.AgeModel + "</td></tr>");
+                           content.push("<tr><td>" + chron.agemodel + "</td></tr>");
                            content.push("<tr class='lbl'><td>Default</td></tr>");
-                           content.push("<tr><td>" + chron.Default + "</td></tr>");
+                           content.push("<tr><td>" + chron.default + "</td></tr>");
 
                            content.push("</table>");
 
@@ -161,7 +161,7 @@ define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin
                    
                         // load geochron data
                         script.get(config.appServicesLocation + "/Geochronologies",
-                            { jsonp: "callback", query:{datasetId:datasetId} }
+                            { jsonp: "callback", query:{datasetid:datasetId} }
                         ).then(lang.hitch(this,
                             function (response) {
                                 try {
@@ -178,36 +178,36 @@ define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin
                                          // create site object to cache
                                         if (currentSiteObj.data != null) {
                                             this.site = {
-                                                SiteID: currentSiteObj.data.SiteID || null,
-                                                SiteName: currentSiteObj.data.SiteName || null,
-                                                SiteDescription: currentSiteObj.data.SiteDescription || null,
-                                                Latitude: currentSiteObj.Latitude || currentSiteObj.data.Latitude,
-                                                Longitude: currentSiteObj.Longitude || currentSiteObj.data.Longitude,
-                                                SiteNotes: currentSiteObj.data.SiteNotes || null
+                                                siteid: currentSiteObj.data.siteid || null,
+                                                sitename: currentSiteObj.data.sitename || null,
+                                                sitedescription: currentSiteObj.data.sitedescription || null,
+                                                latitude: currentSiteObj.latitude || currentSiteObj.data.latitude,
+                                                longitude: currentSiteObj.longitude || currentSiteObj.data.longitude,
+                                                sitenotes: currentSiteObj.data.sitenotes || null
                                             };
                                         } else {
                                             this.site = {
-                                                SiteID: currentSiteObj.SiteID || null,
-                                                SiteName: currentSiteObj.SiteName || null,
-                                                SiteDescription: currentSiteObj.SiteDescription || null,
-                                                Latitude: currentSiteObj.LatitudeSouth || null,
-                                                Longitude: currentSiteObj.LongitudeEast || null,
-                                                SiteNotes: currentSiteObj.SiteNotes || null
+                                                siteid: currentSiteObj.siteid || null,
+                                                sitename: currentSiteObj.sitename || null,
+                                                sitedescription: currentSiteObj.sitedescription || null,
+                                                latitude: currentSiteObj.latitudesouth || null,
+                                                longitude: currentSiteObj.longitudeeast || null,
+                                                sitenotes: currentSiteObj.sitenotes || null
                                             };
                                         }
 
                                         // add site to response to be like others
                                         var results = response.data;
-                                        results.Site = this.site;
+                                        results.site = this.site;
 
                                         // display geochron data
-                                        this._displayGeochronDataset(response.data.Samples);
+                                        this._displayGeochronDataset(response.data.samples);
 
                                         // load site meta data
-                                        this.loadGeochronSiteMetadata(results.Site);
+                                        this.loadGeochronSiteMetadata(results.site);
 
                                         // load publications
-                                        this._loadGeoChronPublications(datasetId, response.data.DatasetPIs);
+                                        this._loadGeoChronPublications(datasetId, response.data.datasetpis);
 
                                         // make sure displays the first time
                                         if (initRun) {
@@ -281,7 +281,7 @@ define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin
                                 this.currentDatasetId = datasetId;
 
                                 // parse with brian's function
-                                this._sheetResponse = this._formatSheet(this._datasetResponse.Samples);
+                                this._sheetResponse = this._formatSheet(this._datasetResponse.samples);
                                
                                 // load samples (header grid)
                                 this._displaySamples(this._sheetResponse);
@@ -300,7 +300,7 @@ define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin
                                 }
 
                                 // load chronologies & retreive additional chronology data; return parsed chronology array
-                                this._parseChronologies(this._datasetResponse.Samples, this._datasetResponse.DefChronologyID);
+                                this._parseChronologies(this._datasetResponse.samples, this._datasetResponse.defchronologyid);
                                 /*
                                 var chronologies = this._parseChronologies(this._datasetResponse.Samples, this._datasetResponse.DefChronologyID);
                                 var dlg = this;
@@ -327,13 +327,13 @@ define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin
                                 }
 
                                 // load site meta data
-                                this._loadSiteMetadata(this._datasetResponse.Site);
+                                this._loadSiteMetadata(this._datasetResponse.site);
 
                                 // load publications
-                                this._loadPublications(datasetId, this._datasetResponse.DatasetPIs);
+                                this._loadPublications(datasetId, this._datasetResponse.datasetpis);
 
                                 // change title
-                                this.getParent().set("title", "Dataset ID: " + datasetId + " | " + this._datasetResponse.DatabaseName);
+                                this.getParent().set("title", "Dataset ID: " + datasetId + " | " + this._datasetResponse.databasename);
 
                                 //HACK. 
                                 if (initRun) {
@@ -414,7 +414,7 @@ define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin
                 this.geoChronPublicationsTab.set("content", "");
                 // get publications for dataset
                 script.get(config.dataServicesLocation + "/Publications/",
-                        { jsonp: "callback", query: { datasetId: datasetId } }
+                        { jsonp: "callback", query: { datasetid: datasetId } }
                     ).then(lang.hitch(this, function (resp) {
                         try {
                             var content = null;
@@ -429,7 +429,7 @@ define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin
                                         var pis = [];
                                         array.forEach(datasetPIs,
                                             function (piObj) {
-                                                pis.push(piObj.ContactName);
+                                                pis.push(piObj.contactname);
                                             }
                                         );
 
@@ -442,7 +442,7 @@ define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin
                                 // add all publications to tab
                                 if (resp.data.length > 0) {
                                     array.forEach(resp.data, function (publication) {
-                                        domConstruct.place(domConstruct.create("p", { innerHTML: publication.Citation, class: "cite" }), pt.domNode);
+                                        domConstruct.place(domConstruct.create("p", { innerHTML: publication.citation, class: "cite" }), pt.domNode);
                                     });
                                 }
                                 else {
@@ -461,7 +461,7 @@ define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin
                 this.publicationsTab.set("content", "");
                 // get publications for dataset
                 script.get(config.dataServicesLocation + "/Publications/",
-                        { jsonp: "callback", query: {datasetId:datasetId} }
+                        { jsonp: "callback", query: {datasetid:datasetId} }
                     ).then(lang.hitch(this,function (resp) {
                         try {
                             var content = null;
@@ -474,7 +474,7 @@ define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin
                                 var pis = [];
                                 array.forEach(datasetPIs,
                                     function (piObj) {
-                                        pis.push(piObj.ContactName);
+                                        pis.push(piObj.contactname);
                                     }
                                 );
 
@@ -484,7 +484,7 @@ define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin
                                 // add all publications to tab
                                 if (resp.data.length > 0) {
                                     array.forEach(resp.data, function (publication) {
-                                        domConstruct.place(domConstruct.create("p", {innerHTML:publication.Citation, class:"cite"}), pt.domNode);
+                                        domConstruct.place(domConstruct.create("p", {innerHTML:publication.citation, class:"cite"}), pt.domNode);
                                     });
                                 }
                                 else {
@@ -522,39 +522,39 @@ define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin
                         outSample = {};
 
                         // assign outSample inSample property values; if null, assign out property ""
-                        outSample["sampleId"] = inSample.SampleID;
-                        outSample["sampleName"] = inSample.SampleName || "";
-                        outSample["unitName"] = inSample.AnalysisUnitName || "";
-                        outSample["depth"] = inSample.AnalysisUnitDepth || "";
-                        outSample["thickness"] = inSample.AnalysisUnitThickness || "";
+                        outSample["sampleId"] = inSample.sampleid;
+                        outSample["sampleName"] = inSample.samplename || "";
+                        outSample["unitName"] = inSample.analysisunitname || "";
+                        outSample["depth"] = inSample.analysisunitdepth || "";
+                        outSample["thickness"] = inSample.analysisunitthickness || "";
 
                         // add to outSamples
                         outSamples.push(outSample);
 
                         // create chron objects to hold age data; chron object includes array of sample age strings by sampleId
-                        for (var ci = 0; ci < inSample.SampleAges.length; ci++) {
-                            inSampAge = inSample.SampleAges[ci];
-                            if (inSampAge.ChronologyID) {
-                                outChron = outChrons["C" + inSampAge.ChronologyID];
+                        for (var ci = 0; ci < inSample.sampleages.length; ci++) {
+                            inSampAge = inSample.sampleages[ci];
+                            if (inSampAge.chronologyid) {
+                                outChron = outChrons["C" + inSampAge.chronologyid];
                                 // create new outChron object if doesn't exist
                                 if (!outChron) {
                                     outChron = {};
-                                    outChron["chronId"] = inSampAge.ChronologyID;
-                                    outChron["chronName"] = inSampAge.ChronologyName;
-                                    outChron["ageType"] = inSampAge.AgeType;
+                                    outChron["chronId"] = inSampAge.chronologyid;
+                                    outChron["chronName"] = inSampAge.chronologyname;
+                                    outChron["ageType"] = inSampAge.agetype;
                                     outChron["sampAges"] = [];
-                                    outChrons["C" + inSampAge.ChronologyID] = outChron;
+                                    outChrons["C" + inSampAge.chronologyid] = outChron;
                                 }
                                 // create string representation of sample age (e.g. AgeOlder/Age/AgeYounger) and add to chron's SampAges array
-                                outSampAge = (inSampAge.AgeOlder || "--") + "/" +
-                                    (inSampAge.Age || "--") + "/" +
-                                    (inSampAge.AgeYounger || "--");
-                                outChron.sampAges.push({ sampleId: inSample.SampleID, ageStr: outSampAge });
+                                outSampAge = (inSampAge.ageolder || "--") + "/" +
+                                    (inSampAge.age || "--") + "/" +
+                                    (inSampAge.ageyounger || "--");
+                                outChron.sampAges.push({ sampleId: inSample.sampleid, ageStr: outSampAge });
                             }
                         }
 
                         // loop through raw SampleData array, create variable objects to hold values for samples
-                        inSampleDataArray = inSample.SampleData;
+                        inSampleDataArray = inSample.sampledata;
                         var numSampleData = inSampleDataArray.length;
                         var thisValue = null;
                         for (var si = 0; si < numSampleData; si++) {
@@ -568,19 +568,19 @@ define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin
                                 varNum += 1;
                                 // create new new Variable stub from inSampleData properties
                                 newVariable = {};
-                                newVariable["name"] = inSampleData.TaxonName;
+                                newVariable["name"] = inSampleData.taxonname;
                                 //newVariable["group"] = inSampleData.TaxaGroup;
-                                newVariable["group"] = inSampleData.EcolGroupID;
-                                newVariable["element"] = inSampleData.VariableElement;
-                                newVariable["units"] = inSampleData.VariableUnits;
-                                newVariable["context"] = inSampleData.VariableContext || "";
+                                newVariable["group"] = inSampleData.ecolgroupid;
+                                newVariable["element"] = inSampleData.variableelement;
+                                newVariable["units"] = inSampleData.variableunits;
+                                newVariable["context"] = inSampleData.variablecontext || "";
                                 //TODO: handle VariableModifications array
                                 outVariables[varId] = newVariable;
                             }
                             
                             // see if value is presence/abscense
-                            thisValue = inSampleData.Value;
-                            if (inSampleData.VariableUnits === "present/absent") {
+                            thisValue = inSampleData.value;
+                            if (inSampleData.variableunits === "present/absent") {
                                 if (thisValue === 1) {
                                     thisValue = "+";
                                 }
@@ -588,7 +588,7 @@ define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin
 
                             // add value of variable for this sample
                             outVariable = outVariables[varId];
-                            outVariable["S" + inSample.SampleID] = thisValue;
+                            outVariable["S" + inSample.sampleid] = thisValue;
                             outVariables[varId] = outVariable;
                         } // next sample data (i.e. variable)
 
@@ -649,10 +649,10 @@ define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin
                 for (var key in list) {
                     if (list.hasOwnProperty(key)) {
                         outVar = list[key];
-                        if (outVar.name == inVar.TaxonName) {
-                            if (outVar.element == inVar.VariableElement) {
-                                if (outVar.units == inVar.VariableUnits) {
-                                    if ((outVar.context == inVar.VariableContext) || (!outVar.context && !inVar.VariableContext)) {
+                        if (outVar.name == inVar.taxonname) {
+                            if (outVar.element == inVar.variableelement) {
+                                if (outVar.units == inVar.variableunits) {
+                                    if ((outVar.context == inVar.variablecontext) || (!outVar.context && !inVar.variablecontext)) {
                                         return key;
                                     }
                                 }
@@ -666,7 +666,7 @@ define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin
                 // populate datasetChronologies combobox
                 this.datasetChronologies.set("store",
                     new Memory({
-                        idProperty: "ChronologyID",
+                        idProperty: "chronologyid",
                         data: this._chronologyChartData["chronologies"]
                     }
                 ));
@@ -675,7 +675,7 @@ define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin
                 if (this.datasetChronologies.get("value") === "") {
                     // set default chron
                     if (this._chronologyChartData["defaultChron"]) {
-                        this.datasetChronologies.set("value", this._chronologyChartData["defaultChron"]["ChronologyID"]);
+                        this.datasetChronologies.set("value", this._chronologyChartData["defaultChron"]["chronologyid"]);
                     }
                 }
             },
@@ -713,14 +713,14 @@ define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin
                             var chronologies = this._chronologyChartData["chronologies"];
                             var numChrons = chronologies.length;
                             for (var i = 0; i < numChrons; i++) {
-                                if (chronologies[i].ChronologyID === chronID) {
+                                if (chronologies[i].chronologyid === chronID) {
                                     chartChron = chronologies[i];
                                     break;
                                 }
                             }
                             
                             // if doesn't have MaxDepth and MinDepth then hide tab and stop
-                            if ((!chartChron.MaxDepth) && (!chartChron.MinDepth)) {
+                            if ((!chartChron.maxdepth) && (!chartChron.mindepth)) {
                                 this.chronologyTab.set("disabled", true);
                                 return false;
                             }
@@ -737,10 +737,10 @@ define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin
 
                         // see whether to show chart
                         var showChart = true;
-                        if (!chartChron.MaxDepth) {
+                        if (!chartChron.maxdepth) {
                             showChart = false;
                         } else {
-                            if (chartChron.MaxDepth - chartChron.MinDepth === 0) {
+                            if (chartChron.maxdepth - chartChron.mindepth === 0) {
                                 showChart = false;
                             }
                         }
@@ -767,12 +767,12 @@ define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin
 
                             // calculate min and max age and depth. Buffer mins and maxs
                             var bufferRatio = 0.05;
-                            var ageSpread = parseInt(chartChron.MaxAge - chartChron.MinAge);
-                            var depthSpread = parseInt(chartChron.MaxDepth - chartChron.MinDepth);
-                            var minAge = Math.floor(chartChron.MinAge - (bufferRatio * ageSpread));
-                            var maxAge = Math.ceil(chartChron.MaxAge + (bufferRatio * ageSpread));
-                            var minDepth = parseInt(chartChron.MinDepth - (bufferRatio * depthSpread));
-                            var maxDepth = parseInt(chartChron.MaxDepth + (bufferRatio * depthSpread));
+                            var ageSpread = parseInt(chartChron.maxage - chartChron.minage);
+                            var depthSpread = parseInt(chartChron.maxdepth - chartChron.mindepth);
+                            var minAge = Math.floor(chartChron.minage - (bufferRatio * ageSpread));
+                            var maxAge = Math.ceil(chartChron.maxage + (bufferRatio * ageSpread));
+                            var minDepth = parseInt(chartChron.mindepth - (bufferRatio * depthSpread));
+                            var maxDepth = parseInt(chartChron.maxdepth + (bufferRatio * depthSpread));
                             //console.log("minDepth: " + minDepth + " maxDepth: " + maxDepth);
                             
                             // calculate depth tick steps
@@ -1030,7 +1030,7 @@ define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin
                     lang.hitch(this, function (Observable, Memory, Chart, theme, StoreSeries, Indicator, MouseZoomAndPan, domStyle) {
                         
                         // hide legend if no ages because there will be no chart
-                        if (samples[0].SampleAges[0].Age == null) {
+                        if (samples[0].sampleages[0].age == null) {
                             // hide chronology legend
                             domStyle.set("chronologyLegend", "visibility", "hidden");
                         } else {
@@ -1063,7 +1063,7 @@ define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin
                         for (var i = 0; i < numSamples; i++) {
                             thisSample = samples[i];
                             // look at sample ages to see how many chronologies there are. 1 chron/sample age
-                            sampleAges = thisSample.SampleAges;
+                            sampleAges = thisSample.sampleages;
                             var numAges = sampleAges.length;
                             var thisAge = null;
 
@@ -1076,15 +1076,15 @@ define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin
                                 if (i === 0) { // only for first sample age
                                     // add to chronologies
                                     chronologies.push({
-                                        ChronologyID: thisAge.ChronologyID || defaultChronId,
-                                        ChronologyName: thisAge.ChronologyName || "default chronology",
-                                        AgeType: thisAge.AgeType
+                                        chronologyid: thisAge.chronologyid || defaultChronId,
+                                        chronologyname: thisAge.chronologyname || "default chronology",
+                                        agetype: thisAge.agetype
                                     });
                                     // initialize chart data for age (chron)
-                                    chartData[thisAge.ChronologyID] = [];
+                                    chartData[thisAge.chronologyid] = [];
 
                                     // see if default chron
-                                    if (thisAge.ChronologyID === defaultChronId) {
+                                    if (thisAge.chronologyid === defaultChronId) {
                                         // get default chronology
                                         defaultChron = chronologies[chronologies.length - 1];
                                     }
@@ -1095,14 +1095,14 @@ define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin
                                     }
                                 }
                                 // add sample to chartData for all records. Make sure has valid depth and age
-                                if ((thisAge.Age != null) && (thisSample.AnalysisUnitDepth != null)) {
+                                if ((thisAge.age != null) && (thisSample.analysisunitdepth != null)) {
                                     // see if should be min
-                                    if (!chronologies[ai].MinAge) {
-                                        chronologies[ai].MinAge = thisAge.Age;
-                                        chronologies[ai].MinDepth = thisSample.AnalysisUnitDepth;
+                                    if (!chronologies[ai].minage) {
+                                        chronologies[ai].minage = thisAge.age;
+                                        chronologies[ai].mindepth = thisSample.analysisunitdepth;
                                     } else {
-                                        if (thisAge.Age < chronologies[ai].MinAge) {
-                                            chronologies[ai].MinAge = thisAge.Age;
+                                        if (thisAge.age < chronologies[ai].minage) {
+                                            chronologies[ai].minage = thisAge.age;
                                         }
                                         //if (thisAge.Age < chronologies[ai].MaxDepth) {
                                         //    chronologies[ai].MaxDepth = thisSample.AnalysisUnitDepth;
@@ -1110,28 +1110,28 @@ define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin
                                     }
 
                                     // make sure can get chart data for this chronology
-                                    if (!chartData[thisAge.ChronologyID]) {
+                                    if (!chartData[thisAge.chronologyid]) {
                                         this.chronologyTab.set("disabled", true);
                                         return;
                                     }
 
                                     // add to chart data
-                                    chartData[thisAge.ChronologyID].push({
-                                        SampleID: thisSample.SampleID,
-                                        AnalysisUnitDepth: thisSample.AnalysisUnitDepth,
-                                        Age: thisAge.Age
+                                    chartData[thisAge.chronologyid].push({
+                                        SampleID: thisSample.sampleid,
+                                        AnalysisUnitDepth: thisSample.analysisunitdepth,
+                                        Age: thisAge.age
                                     });
 
                                     // set each to max since are in age order
-                                    if (!chronologies[ai].MaxAge) {
-                                        chronologies[ai].MaxAge = thisAge.Age;
-                                        chronologies[ai].MaxDepth = thisSample.AnalysisUnitDepth
+                                    if (!chronologies[ai].maxage) {
+                                        chronologies[ai].maxage = thisAge.age;
+                                        chronologies[ai].maxdepth = thisSample.analysisunitdepth
                                     } else {
-                                        if (thisAge.Age > chronologies[ai].MaxAge) {
-                                            chronologies[ai].MaxAge = thisAge.Age;
+                                        if (thisAge.age > chronologies[ai].maxage) {
+                                            chronologies[ai].maxage = thisAge.age;
                                         }
-                                        if (thisAge.Age > chronologies[ai].MaxDepth) {
-                                            chronologies[ai].MaxDepth = thisSample.AnalysisUnitDepth;
+                                        if (thisAge.age > chronologies[ai].maxdepth) {
+                                            chronologies[ai].maxdepth = thisSample.analysisunitdepth;
                                         }
                                     }
                                 }
@@ -1397,18 +1397,18 @@ define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin
                     if (this._geochronGrid == null) { // create grid
                         this._geochronGrid = new declare([Grid, ColumnResizer, StoreMixin, DijitRegistry])({
                             columns: {
-                                SampleID:"ID",
-                                LabNumber: "Lab Number",
-                                GeochronType: "Type",
-                                MaterialDated:"Material Dated",
-                                Age:"Age",
-                                ErrorOlder:"Error Older",
-                                ErrorYounger: "Error Younger",
-                                Depth: "Depth",
-                                Thickness: "Thickness",
+                                sampleid:"ID",
+                                labnumber: "Lab Number",
+                                geochrontype: "Type",
+                                materialdated:"Material Dated",
+                                age:"Age",
+                                errorolder:"Error Older",
+                                erroryounger: "Error Younger",
+                                depth: "Depth",
+                                thickness: "Thickness",
                                 //Delta13C:"Delta13C",
-                                Notes:"Notes",
-                                Infinite:"Infinite"
+                                notes:"Notes",
+                                infinite:"Infinite"
                             },
                             id: "geochronologyGrid"
                         });
@@ -1426,7 +1426,7 @@ define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin
                         // add data to grid
                         this._geochronGrid.set("class", "wideCols");
                         this._geochronGrid.set("store", new Memory({
-                            idProperty: "SampleID",
+                            idProperty: "sampleid",
                             data: data
                         }));
                         this._geochronGrid.refresh();
@@ -1440,7 +1440,7 @@ define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin
                     } else { // update data in grid
                         // update data
                         this._geochronGrid.set("store", new Memory({
-                            idProperty: "SampleID",
+                            idProperty: "sampleid",
                             data: data
                         }));
                         this._geochronGrid.refresh();
@@ -1475,29 +1475,29 @@ define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin
                     // create and rows
                     var row = domConstruct.create("tr", {class:"fixht"}, table);
                     domConstruct.place(domConstruct.create("td", {innerHTML:"Site ID", class:"col1"}), row);
-                    domConstruct.place(domConstruct.create("td", {innerHTML:site.SiteID, class:"col2"}), row);
+                    domConstruct.place(domConstruct.create("td", {innerHTML:site.siteid, class:"col2"}), row);
                     var row = domConstruct.create("tr", {class:"fixht"}, table);
                     domConstruct.place(domConstruct.create("td", {innerHTML: "Longitude", class:"col1"}), row);
-                    domConstruct.place(domConstruct.create("td", {innerHTML: numberUtil.format(site.Longitude, {pattern:"#.######"}), class:"col2"}), row);
+                    domConstruct.place(domConstruct.create("td", {innerHTML: numberUtil.format(site.longitude, {pattern:"#.######"}), class:"col2"}), row);
                     var row = domConstruct.create("tr", {class:"fixht"}, table);
                     domConstruct.place(domConstruct.create("td", {innerHTML: "Latitude", class:"col1"}), row);
-                    domConstruct.place(domConstruct.create("td", {innerHTML: numberUtil.format(site.Latitude, {pattern:"#.######"}), class:"col2"}), row);
-                    if (site.SiteDescription) {
+                    domConstruct.place(domConstruct.create("td", {innerHTML: numberUtil.format(site.latitude, {pattern:"#.######"}), class:"col2"}), row);
+                    if (site.sitedescription) {
                         var row = domConstruct.create("tr", {class:"fixht"}, table);
                         domConstruct.place(domConstruct.create("td", {innerHTML:"Description", class:"col1"}), row);
-                        domConstruct.place(domConstruct.create("td", {innerHTML:site.SiteDescription, class:"col2"}), row);
+                        domConstruct.place(domConstruct.create("td", {innerHTML:site.sitedescription, class:"col2"}), row);
                     }
-                    if (site.SiteNotes) {
+                    if (site.sitenotes) {
                         var row = domConstruct.create("tr", { class: "fixht" }, table);
                         domConstruct.place(domConstruct.create("td", { innerHTML: "Notes", class: "col1" }), row);
-                        domConstruct.place(domConstruct.create("td", { innerHTML: site.SiteNotes, class: "col2" }), row);
+                        domConstruct.place(domConstruct.create("td", { innerHTML: site.sitenotes, class: "col2" }), row);
                     }
 
                     // add class to table
                     domClass.add(table, "sitemeta");
 
                     // create site name header
-                    var header = domConstruct.create("h3", { innerHTML: site.SiteName });
+                    var header = domConstruct.create("h3", { innerHTML: site.sitename });
 
                     // add header to contents
                     domConstruct.place(header, this.siteTab.domNode);
@@ -1523,22 +1523,22 @@ define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin
                     // create and rows
                     var row = domConstruct.create("tr", { class: "fixht" }, table);
                     domConstruct.place(domConstruct.create("td", { innerHTML: "Site ID", class: "col1" }), row);
-                    domConstruct.place(domConstruct.create("td", { innerHTML: site.SiteID, class: "col2" }), row);
+                    domConstruct.place(domConstruct.create("td", { innerHTML: site.siteid, class: "col2" }), row);
                     var row = domConstruct.create("tr", { class: "fixht" }, table);
                     domConstruct.place(domConstruct.create("td", { innerHTML: "Longitude", class: "col1" }), row);
-                    domConstruct.place(domConstruct.create("td", { innerHTML: numberUtil.format(site.Longitude, { pattern: "#.######" }), class: "col2" }), row);
+                    domConstruct.place(domConstruct.create("td", { innerHTML: numberUtil.format(site.longitude, { pattern: "#.######" }), class: "col2" }), row);
                     var row = domConstruct.create("tr", { class: "fixht" }, table);
                     domConstruct.place(domConstruct.create("td", { innerHTML: "Latitude", class: "col1" }), row);
-                    domConstruct.place(domConstruct.create("td", { innerHTML: numberUtil.format(site.Latitude, { pattern: "#.######" }), class: "col2" }), row);
-                    if (site.SiteDescription) {
+                    domConstruct.place(domConstruct.create("td", { innerHTML: numberUtil.format(site.latitude, { pattern: "#.######" }), class: "col2" }), row);
+                    if (site.sitedescription) {
                         var row = domConstruct.create("tr", { class: "fixht" }, table);
                         domConstruct.place(domConstruct.create("td", { innerHTML: "Description", class: "col1" }), row);
-                        domConstruct.place(domConstruct.create("td", { innerHTML: site.SiteDescription, class: "col2" }), row);
+                        domConstruct.place(domConstruct.create("td", { innerHTML: site.sitedescription, class: "col2" }), row);
                     }
-                    if (site.SiteNotes) {
+                    if (site.sitenotes) {
                         var row = domConstruct.create("tr", { class: "fixht" }, table);
                         domConstruct.place(domConstruct.create("td", { innerHTML: "Notes", class: "col1" }), row);
-                        domConstruct.place(domConstruct.create("td", { innerHTML: site.SiteNotes, class: "col2" }), row);
+                        domConstruct.place(domConstruct.create("td", { innerHTML: site.sitenotes, class: "col2" }), row);
                     }
 
                     // add class to table
@@ -1546,7 +1546,7 @@ define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin
 
                     // create site name header
                     if (site) {
-                        var header = domConstruct.create("h3", { innerHTML: site.SiteName });
+                        var header = domConstruct.create("h3", { innerHTML: site.sitename });
                     }
                     
                     // add header to contents
@@ -1731,7 +1731,7 @@ define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin
                     var numChrons = chrons.length;
                     var dlg = this;
                     for (var i = 0; i < numChrons; i++) {
-                        if (chrons[i].ChronologyID == null) {
+                        if (chrons[i].chronologyid == null) {
                             //_alert("There is no chronology. Disable tab");
                             // disable chronologies tab
                             this.chronologyTab.set("disabled", true);
@@ -1742,7 +1742,7 @@ define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin
                          //   this.chronologyTab.set("disabled", false);
                        // }
                         // send request
-                        script.get(config.dataServicesLocation + "/Chronologies/" + chrons[i].ChronologyID,
+                        script.get(config.dataServicesLocation + "/Chronologies/" + chrons[i].chronologyid,
                             { jsonp: "callback"}
                         ).then(lang.hitch([this,chrons[i]], function (response) {
                             if (response.success) {
@@ -1759,8 +1759,8 @@ define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin
                                     // chart default chron
                                     if (this[0]._chronologyChartData["defaultChron"]) {
                                         //console.log("chart default chron: " + JSON.stringify(this[0]._chronologyChartData["defaultChron"]));
-                                        this[0]._displayChronologiesChart(this[0]._chronologyChartData["defaultChron"].ChronologyID);
-                                        dlg.configureStratigraphicDiagram(dlg.currentDatasetId, dlg._datasetType, dlg._datasetResponse.DefChronologyID, chrons);
+                                        this[0]._displayChronologiesChart(this[0]._chronologyChartData["defaultChron"].chronologyid);
+                                        dlg.configureStratigraphicDiagram(dlg.currentDatasetId, dlg._datasetType, dlg._datasetResponse.defchronologyid, chrons);
                                     }
 
                                     // enable chronology tab
@@ -1785,14 +1785,15 @@ define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin
             yAxisChangeHandler: null,
             //params: datasetid, datasetType, defaultChronId, chronologies
             configureStratigraphicDiagram: function(datasetid, datasetType, defaultChronId, chronologies) {
+              
                 // get potential y axes
                 //var yaxes = [{ chronName: "Depth", chronId: -9999 }];
                 //chronologies = sheetResponse.sampleChrons;
-                var yaxes = [{ ChronologyName: "Depth", ChronologyID: -9999 }];
+                var yaxes = [{ chronologyname: "Depth", chronologyid: -9999 }];
                 //check if any chronologies provided
                 if ( chronologies instanceof Array ){
                   //check if provided chronology is enumerated
-                  if (chronologies[0].ChronologyName != "default chronology" ){
+                  if (chronologies[0].chronologyname != "default chronology" ){
                     yaxes = yaxes.concat(chronologies);
                   }
                 }
@@ -1801,7 +1802,7 @@ define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin
                 this.yAxisSelect.set("store",
                     new Memory({
                         //idProperty: "chronId",
-                        idProperty: "ChronologyID",
+                        idProperty: "chronologyid",
                         data: yaxes
                     })
                 );
@@ -1876,26 +1877,11 @@ define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin
                         topic.publish("diagrammer/ShowStandby");
 
                         // get data for datasetid
-                        /*
-					xhr.get("https://tilia.neotomadb.org/Retrieve",
-					{
+                        xhr.get("https://tilia.neotomadb.org/Retrieve",
+                               {
                                    handleAs: "json",
                                    query: {
                                        method: "GetDatasetTopTaxaData",
-                                       DATASETID: id,
-                                       TOPX: 10,
-                                       GROUPTAXA: grpParam
-                                   },
-                                   headers: {
-                                       "X-Requested-With": null
-                                   }
-                               }
-                           )
-					*/
-				     xhr.get("https://wnapi.neotomadb.org/oxcal/getdatasettoptaxadata",		
-                               {
-                                   handleAs: "json",
-                                   query: {                                       
                                        DATASETID: id,
                                        TOPX: 10,
                                        GROUPTAXA: grpParam

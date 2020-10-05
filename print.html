@@ -8,7 +8,10 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <title>Print</title> 
 
+    <!--
     <link rel="stylesheet" href="/dojo/1.9.3/dijit/themes/claro/claro.css"/>
+    -->
+    <link rel="stylesheet" href="https://apps.neotomadb.org/dojo/1.9.3/dijit/themes/claro/claro.css"/>
     <style>
         * {
             outline: none !important;
@@ -48,14 +51,21 @@
             isDebug: 1,
             async: 1,
             packages: [
-                { name: 'dgrid', location: '/dojo/dgrid' },
-                { name: 'xstyle', location: '/dojo/xstyle' },
-                { name: 'put-selector', location: '/dojo/put-selector' }
+                //{ name: 'dgrid', location: '/dojo/dgrid' },
+                //{ name: 'xstyle', location: '/dojo/xstyle' },
+                //{ name: 'put-selector', location: '/dojo/put-selector' }
+
+                { name: 'dgrid', location: 'http://apps.neotomadb.org/dojo/dgrid' },
+                { name: 'xstyle', location: 'http://apps.neotomadb.org/dojo/xstyle' },
+                { name: 'put-selector', location: 'http://apps.neotomadb.org/dojo/put-selector' },
+                
             ]
         };
     </script>
-    <!--<script src="//ajax.googleapis.com/ajax/libs/dojo/1.9.0/dojo/dojo.js"></script>-->
+    <!--<script src="//ajax.googleapis.com/ajax/libs/dojo/1.9.0/dojo/dojo.js"></script>
     <script src="/dojo/1.9.3/dojo/dojo.js"></script>
+    -->
+    <script src="http://apps.neotomadb.org/dojo/1.9.3/dojo/dojo.js"></script>
     <script>
         try {
             require(["dojo/parser", "dijit/layout/ContentPane", "dijit/form/CheckBox", "dijit/form/Button", "dijit/form/TextBox", "dijit/InlineEditBox", "dojo/domReady!"],

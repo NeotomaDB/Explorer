@@ -13,7 +13,7 @@
                 "class":"advancedTaxa",
                 columns: {
                     selCol: selector({ label: "Select"}),
-                    TaxonName: "Taxon"
+                    taxonname: "Taxon"
                 }
             }
         );

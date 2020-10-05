@@ -37,7 +37,7 @@
                 // populate taxa store
                 topic.publish("neotoma/search/StartBusy");
                 script.get(config.appServicesLocation + "/RelativeAges",
-                    { jsonp: "callback", query: { ageScaleId: ageScaleId } }
+                    { jsonp: "callback", query: { agescaleid: ageScaleId } }
                 ).then(lang.hitch(this,function (response) {
                     try {
                         topic.publish("neotoma/search/StopBusy");
@@ -46,7 +46,7 @@
                             this.period.set("displayedValue", "");
                             // set store
                             this.period.set("store", new Memory({
-                                idProperty: "RelativeAgeID",
+                                idProperty: "relativeageid",
                                 data: response.data
                             }));
                             // clear any previous displayed value
@@ -71,7 +71,7 @@
                     if (TaxaGroupID === "") {
                         this.allTaxa.set("query", {});
                     } else {
-                        this.allTaxa.set("query", { TaxaGroupID: TaxaGroupID });
+                        this.allTaxa.set("query", { taxagroupid: TaxaGroupID });
                     }
                     
                     // clear out any existing taxa
@@ -97,8 +97,8 @@
 
                 // put ages in form
                 if (results) {
-                    this.ageYounger.set("value", results.CalAgeYounger);
-                    this.ageOlder.set("value", results.CalAgeOlder);
+                    this.ageYounger.set("value", results.calageyounger);
+                    this.ageOlder.set("value", results.calageolder);
                     this.ageSet = true;
                 }
             },
@@ -262,7 +262,7 @@
                                         array.forEach(response.data,
                                             function (site) {
                                                 numSites += 1;
-                                                numDatasets += site.Datasets.length;
+                                                numDatasets += site.datasets.length;
                                             }
                                         );
                                         var siteStr = "sites";
@@ -316,7 +316,7 @@
                     //                array.forEach(response.data,
                     //                    function (site) {
                     //                        numSites += 1;
-                    //                        numDatasets += site.Datasets.length;
+                    //                        numDatasets += site.datasets.length;
                     //                    }
                     //                );
                     //                var siteStr = "sites";
@@ -563,7 +563,7 @@
                             try {
                                 if (response.success) {
                                     // populate store
-                                    this._set("store", new Memory({ idProperty: "RelativeAgeScaleID", data: response.data }));
+                                    this._set("store", new Memory({ idProperty: "relativeagescaleid", data: response.data }));
                                 } else {
                                     alert("response error in search/TaxaAge.postCreate loading age scales" + response.message);
                                 }
@@ -577,7 +577,7 @@
                         { jsonp: "callback"}
                     ).then(lang.hitch(this, function (response) {
                         if (response.success) {
-                            this.allTaxa._set("store", new Memory({ idProperty: "TaxonID", data: response.data }));
+                            this.allTaxa._set("store", new Memory({ idProperty: "taxonid", data: response.data }));
                         } else {
                             alert("error in search/TaxaAge.postCreate loading taxa: " + response.message);
                         }

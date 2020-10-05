@@ -210,7 +210,7 @@
                     try {
                         if (response.success) {
                             // populate store
-                            this._set("store", new Memory({ idProperty: "CollTypeID", data: response.data }));
+                            this._set("store", new Memory({ idProperty: "colltypeid", data: response.data }));
 
                             // pick first one
                             //this._set("value", 1);
@@ -232,7 +232,7 @@
                     try {
                         if (response.success) {
                             // populate store
-                            this._set("store", new Memory({ idProperty: "KeywordID", data: response.data }));
+                            this._set("store", new Memory({ idProperty: "keywordid", data: response.data }));
 
                             // pick first one
                             //this._set("value", 1);
@@ -253,9 +253,11 @@
                         try {
                             if (response.success) {
                                 // populate store
-                                this._set("store", new Memory({ idProperty: "DatabaseID", data: response.data }));
-                                //sort results
-                                this.set("fetchProperties", {sort: [{ attribute: "DatabaseName", descending: false }]});
+                                this._set("store", new Memory({ idProperty: "databaseid", data: response.data }));
+                                // sort store
+                                var sort = { sort: [{ attribute: "DatabaseName", descending: false }] }
+                                //this.set("query", sort);
+                                //var data = grid.get("store").query({}, sort);
                             } else {
                                 alert("response error setting constituent databases: " + response.message);
                             }
@@ -275,7 +277,7 @@
                     try {
                         if (response.success) {
                             // populate store
-                            this._set("store",new Memory({ idProperty: "ContactID", data: response.data }));
+                            this._set("store",new Memory({ idProperty: "contactid", data: response.data }));
 
                             // pick first one
                             //this._set("value", 1);

@@ -14,7 +14,7 @@
                 <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'left', splitter:true" style="width: 200px;">
                     <table class="stratDiagram">
                         <tr class="lbl"><td colspan="2">Primary axis</td></tr>
-                        <tr><td colspan="2"><select id="yAxisSelect" data-dojo-attach-point="yAxisSelect" data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="searchAttr:'ChronologyName', labelAttr:'ChronologyName'" style="width:160px;"></select></td></tr>
+                        <tr><td colspan="2"><select id="yAxisSelect" data-dojo-attach-point="yAxisSelect" data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="searchAttr:'chronologyname', labelAttr:'chronologyname'" style="width:160px;"></select></td></tr>
                         <tr><td class="c1"><input data-dojo-attach-point="cb5x" data-dojo-attach-event="onChange:onToggle5x" type="checkbox" data-dojo-type="dijit/form/CheckBox" checked="checked"/></td><td>Show 5x exaggeration</td></tr>
                         <tr class="lbl pollen-legend"><td colspan="2">Group<img src='resources/images/miniQuest.png' id='groupHelp' class='miniHelp'></td></tr>
                         <tr class="pollen-legend"><td class="c1"><input data-dojo-attach-point="cbPicea" type="checkbox" data-dojo-type="dijit/form/CheckBox" checked="checked"/></td><td>Picea</td></tr>
@@ -54,7 +54,7 @@
                 <div id="chronologyControllerContainer" data-dojo-type="dijit/layout/ContentPane" style="width: 200px;" data-dojo-props="region:'left', splitter:true">
                     <table class="chronmeta">
                         <tr class="lbl"><td>Chronologies</td></tr>
-                        <tr><td><select id="datasetChronologies" data-dojo-type="dijit/form/FilteringSelect" data-dojo-attach-point="datasetChronologies" data-dojo-props="searchAttr:'ChronologyName', labelAttr:'ChronologyName'" data-dojo-attach-event="onChange:selectedChronologyChanged" style="width:150px;"></select></td></tr>
+                        <tr><td><select id="datasetChronologies" data-dojo-type="dijit/form/FilteringSelect" data-dojo-attach-point="datasetChronologies" data-dojo-props="searchAttr:'chronologyname', labelAttr:'chronologyname'" data-dojo-attach-event="onChange:selectedChronologyChanged" style="width:150px;"></select></td></tr>
                     </table>
                     <div id="chronInfo"></div>
                      <button type="button" data-dojo-type="dijit/form/Button" data-dojo-props="label:'Show Notes'" data-dojo-attach-point="chronNotesBtn" data-dojo-attach-event="onClick:chronNotesBtnClicked"></button>

@@ -17,7 +17,7 @@
         <tr class="fixht">
             <td class="col1">Taxon</td>
             <td class="col2">
-                <div data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="style:'width:216px;', required:false, searchAttr:'TaxonName', hasDownArrow: false, invalidMessage:'Taxon name not found'" data-dojo-attach-point="allTaxa" data-dojo-attach-event="onChange:taxonChanged,onClick:_taxonClicked,onKeyPress:handleEnter"></div>
+                <div data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="style:'width:216px;', required:false, searchAttr:'taxonname', hasDownArrow: false, invalidMessage:'Taxon name not found'" data-dojo-attach-point="allTaxa" data-dojo-attach-event="onChange:taxonChanged,onClick:_taxonClicked,onKeyPress:handleEnter"></div>
             </td>
             <td>
                 <button type="button" data-dojo-type="dijit/form/Button" data-dojo-props="iconClass:'advancedTaxaIcon', showLabel:false, title:'Select multiple taxa names'" data-dojo-attach-point="multipleTaxaBtn" data-dojo-attach-event="onClick:multipleTaxaClick"></button>
@@ -35,13 +35,13 @@
             <tr class="fixht">
                 <td class="col1">Age scale</td>
                 <td class="col2">
-                    <div class="agecontrols" data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="style:'width:260px;', required:false, searchAttr:'RelativeAgeScale', invalidMessage:'Age scale not found'" data-dojo-attach-point="ageScale" data-dojo-attach-event="onChange:ageScaleChanged"></div>
+                    <div class="agecontrols" data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="style:'width:260px;', required:false, searchAttr:'relativeagescale', invalidMessage:'Age scale not found'" data-dojo-attach-point="ageScale" data-dojo-attach-event="onChange:ageScaleChanged"></div>
                 </td>
             </tr>
             <tr class="fixht">
                 <td class="col1">Period</td>
                 <td class="col2">
-                    <div class="agecontrols" data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="style:'width:260px;', required:false, searchAttr:'RelativeAge', invalidMessage:'Period not found', query:function(row) {if ((row.CalAgeYounger != null) || (row.CalAgeOlder != null)) { return true; }}" data-dojo-attach-point="period" data-dojo-attach-event="onChange:periodChanged"></div>
+                    <div class="agecontrols" data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="style:'width:260px;', required:false, searchAttr:'relativeage', invalidMessage:'Period not found', query:function(row) {if ((row.calageyounger != null) || (row.calageolder != null)) { return true; }}" data-dojo-attach-point="period" data-dojo-attach-event="onChange:periodChanged"></div>
                 </td>
             </tr>
         </table>

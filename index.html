@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html> 
   <head> 
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -6,45 +6,54 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no"/>
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <title>Neotoma Explorer</title>
-    <link rel="stylesheet" href="/dojo/1.9.3/dijit/themes/claro/claro.css"/>
+    <link rel="stylesheet" href="./js/dojo/1.9.3/dijit/themes/claro/claro.css"/>
     <!--<link rel="stylesheet" href="/dojo/1.10.3/dijit/themes/claro/claro.css"/>-->
-    <link rel="stylesheet" href="/ol2-13-edited/theme/default/style.css" type="text/css"/>
-    <link rel="stylesheet" href="/ol2-13-edited/theme/default/google.css" type="text/css"/>
+    <link rel="stylesheet" href="./js/ol2-13-edited/theme/default/style.css" type="text/css"/>
+    <link rel="stylesheet" href="./js/ol2-13-edited/theme/default/google.css" type="text/css"/>
+<!--    <link rel="stylesheet" href="http://ceiwin10.cei.psu.edu/ol/theme/default/style.css" type="text/css"/>
+    <link rel="stylesheet" href="//ceiwin10.cei.psu.edu/ol/theme/default/google.css" type="text/css"/>--> 
     <!-- Need to include this stylesheet for toaster-->
-    <link rel="stylesheet" type="text/css" href="/dojo/1.9.3/dojox/widget/Toaster/Toaster.css" >
+    <link rel="stylesheet" type="text/css" href="./js/dojo/1.9.3/dojox/widget/Toaster/Toaster.css" >
     <!--<link rel="stylesheet" type="text/css" href="/dojo/1.10.3/dojox/widget/Toaster/Toaster.css" >-->
     <link rel="stylesheet" type="text/css" href="css/app.css" >
     <link rel="stylesheet" type="text/css" href="css/showtime.css" >
-    <link rel="stylesheet" type="text/css" href="/dojo/dgrid-1.1.0/css/dgrid.css"/>
+    <link rel="stylesheet" type="text/css" href="js/dojo/dgrid-1.1.0/css/dgrid.css"/>
     <link rel="stylesheet" type="text/css" href="css/stratigraphic.css" >
      
-   
-    <script type="text/javascript" src="/ol2-13-edited/OpenLayers.debug.js"></script>
+	
+    <!-- 
+    <script type="text/javascript" src="//maps.google.com/maps/api/js?v=3.5&amp;sensor=false"></script>
+-->
+      
+    <script type="text/javascript" src="./js/ol2-13-edited/OpenLayers.debug.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js" charset="utf-8"></script>
 
+<!--    <script type="text/javascript" src="//ceiwin10.cei.psu.edu/ol/OpenLayers.js"></script>-->
     <script>
         //var appFolder = "/apps/projects/cei/taxamapper/";
         var appFolder = "/explorer/";
+        //var apiRoot = "http://api-dev.neotomadb.org/v1.5/"
+        //var apiRoot = "https://api.neotomadb.org/v1/";
+        var apiRoot = "http://localhost:3010/v1.5/";
         //var appFolder = "/explorerdev/";
         dojoConfig = {
             isDebug: 1,
             async: 1,
             packages: [
-                { name: 'dgrid1', location: '/dojo/dgrid-1.1.0' },
-                { name: 'dstore', location: '/dojo/dstore-1.1.1' },
-                { name: 'dgrid', location: '/dojo/dgrid' },
-                { name: 'xstyle', location: '/dojo/xstyle' },
-                { name: 'put-selector', location: '/dojo/put-selector' },
+                { name: 'dgrid1', location: '/explorer/js/dojo/dgrid-1.1.0' },
+                { name: 'dstore', location: '/explorer/js/dojo/dstore-1.1.1' },
+                { name: 'dgrid', location: '/explorer/js/dojo/dgrid' },
+                { name: 'xstyle', location: '/explorer/js/dojo/xstyle' },
+                { name: 'put-selector', location: '/explorer/js/dojo/put-selector' },
                 { name: 'neotoma', location: appFolder + 'neotoma' },
                 { name: 'amagimap', location: appFolder + 'amagimap' }
             ],
-            appServicesLocation: "https://wnapi.neotomadb.org/v1/apps",
+            appServicesLocation: apiRoot + "apps",
             //appServicesLocation: "http://ceiwin10.cei.psu.edu/appapi",
-            dbServicesLocation: "https://wnapi.neotomadb.org/v1/dbtables",
-            dataServicesLocation: "https://wnapi.neotomadb.org/v1/data",
-         //wfsEndPoint: "http://ceiwin10.cei.psu.edu/geoserver/wfs.ashx",
-         wfsEndPoint: "https://geo.cei.psu.edu/geoserver/cei/ows?",
+            dbServicesLocation: apiRoot + "dbtables",
+            dataServicesLocation: apiRoot + "data",
+            wfsEndPoint: "https://geo.cei.psu.edu/geoserver/cei/ows?",
             map: null,
             localDbConfig: {
                 version: 3,
@@ -99,7 +108,7 @@
             }
         };
     </script>
-    <script src="/dojo/1.9.3/dojo/dojo.js"></script>
+    <script src="./js/dojo/1.9.3/dojo/dojo.js"></script>
    <!-- <script src="/dojo/1.10.3/dojo/dojo.js"></script>-->
     <script>
         try {
@@ -133,11 +142,10 @@
             );
         }
     </script>
-      <!--<script type="text/javascript" src="//maps.googleapis.com/maps/api/js?v=3.5&amp;sensor=false&callback=googleLoaded" async defer></script>-->
-      <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBhUbPnLRPsx2tE42_9VDquWq2KGA8eVkg&callback=googleLoaded"
-        type="text/javascript"></script>
-       
-    <!--<script type="text/javascript" src="//maps.googleapis.com/maps/api/js?v=3.5&amp;sensor=false"></script>-->
+      
+
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBhUbPnLRPsx2tE42_9VDquWq2KGA8eVkg&callback=googleLoaded"
+        type="text/javascript"></script>  
   </head> 
   <body class="claro">
     <div id="loader">
@@ -164,7 +172,11 @@
     <div id="aboutView" data-dojo-type="neotoma/widget/Dialog" class="myDialogs nonModal" data-dojo-props="href:'about.html', visible:true" style="width:475px;"></div>
      <div id="toasterAuto" data-dojo-type="dojox/widget/Toaster" data-dojo-props="positionDirection:'tr-left', duration:4000"></div>
   </body>
+  <!--
+    <script async="" defer="" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBhUbPnLRPsx2tE42_9VDquWq2KGA8eVkg&callback=googleLoaded" type="text/javascript"></script>
+
      <script type="text/javascript">
+        
          var _gaq = _gaq || [];
          _gaq.push(['_setAccount', 'UA-1212792-20']);
          _gaq.push(['_trackPageview']);
@@ -174,5 +186,7 @@
              ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
              var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
          })();
-    </script> 
+         
+    </script>
+   -->  
 </html>

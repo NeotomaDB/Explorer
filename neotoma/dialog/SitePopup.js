@@ -25,13 +25,13 @@
                             var atts = site.attributes;
 
                             // see if site has a bounding box
-                            if ((atts.LongitudeWest === atts.LongitudeEast) || (atts.LatitudeSouth === atts.LatitudeNorth)) {
+                            if ((atts.longitudewest === atts.longitudeeast) || (atts.latitudesouth === atts.latitudenorth)) {
                                 alert("This site only has point coordinates");
                                 return;
                             }
 
                             // create bbox
-                            var bounds = new OpenLayers.Bounds(parseFloat(atts.LongitudeWest), parseFloat(atts.LatitudeSouth), parseFloat(atts.LongitudeEast), parseFloat(atts.LatitudeNorth));
+                            var bounds = new OpenLayers.Bounds(parseFloat(atts.longitudewest), parseFloat(atts.latitudesouth), parseFloat(atts.longitudeeast), parseFloat(atts.latitudenorth));
                             var poly = bounds.toGeometry();
                             poly.transform(dojo.config.app.llProj, dojo.config.app.wmProj);
 
@@ -84,15 +84,15 @@
 
                     // set site on siteDatasetsGrid. Use used to get Site metadata for a dataset added to tray
                     this.siteDatasetsGrid.set("site", {
-                        SiteID: atts.SiteID,
-                        SiteName: atts.SiteName,
-                        SiteDescription: atts.SiteDescription,
-                        Longitude: atts.Longitude,
-                        Latitude: atts.Latitude
+                        SiteID: atts.siteid,
+                        SiteName: atts.sitename,
+                        SiteDescription: atts.sitedescription,
+                        Longitude: atts.longitude,
+                        Latitude: atts.latitude
                     });
 
                     // change title
-                    this.set("title", "Site ID: " + atts.SiteID);
+                    this.set("title", "Site ID: " + atts.siteid);
 
                     // clear out any previous site metadata
                     this.siteData.set("content", "");
@@ -106,8 +106,8 @@
                     // create and populate rows
                     var row = domConstruct.create("tr", null, table);
                     domConstruct.place(domConstruct.create("td", { innerHTML: "Site name", class: "col1" }), row);
-                    domConstruct.place(domConstruct.create("td", { innerHTML: atts.SiteName, class: "col2" }), row);
-                    if (atts.SiteDescription) {
+                    domConstruct.place(domConstruct.create("td", { innerHTML: atts.sitename, class: "col2" }), row);
+                    if (atts.sitedescription) {
                         var row = domConstruct.create("tr", null, table);
                         
                         
@@ -118,7 +118,7 @@
 
                         // try to scroll long description
                         var td = domConstruct.create("td", { class: "col2"}, row);
-                        var div = domConstruct.create("div", { innerHTML: atts.SiteDescription, style: "max-height:120px;overflow:auto;" }, td);
+                        var div = domConstruct.create("div", { innerHTML: atts.sitedescription, style: "max-height:120px;overflow:auto;" }, td);
                     }
                     
 
@@ -126,11 +126,11 @@
                     domConstruct.place(domConstruct.create("td", { innerHTML: "Longitude", class: "col1" }), row);
                     var cell = domConstruct.create("td", { class: "col2" }, row);
                     var div = domConstruct.create("div", null, cell);
-                    domConstruct.place("<span>" + numberUtil.format(atts.Longitude, { pattern: "#.######" }) + "</span>", div);
+                    domConstruct.place("<span>" + numberUtil.format(atts.longitude, { pattern: "#.######" }) + "</span>", div);
                     //domConstruct.place(domConstruct.create("td", { innerHTML: numberUtil.format(atts.Longitude, { pattern: "#.######" }), class: "col2" }), row);
 
                     // see if site has a bounding box
-                    if ((atts.LongitudeWest !== atts.LongitudeEast) && (atts.LatitudeSouth !== atts.LatitudeNorth)) {
+                    if ((atts.longitudewest !== atts.longitudeeast) && (atts.latitudesouth !== atts.latitudenorth)) {
                         // has bounding box
                         this.bboxButton.set("disabled", false);
                         this.bboxButton.set("title", "Show site's bounding box");
@@ -143,7 +143,7 @@
                     // do latitude
                     var row = domConstruct.create("tr", null, table);
                     domConstruct.place(domConstruct.create("td", { innerHTML: "Latitude", class: "col1" }), row);
-                    domConstruct.place(domConstruct.create("td", { innerHTML: numberUtil.format(atts.Latitude, { pattern: "#.######" }), class: "col2" }), row);
+                    domConstruct.place(domConstruct.create("td", { innerHTML: numberUtil.format(atts.latitude, { pattern: "#.######" }), class: "col2" }), row);
 
                     // add "Datasets" row with link for all datasets
                     var row = domConstruct.create("tr", null, table);
@@ -187,7 +187,7 @@
                 this.siteDatasetsGrid.set("store",
                     new Memory(
                         {
-                            idProperty: "DatasetID",
+                            idProperty: "datasetid",
                             data: data
                         }
                     )
@@ -201,7 +201,7 @@
                     // get site attributes to read datasets
                     var atts = this.sites[this.siteIndex].attributes;
                     // see if site has all datasets
-                    if (!atts.allDatasets) { // need to get all datasets and then display
+                    if (!atts.alldatasets) { // need to get all datasets and then display
                         if (this.numTries < 6) {
                             this.numTries += 1;
                             setTimeout(lang.hitch(this, this.showAllDatasets), 200);
@@ -211,7 +211,7 @@
                         
                         return;
                     } else { // display
-                        this.setDatasets(atts.allDatasets);
+                        this.setDatasets(atts.alldatasets);
                     }
 
                     // change styles
@@ -301,12 +301,12 @@
                 // get site attributes to read datasets
                 var atts = this.sites[this.siteIndex].attributes;
                 // load all datasets if site doesn't have them
-                if (!atts.allDatasets) { // need to get all datasets and then display
-                    script.get(config.dataServicesLocation + "/Datasets", { jsonp: "callback", query: { siteid: atts.SiteID } }).then(
+                if (!atts.alldatasets) { // need to get all datasets and then display
+                    script.get(config.dataServicesLocation + "/Datasets", { jsonp: "callback", query: { siteid: atts.siteid } }).then(
                         lang.hitch({ atts: atts, dialog: this }, function (response) {
                             if (response.success) {
                                 var datasets = response.data;
-                                this.atts.allDatasets = datasets;
+                                this.atts.alldatasets = datasets;
                             } else {
                                 alert("error getting all site datasets: " + response.message);
                             }

@@ -1,4 +1,4 @@
-define(["dojo/_base/lang", "dojo/topic", "dijit/registry","neotoma/app/neotoma", "amagimap/util/url", "dojo/_base/array", "dojo/_base/Color", "dojo/colors"],
+﻿define(["dojo/_base/lang", "dojo/topic", "dijit/registry","neotoma/app/neotoma", "amagimap/util/url", "dojo/_base/array", "dojo/_base/Color", "dojo/colors"],
     function (lang, topic, registry, neotoma, urlUtil, array, Color, colors) {
         var dropCancel = function (e) {
             if (e.preventDefault) e.preventDefault(); // required by FF + Safari
@@ -68,29 +68,28 @@ define(["dojo/_base/lang", "dojo/topic", "dijit/registry","neotoma/app/neotoma",
 
                             // create icon store
                             dojo.config.app.iconStore = new Memory({
-                                idProperty: "DatasetType",
+                                idProperty: "datasettype",
                                 data: [
-                                    { DatasetType: "geochronologic", image: "G.png" },
-                                    { DatasetType: "loss-on-ignition", image: "L.png" },
-                                    { DatasetType: "pollen", image: "P.png" },
-                                    { DatasetType: "plant macrofossil", image: "PM.png" },
-                                    { DatasetType: "vertebrate fauna", image: "V.png" },
-                                    { DatasetType: "macroinvertebrate", image: "M.png" },
-                                    { DatasetType: "pollen surface sample", image: "Ps.png" },
-                                    { DatasetType: "insect", image: "I.png" },
-                                    { DatasetType: "ostracode", image: "O.png" },
-                                    { DatasetType: "water chemistry", image: "W.png" },
-                                    { DatasetType: "diatom", image: "D.png" },
-                                    { DatasetType: "ostracode surface sample", image: "Os.png" },
-                                    { DatasetType: "diatom surface sample", image: "Ds.png" },
-                                    { DatasetType: "geochemistry", image: "GC.png" },
-                                    { DatasetType: "physical sedimentology", image: "S.png" },
-                                    { DatasetType: "charcoal", image: "C.png" },
-                                    { DatasetType: "testate amoebae", image: "T.png" },
-                                    { DatasetType: "testate amoebae surface sample", image: "Ts.png" },
-                                    { DatasetType: "Energy dispersive X-ray spectroscopy (EDS/EDX)", image: "GC.png" },
-                                    { DatasetType: "X-ray diffraction (XRD)", image: "GC.png" },
-                                    { DatasetType: "X-ray fluorescence (XRF)", image: "GC.png" }
+                                    { datasettype: "geochronologic", image: "G.png" },
+                                    { datasettype: "loss-on-ignition", image: "L.png" },
+                                    { datasettype: "pollen", image: "P.png" },
+                                    { datasettype: "plant macrofossil", image: "PM.png" },
+                                    { datasettype: "vertebrate fauna", image: "V.png" },
+                                    { datasettype: "macroinvertebrate", image: "M.png" },
+                                    { datasettype: "pollen surface sample", image: "Ps.png" },
+                                    { datasettype: "insect", image: "I.png" },
+                                    { datasettype: "ostracode", image: "O.png" },
+                                    { datasettype: "water chemistry", image: "W.png" },
+                                    { datasettype: "diatom", image: "D.png" },
+                                    { datasettype: "ostracode surface sample", image: "OS.png" },
+                                    { datasettype: "diatom surface sample", image: "Ds.png" },
+                                    { datasettype: "geochemistry", image: "GC.png" },
+                                    { datasettype: "physical sedimentology", image: "S.png" },
+                                    { datasettype: "charcoal", image: "C.png" },
+                                    { datasettype: "testate amoebae", image: "T.png" },
+                                    { datasettype: "energy dispersive x-ray spectroscopy (eds/edx)", image: "GC.png" },
+                                    { datasettype: "x-ray diffraction (xrd)", image: "GC.png" },
+                                    { datasettype: "x-ray fluorescence (xrf)", image: "GC.png" }
                                 ]
                             });
                             //// get overlay div. quit if it doesn't exist
@@ -233,20 +232,21 @@ define(["dojo/_base/lang", "dojo/topic", "dijit/registry","neotoma/app/neotoma",
                                     }
                                     
 
+                                    console.log("app.js handle search/NewResult: "+new Date().toLocaleTimeString());
                                     // add a UI for this search
                                     var newId = dojo.config.app.allSearchResults.allSearchesList.addSearch({ name: args.searchName, symbol: { color: thisSymbol.color, size: thisSymbol.size, shape: thisSymbol.shape }, request: args.request, sites: args.data, numDatasets: args.numDatasets, numSites: args.numSites });
-
+                                    console.log("app.js handle search/NewResult after addSearch: "+new Date().toLocaleTimeString());
                                     // show on map
                                     var searchLayer = neotoma.loadSitesOnMap(args.data, newId, thisSymbol);
 
                                     // fix ages before displaying
                                     var numSites = args.data.length;
                                     for (var i = 0; i < numSites; i++) {
-                                        if (args.data[i].MaxAge != null) {
-                                            args.data[i].AgeOldest = args.data[i].MaxAge;
+                                        if (args.data[i].maxage != null) {
+                                            args.data[i].ageoldest = args.data[i].maxage;
                                         }
-                                        if (args.data[i].MinAge != null) {
-                                            args.data[i].AgeYoungest = args.data[i].MinAge;
+                                        if (args.data[i].minage != null) {
+                                            args.data[i].ageyoungest = args.data[i].minage;
                                         }
                                     }
                                 } catch (e) {
@@ -342,28 +342,8 @@ define(["dojo/_base/lang", "dojo/topic", "dijit/registry","neotoma/app/neotoma",
                             } catch(e) {
                                 alert("new error: " + e.message);
                             } 
-					/*DEPRECATED
-                            // try to get IP location
-                            if (idsPassed === false) {
-                                script.get("//freegeoip.net/json/", { jsonp: "callback" }).then(
-                                   lang.hitch(this, function (response) {
-                                       try {
-                                           var pt = null;
-                                           if ((response.latitude) && (response.longitude)) {
-                                               pt = { latitude: response.latitude, longitude: response.longitude };
 
-                                               if (dojo.config.map !== null) {
-                                                   this.centerMap(pt);
-                                               }
-                                           }
-                                       } catch (e) {
-                                           // do nothing
-                                           alert("Error handling freegeoip response: " + e.message);
-                                       }
-                                   })
-                               );
-                            }
-                           */
+                           
 
                             // switch to gphy
                             setTimeout(
@@ -447,6 +427,7 @@ define(["dojo/_base/lang", "dojo/topic", "dijit/registry","neotoma/app/neotoma",
                     try {
                         var toaster = registry.byId("toasterAuto");
                         if (toaster) {
+                            console.log(message);
                             toaster.setContent(message, "message");
                             toaster.show();
                         } else {

@@ -107,7 +107,7 @@
                             var numSiteArrays = sites.length;
                             var combinedStore = new Memory({
                                 data: lang.clone(sites[0]),
-                                idProperty: "SiteID"
+                                idProperty: "siteid"
                             }
                             );
 
@@ -118,7 +118,7 @@
                                 // create a store with this search's sites
                                 var newStore = new Memory({
                                     data: lang.clone(sites[i]),
-                                    idProperty: "SiteID"
+                                    idProperty: "siteid"
                                 }
                                 );
 
@@ -149,7 +149,7 @@
                             var numSiteArrays = sites.length;
                             var combinedStore = new Memory({
                                 data: lang.clone(sites[0]),
-                                idProperty: "SiteID"
+                                idProperty: "siteid"
                             }
                             );
 
@@ -166,7 +166,7 @@
                                     // create a store with the next search's sites
                                     newStore = new Memory({
                                         data: lang.clone(site),
-                                        idProperty: "SiteID"
+                                        idProperty: "siteid"
                                     });
 
                                     // loop through records in new store and look in combined store.

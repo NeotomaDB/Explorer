@@ -29,12 +29,12 @@
                             }
 
                             // need to see if there are any other sites at the location
-                            var thisSiteId = site.attributes.SiteID;
+                            var thisSiteId = site.attributes.siteid;
                             var sites = [site];
                             var siteGeom = site.geometry;
                             //alert("thisSiteId: " + thisSiteId);
                             array.forEach(site.layer.features, function (feature) {
-                                if (thisSiteId !== feature.attributes.SiteID) { // see if the same
+                                if (thisSiteId !== feature.attributes.siteid) { // see if the same
                                     if (siteGeom.distanceTo(feature.geometry, { edge: false, details: false }) === 0) {
                                         sites.push(feature);
                                         //alert("add site");
@@ -60,60 +60,60 @@
 
 
         return {
-            loadDataset: function (datasetId) { // loads a dataset passed in url
+            loadDataset: function (datasetid) { // loads a dataset passed in url
                 try {
-                    // make request to data/DataSets
-                    script.get(config.dataServicesLocation + "/Datasets/" + datasetId,
+                    // make request to data/datasets
+                    script.get(config.dataServicesLocation + "/datasets/" + datasetid,
                             { jsonp: "callback" }
                         ).then(lang.hitch(this, function (response) {
                             try {
                                 if (response.success) {
                                     // make sure data was returned
                                     if (response.data.length === 0) {
-                                        alert("No dataset with id = " + datasetId + " was found.");
+                                        alert("No dataset with id = " + datasetid + " was found.");
                                         return;
                                     }
 
                                     // format into standard response
                                     var obj = response.data[0];
                                     var standardResponse = {
-                                        SiteID: obj.Site.SiteID,
-                                        SiteName: obj.Site.SiteName,
-                                        SiteDescription: obj.Site.SiteDescription,
-                                        SiteNotes: obj.Site.SiteNotes,
-                                        LatitudeSouth: obj.Site.LatitudeSouth,
-                                        LatitudeNorth: obj.Site.LatitudeNorth,
-                                        LongitudeWest: obj.Site.LongitudeWest, 
-                                        LongitudeEast: obj.Site.LongitudeEast,
-                                        Latitude: (obj.Site.LatitudeSouth + obj.Site.LatitudeNorth) / 2,
-                                        Longitude: (obj.Site.LongitudeWest + obj.Site.LongitudeEast) / 2,
-                                        AgeOldest: obj.Site.AgeOldest,
-                                        AgeYoungest: obj.Site.AgeYoungest
+                                        siteid: obj.site.siteid,
+                                        sitename: obj.site.sitename,
+                                        sitedescription: obj.site.sitedescription,
+                                        sitenotes: obj.site.sitenotes,
+                                        latitudesouth: obj.site.latitudesouth,
+                                        latitudenorth: obj.site.latitudenorth,
+                                        longitudewest: obj.site.longitudewest, 
+                                        longitudeeast: obj.site.longitudeeast,
+                                        latitude: (obj.site.latitudesouth + obj.site.latitudenorth) / 2,
+                                        longitude: (obj.site.longitudewest + obj.site.longitudeeast) / 2,
+                                        ageoldest: obj.site.ageoldest,
+                                        ageyoungest: obj.site.ageyoungest
                                     };
                                     // add the one dataset
-                                    standardResponse.Datasets = [{
-                                        DatasetID: obj.DatasetID,
-                                        //DatabaseName: obj.DatabaseName,
-                                        AgeYoungest: obj.AgeYoungest,
-                                        AgeOldest: obj.AgeOldest,
-                                        DatasetType: obj.DatasetType,
-                                        CollUnitHandle: obj.CollUnitHandle,
-                                        CollUnitName: obj.CollUnitName,
-                                        DatabaseName: obj.DatabaseName
+                                    standardResponse.datasets = [{
+                                        datasetid: obj.datasetid,
+                                        //databasename: obj.databasename,
+                                        ageyoungest: obj.ageyoungest,
+                                        ageoldest: obj.ageoldest,
+                                        datasettype: obj.datasettype,
+                                        collunithandle: obj.collunithandle,
+                                        collunitname: obj.collunitname,
+                                        databasename: obj.databasename
                                     }];
 
                                     // publish topic with new response
                                     topic.publish("neotoma/search/NewResult", {
                                         data: [standardResponse],
-                                        searchName: "DatasetID: " + datasetId,
-                                        request: { datasetId: datasetId },
+                                        searchName: "datasetid: " + datasetid,
+                                        request: { datasetid: datasetid },
                                         symbol: { "color": "ff0000", "shape": "Square", "size": "Large" }
                                     }
                                     );
 
                                     // load dataset explorer
-                                    mainToolbar.showDatasetExplorer(datasetId, obj.DatasetType, obj.DatabaseName, standardResponse);
-                                    //showDatasetExplorer(datasetId, obj.DatasetType);
+                                    mainToolbar.showDatasetExplorer(datasetid, obj.datasettype, obj.databasename, standardResponse);
+                                    //showDatasetExplorer(datasetid, obj.datasettype);
                                 } else {
                                     alert(response.message);
                                 }
@@ -128,8 +128,8 @@
             },
             loadDatasets: function (datasetIds) {
                 try {
-                    // make request to data/DataSets
-                    script.get(config.dataServicesLocation + "/Datasets/?datasetids=" + datasetIds,
+                    // make request to data/datasets
+                    script.get(config.dataServicesLocation + "/datasets/?datasetids=" + datasetIds,
                             { jsonp: "callback" }
                         ).then(lang.hitch(this, function (response) {
                             try {
@@ -166,8 +166,8 @@
             },
             loadSites: function (siteIds) {
                 try {
-                    // make request to data/DataSets
-                    script.get(config.dataServicesLocation + "/Datasets/?siteids=" + siteIds,
+                    // make request to data/datasets
+                    script.get(config.dataServicesLocation + "/datasets/?siteids=" + siteIds,
                             { jsonp: "callback" }
                         ).then(lang.hitch(this, function (response) {
                             try {
@@ -200,7 +200,7 @@
                 }
             },
             selectedSite: null,
-            selectSite: function (siteId) {
+            selectSite: function (siteid) {
                 try {
                     // get the search layer
                     var searchId = registry.byId("tableSearches").get("value");
@@ -212,7 +212,7 @@
                     var searchLayer = layers[0];
 
                     // get site
-                    var sites = searchLayer.getFeaturesByAttribute("SiteID", siteId);
+                    var sites = searchLayer.getFeaturesByAttribute("siteid", siteid);
                     if (sites.length === 0) {
                         alert("Can't find site to select.");
                         return;
@@ -289,21 +289,21 @@
                         var rec = data[i];
                         // make feature and add to features
                         var atts = {
-                            SiteID: rec.SiteID,
-                            SiteName: rec.SiteName,
-                            SiteDescription: rec.SiteDescription,
-                            SiteNotes: rec.SiteNotes,
-                            Longitude: rec.Longitude,
-                            Latitude: rec.Latitude,
-                            LatitudeSouth: rec.LatitudeSouth,
-                            LongitudeWest: rec.LongitudeWest,
-                            LatitudeNorth: rec.LatitudeNorth,
-                            LongitudeEast: rec.LongitudeEast,
-                            AgeOldest: rec.AgeOldest || rec.MaxAge,
-                            AgeYoungest: rec.AgeYoungest || rec.MinAge,
-                            datasets: rec.Datasets
+                            siteid: rec.siteid,
+                            sitename: rec.sitename,
+                            sitedescription: rec.sitedescription,
+                            sitenotes: rec.sitenotes,
+                            longitude: rec.longitude,
+                            latitude: rec.latitude,
+                            latitudesouth: rec.latitudesouth,
+                            longitudewest: rec.longitudewest,
+                            latitudenorth: rec.latitudenorth,
+                            longitudeeast: rec.longitudeeast,
+                            ageoldest: rec.ageoldest || rec.maxage,
+                            ageyoungest: rec.ageyoungest || rec.minage,
+                            datasets: rec.datasets
                         };
-                        var pt = new OpenLayers.Geometry.Point(rec.Longitude, rec.Latitude).transform(dojo.config.app.llProj, dojo.config.app.wmProj);
+                        var pt = new OpenLayers.Geometry.Point(rec.longitude, rec.latitude).transform(dojo.config.app.llProj, dojo.config.app.wmProj);
                         //console.log("(x,y): (" + pt.x + "," + pt.y + ")");
                         features.push(new OpenLayers.Feature.Vector(pt, atts));
                     }
@@ -397,7 +397,7 @@
                 try {
                     array.forEach(dojo.config.app.forms.sitePopup.siteDatasetsGrid.get("store").data,
                         lang.hitch(this,function (dataset) {
-                            this.addDatasetToTray(dataset.DatasetID);
+                            this.addDatasetToTray(dataset.datasetid);
                         })
                     );
                     //alert("All datasets added to tray");
@@ -405,7 +405,7 @@
                     alert("error in app/neotoma.addAllToTray: " + e.message);
                 }
             },
-            addDatasetToTray: function (datasetId, suppressMessages) {
+            addDatasetToTray: function (datasetid, suppressMessages) {
                 // make sure dataset tray exists
                 // todo: get rid of this. Open from subscriber if not already open
                 if (!dojo.config.app.datasetTrayForm) {
@@ -414,9 +414,9 @@
                 }
 
                 var store = dojo.config.app.forms.sitePopup.siteDatasetsGrid.get("store");
-                var dataset = store.get(datasetId);
+                var dataset = store.get(datasetid);
                 if (!dataset) {
-                    alert("Can't find dataset with id: " + datasetId);
+                    alert("Can't find dataset with id: " + datasetid);
                     return;
                 }
 
@@ -431,7 +431,7 @@
                 // listen for rows in search tables to be selected
                 topic.subscribe("neotoma/searchTable/RowSelected",
                     lang.hitch(this, function (row) {
-                        this.selectSite(row.data.SiteID);
+                        this.selectSite(row.data.siteid);
                     })
                 );
 
@@ -514,68 +514,68 @@
                     function (datasetObj) {
                         // see if it expands the extent
                         if (miny === null) {
-                            miny = datasetObj.Site.LatitudeSouth;
-                            maxy = datasetObj.Site.LatitudeNorth;
-                            minx = datasetObj.Site.LongitudeWest;
-                            maxx = datasetObj.Site.LongitudeEast;
+                            miny = datasetObj.site.latitudesouth;
+                            maxy = datasetObj.site.latitudenorth;
+                            minx = datasetObj.site.longitudewest;
+                            maxx = datasetObj.site.longitudeeast;
                         } else {
-                            if (datasetObj.Site.LatitudeSouth < miny) {
-                                miny = datasetObj.Site.LatitudeSouth;
+                            if (datasetObj.site.latitudesouth < miny) {
+                                miny = datasetObj.site.latitudesouth;
                             }
-                            if (datasetObj.Site.LatitudeNorth > maxy) {
-                                maxy = datasetObj.Site.LatitudeNorth;
+                            if (datasetObj.site.latitudenorth > maxy) {
+                                maxy = datasetObj.site.latitudenorth;
                             }
-                            if (datasetObj.Site.LongitudeWest < minx) {
-                                minx = datasetObj.Site.LongitudeWest;
+                            if (datasetObj.site.longitudewest < minx) {
+                                minx = datasetObj.site.longitudewest;
                             }
-                            if (datasetObj.Site.LongitudeEast > maxx) {
-                                maxx = datasetObj.Site.LongitudeEast;
+                            if (datasetObj.site.longitudeeast > maxx) {
+                                maxx = datasetObj.site.longitudeeast;
                             }
                         }
 
                         // see if already have site or need to create
-                        if (siteIds.indexOf(datasetObj.Site.SiteID) !== -1) {
+                        if (siteIds.indexOf(datasetObj.site.siteid) !== -1) {
                             // already created site, just add dataset
                             var result = array.filter(reformattedSites,
                                 function (item, index, ary) {
-                                    if (item.SiteID === datasetObj.Site.SiteID) {
+                                    if (item.siteid === datasetObj.site.siteid) {
                                         return true;
                                     }
                                 }
                             );
                             reformattedSite = result[0];
                         } else {
-                            // add new siteId to siteIds
-                            siteIds.push(datasetObj.Site.SiteID);
+                            // add new siteid to siteIds
+                            siteIds.push(datasetObj.site.siteid);
 
                             // create site with empty datasets
                             reformattedSite = {
-                                SiteID: datasetObj.Site.SiteID,
-                                SiteName: datasetObj.Site.SiteName,
-                                SiteDescription: datasetObj.Site.SiteDescription,
-                                SiteNotes: datasetObj.Site.SiteNotes,
-                                LatitudeSouth: datasetObj.Site.LatitudeSouth,
-                                LatitudeNorth: datasetObj.Site.LatitudeNorth,
-                                LongitudeWest: datasetObj.Site.LongitudeWest,
-                                LongitudeEast: datasetObj.Site.LongitudeEast,
-                                Latitude: (datasetObj.Site.LatitudeSouth + datasetObj.Site.LatitudeNorth) / 2,
-                                Longitude: (datasetObj.Site.LongitudeWest + datasetObj.Site.LongitudeEast) / 2,
-                                AgeOldest: datasetObj.Site.AgeOldest,
-                                AgeYoungest: datasetObj.Site.AgeYoungest,
-                                Datasets: []
+                                siteid: datasetObj.site.siteid,
+                                sitename: datasetObj.site.sitename,
+                                sitedescription: datasetObj.site.sitedescription,
+                                sitenotes: datasetObj.site.sitenotes,
+                                latitudesouth: datasetObj.site.latitudesouth,
+                                latitudenorth: datasetObj.site.latitudenorth,
+                                longitudewest: datasetObj.site.longitudewest,
+                                longitudeeast: datasetObj.site.longitudeeast,
+                                latitude: (datasetObj.site.latitudesouth + datasetObj.site.latitudenorth) / 2,
+                                longitude: (datasetObj.site.longitudewest + datasetObj.site.longitudeeast) / 2,
+                                ageoldest: datasetObj.site.ageoldest,
+                                ageyoungest: datasetObj.site.ageyoungest,
+                                datasets: []
                             };
                         }
 
                         // add dataset
-                        reformattedSite.Datasets.push(
+                        reformattedSite.datasets.push(
                             {
-                                DatasetID: datasetObj.DatasetID,
-                                AgeYoungest: datasetObj.AgeYoungest,
-                                AgeOldest: datasetObj.AgeOldest,
-                                DatasetType: datasetObj.DatasetType,
-                                CollUnitHandle: datasetObj.CollUnitHandle,
-                                CollUnitName: datasetObj.CollUnitName,
-                                DatabaseName: datasetObj.DatabaseName
+                                datasetid: datasetObj.datasetid,
+                                ageyoungest: datasetObj.ageyoungest,
+                                ageoldest: datasetObj.ageoldest,
+                                datasettype: datasetObj.datasettype,
+                                collunithandle: datasetObj.collunithandle,
+                                collunitname: datasetObj.collunitname,
+                                databasename: datasetObj.databasename
                             }
                         );
 
@@ -586,8 +586,7 @@
 
 
                 // check that there is a width and a height
-                // add quarter degree buffer to set usable map extent
-                var buf = 0.125;
+                var buf = 0.125;//0.00004;
                 if (miny === maxy) {
                     miny -= buf;
                     maxy += buf;

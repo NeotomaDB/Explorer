@@ -26,13 +26,13 @@
             <tr class="fixht">
                 <td class="col1">Age scale</td>
                 <td class="col2">
-                    <div class="agecontrols" data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="style:'width:230px;', required:false, searchAttr:'RelativeAgeScale', invalidMessage:'Age scale not found'" data-dojo-attach-point="ageScale" data-dojo-attach-event="onChange:ageScaleChanged"></div>
+                    <div class="agecontrols" data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="style:'width:230px;', required:false, searchAttr:'relativeagescale', invalidMessage:'Age scale not found'" data-dojo-attach-point="ageScale" data-dojo-attach-event="onChange:ageScaleChanged"></div>
                 </td>
             </tr>
             <tr class="fixht">
                 <td class="col1">Period</td>
                 <td class="col2">
-                    <div class="agecontrols" data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="style:'width:230px;', required:false, searchAttr:'RelativeAge', invalidMessage:'Period not found', query:function(row) {if ((row.CalAgeYounger != null) || (row.CalAgeOlder != null)) { return true; }}" data-dojo-attach-point="period" data-dojo-attach-event="onChange:periodChanged"></div>
+                    <div class="agecontrols" data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="style:'width:230px;', required:false, searchAttr:'relativeage', invalidMessage:'Period not found', query:function(row) {if ((row.calageyounger != null) || (row.calageolder != null)) { return true; }}" data-dojo-attach-point="period" data-dojo-attach-event="onChange:periodChanged"></div>
                 </td>
             </tr>
         </table>

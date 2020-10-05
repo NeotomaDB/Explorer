@@ -6,7 +6,7 @@
             columns: [
                 {
                     label: "Dataset Type",
-                    field: "DatasetType",
+                    field: "datasettype",
                     formatter: function (value) {
                         // make sure image exists
                         if (dojo.config.app.iconStore.get(value) == null) {
@@ -18,7 +18,7 @@
                 },
                 {
                     label: "CollUnitHandle",
-                    field: "CollUnitHandle",
+                    field: "collunithandle",
                     //formatter: function (_item) {
                     //    var datasetLabel = _item.CollUnitHandle;
                     //    if (_item.CollUnitName) {
@@ -36,16 +36,16 @@
                     //},
                     renderCell: lang.hitch(this,function (row, value, node, options) {
                         try {
-                            var datasetLabel = row.CollUnitHandle;
-                            if (row.CollUnitName) {
-                                datasetLabel += "_" + row.CollUnitName;
+                            var datasetLabel = row.collunithandle;
+                            if (row.collunitname) {
+                                datasetLabel += "_" + row.collunitname;
                             }
 
                             // create dataset description
                             var description = [];
-                            description.push("Database: " + row.DatabaseName);
-                            description.push("Dataset type: " + row.DatasetType);
-                            description.push("Dataset ID: " + row.DatasetID);
+                            description.push("Database: " + row.databasename);
+                            description.push("Dataset type: " + row.datasettype);
+                            description.push("Dataset ID: " + row.datasetid);
                             
                             //var content = [];
                             //content.push('<a title="' + description.join("\n") + '" href="javascript:mainToolbar.showDatasetExplorer(' + row.DatasetID + ',\'' + row.DatasetType + '\',\'' + row.DatabaseName + '\');">' + datasetLabel + '</a>');
@@ -69,7 +69,7 @@
                                 {
                                     title: description.join("\n"),
                                     innerHTML: datasetLabel,
-                                    href: "javascript:mainToolbar.showDatasetExplorer(" + row.DatasetID + ",'" + row.DatasetType + "','" + row.DatabaseName + "');"
+                                    href: "javascript:mainToolbar.showDatasetExplorer(" + row.datasetid + ",'" + row.datasettype + "','" + row.databasename + "');"
                                     //href: "javascript:mainToolbar.showDatasetExplorer(" + row.DatasetID + ",'" + row.DatasetType + "','" + row.DatabaseName + "'," + null + "," + JSON.stringify(row.Embargo) + ");"
                                 },
                                 cellDiv
@@ -90,11 +90,11 @@
                                 "class": "dsView",
                                 name: "view",
                                 click: function () {
-                                    if (row.Embargo != null) {
+                                    if (row.embargo != null) {
                                         alert("This dataset is embargoed and can't be viewed in the Dataset Explorer.");
                                         return;
                                     } else {
-                                        mainToolbar.showDatasetExplorer(row.DatasetID, row.DatasetType, row.DatabaseName);
+                                        mainToolbar.showDatasetExplorer(row.datasetid, row.datasettype, row.databasename);
                                     }
                                     
                                 }
@@ -106,7 +106,7 @@
                                 "class": "dsAdd",
                                 name: "add",
                                 click: function () {
-                                    neotoma.addDatasetToTray(row.DatasetID);
+                                    neotoma.addDatasetToTray(row.datasetid);
                                 }
                             }, buttonsDiv);
 
@@ -148,7 +148,7 @@
 
                 // highlight embargoed rows
                 aspect.after(this, "renderRow", function (row, args) {
-                    if (args[0].Embargo != null) {
+                    if (args[0].embargo != null) {
                         domClass.add(row, "highlightEmbargoedRow");
                     }
                     return row;
