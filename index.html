@@ -7,36 +7,22 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <title>Neotoma Explorer</title>
     <link rel="stylesheet" href="./js/dojo/1.9.3/dijit/themes/claro/claro.css"/>
-    <!--<link rel="stylesheet" href="/dojo/1.10.3/dijit/themes/claro/claro.css"/>-->
     <link rel="stylesheet" href="./js/ol2-13-edited/theme/default/style.css" type="text/css"/>
     <link rel="stylesheet" href="./js/ol2-13-edited/theme/default/google.css" type="text/css"/>
-<!--    <link rel="stylesheet" href="http://ceiwin10.cei.psu.edu/ol/theme/default/style.css" type="text/css"/>
-    <link rel="stylesheet" href="//ceiwin10.cei.psu.edu/ol/theme/default/google.css" type="text/css"/>--> 
     <!-- Need to include this stylesheet for toaster-->
     <link rel="stylesheet" type="text/css" href="./js/dojo/1.9.3/dojox/widget/Toaster/Toaster.css" >
-    <!--<link rel="stylesheet" type="text/css" href="/dojo/1.10.3/dojox/widget/Toaster/Toaster.css" >-->
     <link rel="stylesheet" type="text/css" href="css/app.css" >
     <link rel="stylesheet" type="text/css" href="css/showtime.css" >
     <link rel="stylesheet" type="text/css" href="js/dojo/dgrid-1.1.0/css/dgrid.css"/>
     <link rel="stylesheet" type="text/css" href="css/stratigraphic.css" >
      
-	
-    <!-- 
-    <script type="text/javascript" src="//maps.google.com/maps/api/js?v=3.5&amp;sensor=false"></script>
--->
-      
     <script type="text/javascript" src="./js/ol2-13-edited/OpenLayers.debug.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js" charset="utf-8"></script>
 
-<!--    <script type="text/javascript" src="//ceiwin10.cei.psu.edu/ol/OpenLayers.js"></script>-->
     <script>
-        //var appFolder = "/apps/projects/cei/taxamapper/";
         var appFolder = "/explorer/";
-        //var apiRoot = "http://api-dev.neotomadb.org/v1.5/"
-        //var apiRoot = "https://api.neotomadb.org/v1/";
-        var apiRoot = "http://localhost:3010/v1.5/";
-        //var appFolder = "/explorerdev/";
+        var apiRoot = "https://api-dev.neotomadb.org/v1.5/"
         dojoConfig = {
             isDebug: 1,
             async: 1,
@@ -50,7 +36,6 @@
                 { name: 'amagimap', location: appFolder + 'amagimap' }
             ],
             appServicesLocation: apiRoot + "apps",
-            //appServicesLocation: "http://ceiwin10.cei.psu.edu/appapi",
             dbServicesLocation: apiRoot + "dbtables",
             dataServicesLocation: apiRoot + "data",
             wfsEndPoint: "https://geo.cei.psu.edu/geoserver/cei/ows?",
@@ -99,7 +84,6 @@
                 layersSelectControl: null,
                 navControl: null,
                 iconStore: null,
-                //saveProxyPath: "http://localhost/apps/products/saveproxy/save.ashx",
                 saveProxyPath: "/files/save.ashx",
                 gaveChromeMapBugMessage: false,
                 user: {
@@ -109,7 +93,6 @@
         };
     </script>
     <script src="./js/dojo/1.9.3/dojo/dojo.js"></script>
-   <!-- <script src="/dojo/1.10.3/dojo/dojo.js"></script>-->
     <script>
         try {
             require(["dojo/parser", "dojo/request/script", "neotoma/app/app" ,"dijit/layout/BorderContainer", "dijit/layout/ContentPane", "dijit/layout/AccordionContainer", "dijit/layout/StackContainer", "dijit/form/CheckBox", "dijit/form/Button", "dijit/form/TextBox", "dijit/Toolbar", "dijit/ToolbarSeparator", "dijit/TitlePane", "neotoma/widget/Dialog", "dijit/form/Select", "dojox/widget/Standby", "dijit/layout/StackContainer", "dijit/layout/StackController", "dijit/RadioMenuItem", "dijit/form/ComboButton", "dijit/DropDownMenu", "dojox/widget/Toaster", "neotoma/form/Toolbar", "neotoma/widget/MapPane", "neotoma/form/Tables","neotoma/form/Tables2", "dijit/form/FilteringSelect", "neotoma/widget/SearchResultsGrid", "dojo/domReady!"],
@@ -117,9 +100,6 @@
                     parser.parse().then(
                         function () {
                             try {
-                                //call pageReady
-                                //appUtil.pageReady();
-
                                 // use toaster for alerts
                                 appUtil.toasterAlert();
                             } catch (e) {
