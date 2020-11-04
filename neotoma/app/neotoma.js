@@ -60,17 +60,17 @@
 
 
         return {
-            loadDataset: function (datasetid) { // loads a dataset passed in url
+            loadDataset: function (datasetId) { // loads a dataset passed in url
                 try {
                     // make request to data/datasets
-                    script.get(config.dataServicesLocation + "/datasets/" + datasetid,
+                    script.get(config.dataServicesLocation + "/datasets/" + datasetId,
                             { jsonp: "callback" }
                         ).then(lang.hitch(this, function (response) {
                             try {
                                 if (response.success) {
                                     // make sure data was returned
                                     if (response.data.length === 0) {
-                                        alert("No dataset with id = " + datasetid + " was found.");
+                                        alert("No dataset with id = " + ddatasetId + " was found.");
                                         return;
                                     }
 
@@ -106,7 +106,7 @@
                                     topic.publish("neotoma/search/NewResult", {
                                         data: [standardResponse],
                                         searchName: "datasetid: " + datasetid,
-                                        request: { datasetid: datasetid },
+                                        request: { datasetId: datasetId },
                                         symbol: { "color": "ff0000", "shape": "Square", "size": "Large" }
                                     }
                                     );
@@ -405,7 +405,7 @@
                     alert("error in app/neotoma.addAllToTray: " + e.message);
                 }
             },
-            addDatasetToTray: function (datasetid, suppressMessages) {
+            addDatasetToTray: function (datasetId, suppressMessages) {
                 // make sure dataset tray exists
                 // todo: get rid of this. Open from subscriber if not already open
                 if (!dojo.config.app.datasetTrayForm) {
@@ -414,9 +414,9 @@
                 }
 
                 var store = dojo.config.app.forms.sitePopup.siteDatasetsGrid.get("store");
-                var dataset = store.get(datasetid);
+                var dataset = store.get(datasetId);
                 if (!dataset) {
-                    alert("Can't find dataset with id: " + datasetid);
+                    alert("Can't find dataset with id: " + datasetId);
                     return;
                 }
 

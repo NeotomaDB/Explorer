@@ -84,11 +84,11 @@
 
                     // set site on siteDatasetsGrid. Use used to get Site metadata for a dataset added to tray
                     this.siteDatasetsGrid.set("site", {
-                        SiteID: atts.siteid,
-                        SiteName: atts.sitename,
-                        SiteDescription: atts.sitedescription,
-                        Longitude: atts.longitude,
-                        Latitude: atts.latitude
+                        siteid: atts.siteid,
+                        sitename: atts.sitename,
+                        sitedescription: atts.sitedescription,
+                        longitude: atts.longitude,
+                        latitude: atts.latitude
                     });
 
                     // change title

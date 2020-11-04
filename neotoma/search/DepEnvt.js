@@ -66,7 +66,7 @@
                     },
                     getLabel: function (object) {
                         // the name is the DepEnvt
-                        return object.DepEnvt;
+                        return object.depenvt;
                     }
                 });
 
