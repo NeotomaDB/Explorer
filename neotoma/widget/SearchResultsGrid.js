@@ -11,11 +11,11 @@
                 return ids;
             },
             columns: [
-                { label: 'SiteID', field: 'SiteID' },
-                { label: 'DatasetID', field: 'DatasetID' },
+                { label: 'Site ID', field: 'siteid' },
+                { label: 'Dataset ID', field: 'datasetid' },
                 {
                     label: 'Type',
-                    field: 'DatasetType',
+                    field: 'datasettype',
                     formatter: function (value) {
                         // make sure image exists
                         if (dojo.config.app.iconStore.get(value) == null) {
@@ -25,11 +25,11 @@
                         return '<img src="resources/datasetIcons/' + dojo.config.app.iconStore.get(value).image + '" title="' + value + '"></img>';
                     }
                 },
-                { label: 'SiteName', field: 'SiteName' },
-                { label: 'Latitude', field: 'Latitude' }, // llchange
-                { label: 'Longitude', field: 'Longitude' }, // llchange
-                { label: 'AgeOldest', field: 'AgeOldest' },
-                { label: 'AgeYoungest', field: 'AgeYoungest' }
+                { label: 'Site Name', field: 'sitename' },
+                { label: 'Latitude', field: 'latitude' }, // llchange
+                { label: 'Longitude', field: 'longitude' }, // llchange
+                { label: 'Age Oldest', field: 'ageoldest' },
+                { label: 'Age Youngest', field: 'ageyoungest' }
             ],
             postCreate: function() {
                 this.inherited(arguments);
