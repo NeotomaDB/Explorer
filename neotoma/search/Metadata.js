@@ -180,7 +180,7 @@
                             }
                             break;
                     }
-                    
+
 
                     // return null if no parameters
                     var count = 0;
@@ -195,7 +195,7 @@
                 } catch (e) {
                     alert("Error in search/Metadata._getValueAttr: " + e.message);
                 }
-                
+
             },
             postCreate: function () {
                 this.inherited(arguments);
@@ -246,7 +246,7 @@
 
                 //populate constituent databases, if needed
                 if (this.database.get("store").data.length === 0) {
-                    script.get(config.dbServicesLocation + "/ConstituentDatabases",
+                    script.get(config.dbServicesLocation + "/ConstituentDatabases?limit=100",
                         { jsonp: "callback" }
                     ).then(lang.hitch(this.database, function (response) {
                         //topic.publish("neotoma/search/StopBusy");
@@ -293,7 +293,7 @@
                 //this.submitDate.set("value", date.add(new Date(), "day", -28));
 
                 // listen for a new depositional environment to be selected
-                topic.subscribe("explorer/search/newDepEnvt", 
+                topic.subscribe("explorer/search/newDepEnvt",
                     lang.hitch(this, function (items) {
                         if (items.length === 1) {
                             // set depEnvtIds
@@ -334,7 +334,7 @@
                                 }
                             );
                         }
-                       
+
                     })
                 );
             }

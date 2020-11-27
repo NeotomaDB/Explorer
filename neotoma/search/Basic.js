@@ -73,13 +73,13 @@
                     } else {
                         this.allTaxa.set("query", { taxagroupid: TaxaGroupID });
                     }
-                    
+
                     // clear out any existing taxa
                     this.allTaxa.set("value", "");
                 } catch (e) {
                     alert("error in search/TaxaAge.dataTypeChanged: " + e.message);
                 }
-               
+
             },
             periodChanged: function (periodId) {
                 if ((periodId == null) || (periodId === "")) {
@@ -159,7 +159,7 @@
                     topic.publish("neotoma/search/NewSearchName", this.newSearchName);
                 } catch (e) {
                     alert("Error in search/TaxaAge.taxonChanged: " + e.message);
-                }             
+                }
             },
             multipleTaxaClick: function () {
                 try {
@@ -218,9 +218,9 @@
                 } catch (e) {
                     alert("Error in search/Basic.multipleTaxaDialogClose: " + e.message);
                 }
-               
+
             },
-            doSearch: function(searchName) { 
+            doSearch: function(searchName) {
                 try {
                     // clear out previous results
                     this.searchResults = null;
@@ -233,7 +233,7 @@
 
                     // add tokens to parameters
                     requestParams.tokens = dojo.config.app.tokens;
- 
+
                     // create an object to hitch function to
                     this.searchRequest = {
                         url: config.appServicesLocation + "/Search",
@@ -305,7 +305,7 @@
                     //).then(lang.hitch(this, function (response) {
                     //    topic.publish("neotoma/search/StopBusy");
                     //    if (response.success) {
-                    //        try { 
+                    //        try {
                     //            // stop if nothing was returned
                     //            if (response.data.length === 0) {
                     //                alert("No datasets found");
@@ -333,7 +333,7 @@
                     //            // set results
                     //            this.searchResults = response.data;
                     //            topic.publish("neotoma/search/NewResult", {
-                    //                data: response.data, 
+                    //                data: response.data,
                     //                searchName: searchName,
                     //                request: this.searchRequest
                     //            });
@@ -417,7 +417,7 @@
                 } //else {
                  //   console.log("didn't set ids for advanced select");
                 //}
-   
+
                 // hide abundance
                 dojo.query(".abundance").addClass("hide");
             },
@@ -504,7 +504,7 @@
                 } else {
                     response.time = null;
                 }
-                
+
                 // see if abundance is needed and if it is, make sure one is entered
                 var abundance = null;
                 var abundanceFS = this.abundance;
@@ -557,7 +557,7 @@
 
                 try {
                     // load ageScale store
-                    script.get(config.dbServicesLocation + "/RelativeAgeScales",
+                    script.get(config.dbServicesLocation + "/RelativeAgeScales?limit=100",
                             { jsonp: "callback", query: {sort:"RelativeAgeScale"} }
                         ).then(lang.hitch(this.ageScale, function (response) {
                             try {
@@ -619,7 +619,7 @@
                             } catch (e) {
                                 alert("Error in search/Basic subscribe('neotoma/search/AgeChanged'): " + e.message);
                             }
-                            
+
                         })
                     );
                 } catch (e) {

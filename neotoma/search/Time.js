@@ -57,7 +57,7 @@
                     }
                 } catch (e) {
                     alert("error in search/Time.advancedAgesClick: " + e.message);
-                } 
+                }
             },
             ageScaleChanged: function (ageScaleId) {
                 if ((ageScaleId == null) || (ageScaleId === "")) {
@@ -118,7 +118,7 @@
                 this.inherited(arguments);
 
                 // populate age scales
-                script.get(config.dbServicesLocation + "/RelativeAgeScales",
+                script.get(config.dbServicesLocation + "/RelativeAgeScales?limit=100",
                         { jsonp: "callback", query: { sort: "relativeagescale" } }
                     ).then(lang.hitch(this.ageScale, function (response) {
                         try {
