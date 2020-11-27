@@ -567,11 +567,11 @@
                                 // add site to dataset if needed
                                 if (!dataset.hasOwnProperty("site")) {
                                     dataset["site"] = {
-                                        SiteID: site.siteid,
-                                        SiteName: site.sitename,
-                                        SiteDescription: site.sitedescription,
-                                        Latitude: site.latitude, // llchange
-                                        Longitude: site.longitude // llchange
+                                        siteid: site.siteid,
+                                        sitename: site.sitename,
+                                        sitedescription: site.sitedescription,
+                                        latitude: site.latitude, // llchange
+                                        longitude: site.longitude // llchange
                                     };
                                 }
                                 topic.publish("explorer/dataset/AddToTray", dataset, false);

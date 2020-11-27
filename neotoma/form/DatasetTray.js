@@ -32,7 +32,7 @@
                                 if (datasetResponse.DatasetType === "geochronologic") {
                                     // load geochron data
                                     script.get(config.appServicesLocation + "/Geochronologies",
-                                        { jsonp: "callback", query: { datasetId: datasetId } }
+                                        { jsonp: "callback", query: { datasetId: datasetid } }
                                     ).then(lang.hitch([this,fileName],
                                         function (response) {
                                             if (response.success) {
@@ -115,7 +115,7 @@
                 if (store) {
                     array.forEach(store.data,
                        lang.hitch(this, function (dataset) {
-                           datasetIds.push(dataset.DatasetID);
+                           datasetIds.push(dataset.datasetId);
                        }
                    ));
                 }

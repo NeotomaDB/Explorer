@@ -6,7 +6,7 @@
             columns: [
                 {
                     label: "Dataset Type",
-                    field: "DatasetType",
+                    field: "datasettype",
                     formatter: function (value) {
                         // make sure image exists
                         if (dojo.config.app.iconStore.get(value) == null) {
@@ -18,23 +18,23 @@
                 },
                 {
                     label: "CollUnitHandle",
-                    field: "CollUnitHandle",
+                    field: "collunithandle",
                     renderCell: function (row, value, node, options) {
                         try {
                             // create description tooltip
                             var description = [];
-                            description.push("Database: " + row.DatabaseName);
-                            description.push("Dataset ID: " + row.DatasetID);
-                            description.push("Dataset type: " + row.DatasetType);
-                            description.push("Site name: " + row.site.SiteName);
+                            description.push("Database: " + row.databasename);
+                            description.push("Dataset ID: " + row.datasetid);
+                            description.push("Dataset type: " + row.datasettype);
+                            description.push("Site name: " + row.site.sitename);
                             
     /*                        if (_item.site.SiteDescription) {
                                 description.push("Description: " + _item.site.SiteDescription);
                             }*/
 
-                            var datasetLabel = row.CollUnitHandle;
-                            if (row.CollUnitName) {
-                                datasetLabel += "_" + row.CollUnitName;
+                            var datasetLabel = row.collunithandle;
+                            if (row.collunitname) {
+                                datasetLabel += "_" + row.collunitname;
                             }
 
                             //var content = [];
@@ -170,30 +170,30 @@
                 // see if store needs created or updated
                 if (store == null) {
                     store = new Memory({
-                        idProperty: "DatasetID",
+                        idProperty: "datasetid",
                         data: [dataset]
                     });
                     this.set("store", store);
-                    alert("DatasetID: " + dataset.DatasetID + " was successfully added to tray.");
+                    alert("DatasetID: " + dataset.datasetid + " was successfully added to tray.");
                 } else {
-                    if (store.get(dataset.DatasetID)) {
-                        alert("DatasetID: " + dataset.DatasetID + " is already in the tray.");
+                    if (store.get(dataset.datasetid)) {
+                        alert("DatasetID: " + dataset.datasetid + " is already in the tray.");
                         return;
                     }
                     // add record
                     store.add(dataset);
-                    alert("DatasetID: " + dataset.DatasetID + " was successfully added to tray.");
+                    alert("DatasetID: " + dataset.datasetid + " was successfully added to tray.");
                 }
                 // refresh grid
                 this.refresh();
                 this.resize();
             },
-            removeDataset: function (datasetId) {
+            removeDataset: function (datasetid) {
                 // get datasets store
                 var store = this.get("store");
 
                 // remove record
-                store.remove(datasetId);
+                store.remove(datasetid);
 
                 // refresh grid
                 this.refresh();
@@ -219,13 +219,13 @@
                     // see what to do
                     switch (this.clickOperation) {
                         case "showExplorer":
-                            mainToolbar.showDatasetExplorer(row.data.DatasetID, row.data.DatasetType, row.data.DatabaseName, row.data.site);
+                            mainToolbar.showDatasetExplorer(row.data.datasetid, row.data.datasettype, row.data.databasename, row.data.site);
                             break;
                         case "remove":
-                            this.removeDataset(row.data.DatasetID);
+                            this.removeDataset(row.data.datasetid);
                             break;
                         case "save":
-                            topic.publish("explorer/dataset/Save", row.data.DatasetID);
+                            topic.publish("explorer/dataset/Save", row.data.datasetid);
                             break;
                     }
 

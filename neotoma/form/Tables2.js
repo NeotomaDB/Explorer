@@ -13,11 +13,11 @@
                     // fix ages before displaying
                     array.forEach(rec.sites,
                         function (site) {
-                            if (site.MaxAge != null) {
-                                site.AgeOldest = site.MaxAge;
+                            if (site.maxage != null) {
+                                site.ageoldest = site.maxage;
                             }
-                            if (site.MinAge != null) {
-                                site.AgeYoungest = site.MinAge;
+                            if (site.minage != null) {
+                                site.ageyoungest = site.minage;
                             }
                         }
                     );
@@ -27,25 +27,25 @@
                     var responseData = rec.sites;
                     var newRecord = null;
                     array.forEach(responseData, function (site) {
-                        array.forEach(site.Datasets, function (dataset) {
+                        array.forEach(site.datasets, function (dataset) {
                             newRecord = {
-                                SiteID: site.SiteID,
-                                SiteName: site.SiteName,
-                                Latitude: number.round(site.Latitude, 6), // llchange
-                                Longitude: number.round(site.Longitude, 6), // llchange
-                                DatasetID: dataset.DatasetID,
-                                DatasetType: dataset.DatasetType,
-                                AgeOldest: dataset.AgeOldest,
-                                AgeYoungest: dataset.AgeYoungest
+                                siteid: site.siteid,
+                                sitename: site.sitename,
+                                latitude: number.round(site.latitude, 6), // llchange
+                                longitude: number.round(site.longitude, 6), // llchange
+                                datasetid: dataset.datasetid,
+                                datasettype: dataset.datasettype,
+                                ageoldest: dataset.ageoldest,
+                                ageyoungest: dataset.ageyoungest
                             };
 
                             // check ages
                             if (dataset.MaxAge != null) {
-                                newRecord.AgeOldest = dataset.MaxAge;
+                                newRecord.ageOodest = dataset.MaxAge;
                             }
 
                             if (dataset.MinAge != null) {
-                                newRecord.AgeYoungest = dataset.MinAge;
+                                newRecord.ageyoungest = dataset.MinAge;
                             }
 
                             // add record
@@ -59,7 +59,7 @@
                     //searchResultsGrid.renderArray(tableData);
                     searchResultsGrid.set("store",
                         new Memory({
-                            idProperty: "SiteID",
+                            idProperty: "siteid",
                             data: tableData
                         })
                     );
