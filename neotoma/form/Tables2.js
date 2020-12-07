@@ -40,12 +40,12 @@
                             };
 
                             // check ages
-                            if (dataset.MaxAge != null) {
-                                newRecord.ageOodest = dataset.MaxAge;
+                            if (dataset.maxage != null) {
+                                newRecord.ageoldest = dataset.maxage;
                             }
 
-                            if (dataset.MinAge != null) {
-                                newRecord.ageyoungest = dataset.MinAge;
+                            if (dataset.minage != null) {
+                                newRecord.ageyoungest = dataset.minage;
                             }
 
                             // add record

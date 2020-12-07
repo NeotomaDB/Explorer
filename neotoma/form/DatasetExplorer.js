@@ -64,7 +64,7 @@
                            content.push("<tr class='lbl'><td>Age model</td></tr>");
                            content.push("<tr><td>" + chron.agemodel + "</td></tr>");
                            content.push("<tr class='lbl'><td>Default</td></tr>");
-                           content.push("<tr><td>" + chron.default + "</td></tr>");
+                           content.push("<tr><td>" + chron.Default + "</td></tr>");
 
                            content.push("</table>");
 
@@ -80,13 +80,13 @@
                            });
 
                            // see if there are notes
-                           if (chron.Notes) {
+                           if (chron.notes) {
                                // show button
                                domStyle.set(this.chronNotesBtn.domNode, "visibility", "visible");
 
                                // attach notes to chronNotesBtn
                                //var notes = JSON.stringify(chron.Notes);
-                               this.chronNotesBtn.set("notes", chron.Notes);
+                               this.chronNotesBtn.set("notes", chron.notes);
                            } else {
                                // hide button
                                domStyle.set(this.chronNotesBtn.domNode, "visibility", "hidden");
@@ -688,7 +688,7 @@
                     lang.hitch(this, function (Observable, Memory, Chart, theme, StoreSeries, domStyle, SimpleTheme, Tooltip, Magnify) {
                         if (!chronID) { //  use default
                             if (this._chronologyChartData["defaultChron"]) {
-                                var chartData =  this._chronologyChartData["chartData"][this._chronologyChartData["defaultChron"]["ChronologyID"]] ;
+                                var chartData =  this._chronologyChartData["chartData"][this._chronologyChartData["defaultChron"]["chronologyid"]];
                                 var chartChron = this._chronologyChartData["defaultChron"];
                             } else {
                                 alert("This dataset has no default chronology. Please select one to create a chart.");
@@ -719,8 +719,8 @@
                                 }
                             }
                             
-                            // if doesn't have MaxDepth and MinDepth then hide tab and stop
-                            if ((!chartChron.maxdepth) && (!chartChron.mindepth)) {
+                            // if doesn't have MaxDepth and MinDepth or necessary charting controls then hide tab and stop
+                            if ((!chartChron.maxdepth && !chartChron.mindepth) || (chartChron.controls.length <= 1)) {
                                 this.chronologyTab.set("disabled", true);
                                 return false;
                             }
@@ -830,7 +830,6 @@
                                 minAgeAdjusted = minAge - ageMinorStep;
                             }
 
-
                             // add plots
                             this._chronologyChart.addPlot("controlCandle", {
                                 type: "Candlesticks",
@@ -904,7 +903,7 @@
                                 stroke: { color: "#B5B5B5", width: 1 },
                                 titleFont: "normal normal bold 8pt Arial",
                                 titleFontColor: "#8A8484",
-                                title: "Age (" + chartChron.AgeType + ")"
+                                title: "Age (" + chartChron.agetype + ")"
                             });
                           
                             this._chronologyChart.addAxis("y", {
@@ -1030,28 +1029,15 @@
                     lang.hitch(this, function (Observable, Memory, Chart, theme, StoreSeries, Indicator, MouseZoomAndPan, domStyle) {
                         
                         // hide legend if no ages because there will be no chart
-                        if (samples[0].sampleages[0].age == null) {
-                            // hide chronology legend
+                        if (samples[0].sampleages[0].age == null || samples[0].sampleages[0].ageolder == null || samples[0].sampleages[0].ageyounger == null) {
+                            // hide chronology legend, disable tab
                             domStyle.set("chronologyLegend", "visibility", "hidden");
+                            this.chronologyTab.set("disabled", true);
                         } else {
-                            // show chronology legend
+                            // show chronology legend, enable tab
                             domStyle.set("chronologyLegend", "visibility", "visible");
+                            this.chronologyTab.set("disabled", false);
                         }
-
-                        // make sure sample ages have age values. If not then don't display chron.
-                        //if (samples[0].SampleAges[0].Age == null) {
-                        //    // disable chronologies tab
-                        //    this.chronologyTab.set("disabled", true);
-                        //    // stop
-                        //    return;
-                        //} else {
-                        //    // enable chronologies tab in case was disabled
-                        //    this.chronologyTab.set("disabled", false); // was false
-                        //}
-
-
-                        // enable chronologies tab in case was disabled
-                        this.chronologyTab.set("disabled", false); // was false
 
                         // parse into chronologies first
                         var chronologies = [];
@@ -1060,6 +1046,16 @@
                         var sampleAges = null;
                         var thisSample = null;
                         var defaultChron = null;
+
+                        // chronologies vary by sample. find sample index with most.
+                        var maxChronologiesBySample = 0;
+                        samples.forEach(function(sample, index) {
+                            if (sample.sampleages.length > maxChronologiesBySample) {
+                                maxChronologiesBySample = index;
+                            }
+                            return maxChronologiesBySample;
+                        });
+                        
                         for (var i = 0; i < numSamples; i++) {
                             thisSample = samples[i];
                             // look at sample ages to see how many chronologies there are. 1 chron/sample age
@@ -1071,9 +1067,7 @@
                             for (var ai = 0; ai < numAges; ai++) {
                                 // get this age
                                 thisAge = sampleAges[ai];
-
-                                // if first record, create chronologies and initialize chartData for this age (chron)
-                                if (i === 0) { // only for first sample age
+                                if (i === maxChronologiesBySample) { // only for sample with most chronologies
                                     // add to chronologies
                                     chronologies.push({
                                         chronologyid: thisAge.chronologyid || defaultChronId,
@@ -1095,7 +1089,7 @@
                                     }
                                 }
                                 // add sample to chartData for all records. Make sure has valid depth and age
-                                if ((thisAge.age != null) && (thisSample.analysisunitdepth != null)) {
+                                if ((thisAge.age != null) && (thisSample.analysisunitdepth != null) && (chronologies[ai])) {
                                     // see if should be min
                                     if (!chronologies[ai].minage) {
                                         chronologies[ai].minage = thisAge.age;
