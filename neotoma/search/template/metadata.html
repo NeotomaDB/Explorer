@@ -13,7 +13,7 @@
         </tr>
         <tr class="fixht">
             <td class="colSF1">Database</td>
-            <td class="colSF2"><select data-dojo-type="neotoma/widget/FilteringSelect" data-dojo-props="required:false, placeholder:'', searchAttr:'databasename', invalidMessage:'Database not found'" data-dojo-attach-point="database" data-dojo-attach-event="onKeyPress:handleEnter"></select></td>
+            <td class="colSF2"><select data-dojo-type="neotoma/widget/FilteringSelect" data-dojo-props="required:false, placeholder:'', searchAttr:'databasename', fetchProperties:{sort:[{attribute:'databasename',descending:false}]}, invalidMessage:'Database not found'" data-dojo-attach-point="database" data-dojo-attach-event="onKeyPress:handleEnter"></select></td>
         </tr>
         <tr class="fixht">
             <td class="colSF1">Sample keyword</td>
@@ -25,7 +25,7 @@
         </tr>
         <tr class="fixht">
             <td class="colSF1">Person name</td>
-            <td class="colSF2"><select data-dojo-type="neotoma/widget/FilteringSelect" data-dojo-props="required:false, placeholder:'', searchAttr:'contactname', invalidMessage:'Person not found'" data-dojo-attach-point="personName" data-dojo-attach-event="onKeyPress:handleEnter"></select></td>
+            <td class="colSF2"><select data-dojo-type="neotoma/widget/FilteringSelect" data-dojo-props="required:false, placeholder:'', searchAttr:'contactname', fetchProperties:{sort:[{attribute:'contactname',descending:false}]}, invalidMessage:'Person not found'" data-dojo-attach-point="personName" data-dojo-attach-event="onKeyPress:handleEnter"></select></td>
         </tr>
         <tr class="fixht">
             <td class="col1">Date submitted</td>
