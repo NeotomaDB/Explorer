@@ -32,7 +32,7 @@
                                 if (datasetResponse.DatasetType === "geochronologic") {
                                     // load geochron data
                                     script.get(config.appServicesLocation + "/Geochronologies",
-                                        { jsonp: "callback", query: { datasetId: datasetid } }
+                                        { jsonp: "callback", query: { datasetid: datasetId } }
                                     ).then(lang.hitch([this,fileName],
                                         function (response) {
                                             if (response.success) {
@@ -69,8 +69,9 @@
                                     );
                                    
                                 } else {
+                                  
                                     // parse with brian's function
-                                    var sheetResponse = this._formatSheet(datasetResponse.Samples);
+                                    var sheetResponse = this._formatSheet(datasetResponse.samples);
 
                                     // initialize array with header records
                                     data = this._createHeaderRecordsForSave(sheetResponse).data;
@@ -159,39 +160,39 @@
                         outSample = {};
 
                         // assign outSample inSample property values; if null, assign out property ""
-                        outSample["sampleId"] = inSample.SampleID;
-                        outSample["sampleName"] = inSample.SampleName || "";
-                        outSample["unitName"] = inSample.AnalysisUnitName || "";
-                        outSample["depth"] = inSample.AnalysisUnitDepth || "";
-                        outSample["thickness"] = inSample.AnalysisUnitThickness || "";
+                        outSample["sampleId"] = inSample.sampleid;
+                        outSample["sampleName"] = inSample.samplename || "";
+                        outSample["unitName"] = inSample.analysisunitname || "";
+                        outSample["depth"] = inSample.analysisunitdepth || "";
+                        outSample["thickness"] = inSample.analysisunitthickness || "";
 
                         // add to outSamples
                         outSamples.push(outSample);
 
                         // create chron objects to hold age data; chron object includes array of sample age strings by sampleId
-                        for (var ci = 0; ci < inSample.SampleAges.length; ci++) {
-                            inSampAge = inSample.SampleAges[ci];
-                            if (inSampAge.ChronologyID) {
-                                outChron = outChrons["C" + inSampAge.ChronologyID];
+                        for (var ci = 0; ci < inSample.sampleages.length; ci++) {
+                            inSampAge = inSample.sampleages[ci];
+                            if (inSampAge.chronologyid) {
+                                outChron = outChrons["C" + inSampAge.chronologyid];
                                 // create new outChron object if doesn't exist
                                 if (!outChron) {
                                     outChron = {};
-                                    outChron["chronId"] = inSampAge.ChronologyID;
-                                    outChron["chronName"] = inSampAge.ChronologyName;
-                                    outChron["ageType"] = inSampAge.AgeType;
+                                    outChron["chronId"] = inSampAge.chronologyid;
+                                    outChron["chronName"] = inSampAge.chronologyname;
+                                    outChron["ageType"] = inSampAge.agetype;
                                     outChron["sampAges"] = [];
-                                    outChrons["C" + inSampAge.ChronologyID] = outChron;
+                                    outChrons["C" + inSampAge.chronologyid] = outChron;
                                 }
                                 // create string representation of sample age (e.g. AgeOlder/Age/AgeYounger) and add to chron's SampAges array
-                                outSampAge = (inSampAge.AgeOlder || "--") + "/" +
-                                    (inSampAge.Age || "--") + "/" +
-                                    (inSampAge.AgeYounger || "--");
-                                outChron.sampAges.push({ sampleId: inSample.SampleID, ageStr: outSampAge });
+                                outSampAge = (inSampAge.ageolder || "--") + "/" +
+                                    (inSampAge.age || "--") + "/" +
+                                    (inSampAge.ageyounger || "--");
+                                outChron.sampAges.push({ sampleId: inSample.sampleid, ageStr: outSampAge });
                             }
                         }
 
                         // loop through raw SampleData array, create variable objects to hold values for samples
-                        inSampleDataArray = inSample.SampleData;
+                        inSampleDataArray = inSample.sampledata;
                         var numSampleData = inSampleDataArray.length;
                         for (var si = 0; si < numSampleData; si++) {
                             // inSampleData = variable and its value
@@ -204,18 +205,27 @@
                                 varNum += 1;
                                 // create new new Variable stub from inSampleData properties
                                 newVariable = {};
-                                newVariable["name"] = inSampleData.TaxonName;
-                                newVariable["group"] = inSampleData.TaxaGroup;
-                                newVariable["element"] = inSampleData.VariableElement;
-                                newVariable["units"] = inSampleData.VariableUnits;
-                                newVariable["context"] = inSampleData.VariableContext || "";
+                                newVariable["name"] = inSampleData.taxonname;
+                                //newVariable["group"] = inSampleData.taxagroup;
+                                newVariable["group"] = inSampleData.ecolgroupid;
+                                newVariable["element"] = inSampleData.variableelement;
+                                newVariable["units"] = inSampleData.variableunits;
+                                newVariable["context"] = inSampleData.variablecontext || "";
                                 //TODO: handle VariableModifications array
                                 outVariables[varId] = newVariable;
                             }
 
+                            // see if value is presence/abscense
+                            thisValue = inSampleData.value;
+                            if (inSampleData.variableunits === "present/absent") {
+                                if (thisValue === 1) {
+                                    thisValue = "+";
+                                }
+                            }
+
                             // add value of variable for this sample
                             outVariable = outVariables[varId];
-                            outVariable["S" + inSample.SampleID] = inSampleData.Value;
+                            outVariable["S" + inSample.sampleid] = thisValue;
                             outVariables[varId] = outVariable;
                         } // next sample data (i.e. variable)
 
@@ -385,10 +395,10 @@
                 for (var key in list) {
                     if (list.hasOwnProperty(key)) {
                         outVar = list[key];
-                        if (outVar.name == inVar.TaxonName) {
-                            if (outVar.element == inVar.VariableElement) {
-                                if (outVar.units == inVar.VariableUnits) {
-                                    if ((outVar.context == inVar.VariableContext) || (!outVar.context && !inVar.VariableContext)) {
+                        if (outVar.name == inVar.taxonname) {
+                            if (outVar.element == inVar.variableelement) {
+                                if (outVar.units == inVar.variableunits) {
+                                    if ((outVar.context == inVar.variablecontext) || (!outVar.context && !inVar.variablecontext)) {
                                         return key;
                                     }
                                 }
