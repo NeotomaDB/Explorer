@@ -444,6 +444,22 @@
                                     }
                                 }, buttonBar);
 
+                                // doi
+                                domConstruct.create("button", {
+                                  type: "button",
+                                  title: "Visit DOI page",
+                                  "class": "dsDOI",
+                                  click: function () {
+                                      var datasetDOI = dlg.datasetExplorer._datasetResponse.doi;
+                                      if (!datasetDOI) {
+                                        alert("A DOI does not yet exist for this dataset.");
+                                      } else {
+                                        var url = "https://doi.org/" + datasetDOI;
+                                        window.open(url);
+                                      }
+                                  }
+                              }, buttonBar);
+
                                 // will load data so show busy
                                 dlg.datasetExplorer.toggleStandby(true);
                             } else {
