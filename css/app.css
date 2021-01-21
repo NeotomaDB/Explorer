@@ -394,6 +394,9 @@ button.mini {
 .mini button.dsSave {
     background: url("../resources/images/disk.png") no-repeat center;
 }
+.mini button.dsDOI {
+  background: url("../resources/images/doi.png") no-repeat center;
+}
 .mini button.dsUp {
     background: url("../resources/images/arrow_up16.png") no-repeat center;
 }
