@@ -108,13 +108,6 @@
                     this.standby.hide();
                 }
             },
-            toggleStratigraphicStandby: function(show){
-                if (show) {
-                    this.stratigraphicStandby.show();
-                } else {
-                    this.stratigraphicStandby.hide();
-                }
-            },
             showSamplesTab: function() {
                 // make sure samples tab is active
                 this.tabContainer.selectChild(this.samplesTab);
@@ -248,12 +241,13 @@
                         // show main tabs
                         this.datasetExplorerTabsContainer.selectChild(this.tabContainer);
                     }
-                    //clear yAxis change handler for stratigraphic chart
-                    this.clearYAxisChangeHandler();
+   
+/****STUB FOR CLEAR CHARTS
                     //clear prior chart if one exists
                     if(dojo.config.diagrammer){
                         dojo.config.diagrammer.clearChart();                   
-                    }        
+                    }    
+*/    
                     // send request to Downloads resource
                     script.get(config.dataServicesLocation + "/Downloads/" + datasetId,
                         { jsonp: "callback" }
@@ -274,6 +268,9 @@
                                     initRun = false;
                                 }
 
+                                //create or update SD content
+                                this.diagramTab.processDataset(this._datasetResponse)
+
                                 // make sure samples tab is active
                                 this.tabContainer.selectChild(this.samplesTab);
 
@@ -289,35 +286,12 @@
                                 // load variables (main grid)
                                 this._displayVariables(this._sheetResponse);
 
-                                if (initRun) {
-                                    
-                                    // briefly select stratigraphic diagram tab to try to initialize
-                                    this.tabContainer.selectChild(this.diagramTab);
-                                    dojo.config.diagrammer = dijit.registry.byId("diagrammer");
-                                    //use same reference to store configuration data for chart
-                                    dojo.config.diagrammer.config = {};
-                                    this.diagrammer = dojo.config.diagrammer;
-                                }
-
                                 // load chronologies & retreive additional chronology data; return parsed chronology array
                                 this._parseChronologies(this._datasetResponse.samples, this._datasetResponse.defchronologyid);
-                                /*
-                                var chronologies = this._parseChronologies(this._datasetResponse.Samples, this._datasetResponse.DefChronologyID);
-                                var dlg = this;
-                                var deferred = new Deferred();
-                                deferred.then(function(chronologies){
-                                    dlg.configureStratigraphicDiagram(datasetId, datasetType, dlg._datasetResponse.DefChronologyID, chronologies);
-                                }, function(err){
-                                  console.log("error obtaining chronologies from parseChronologies()");
-                                });
-
-                                deferred.resolve(chronologies);
-                                */
-
-
-                                
+                                                                
                                 // enable tab if appropriate
-                                if (datasetType == "pollen" || datasetType == "diatom" || datasetType == "ostracode" ) {
+                                var DatasetTypesWithSD = ["pollen","diatom", "ostracode", "testate amoebae", "vertebrate fauna"];
+                                if ( DatasetTypesWithSD.indexOf(datasetType) > -1 ) {
                                         // enable pollen diagram tab
                                         this.diagramTab.set("disabled", false);
                                        
@@ -342,50 +316,13 @@
 
                                     // briefly select pollen diagram tab to try to initialize
                                     this.tabContainer.selectChild(this.diagramTab);
-                                    dojo.config.diagrammer = dijit.registry.byId("diagrammer");
-                                    //use same reference to store configuration data for chart
-                                    dojo.config.diagrammer.config = {};
-                                    this.diagrammer = dojo.config.diagrammer;
                                    
-                                    //HACK. This gets the grids to display on the first search. Otherwise they don't render unless the samplesTab is hidden and shown once
+                                //HACK. This gets the grids to display on the first search. Otherwise they don't render unless the samplesTab is hidden and shown once
                                 // Problem started after moving tab container to stack container to have geochron tabs.
                                     this.tabContainer.selectChild(this.siteTab);
                                     this.tabContainer.selectChild(this.samplesTab);
                                 }
 
-                                 //populate diagrammer configuration
-                                 //this.configurePollenDiagram(this._sheetResponse, this._datasetResponse.DefChronologyID);
-
-                                //update diagram legend
-                                d3.selectAll(".stratDiagram")
-                                      .selectAll(".hide")
-                                      .classed("hide",false);
-                                switch(datasetType){
-                                  case 'pollen':
-                                    d3.selectAll(".diatom-legend")
-                                      .classed("hide",true);
-                                    d3.selectAll(".ostracode-legend")
-                                      .classed("hide",true);
-                                    break;
-                                  case 'ostracode':
-                                    d3.selectAll(".diatom-legend")
-                                      .classed("hide",true);
-                                    d3.selectAll(".pollen-legend")
-                                      .classed("hide",true);
-                                    break;
-                                  case 'diatom':
-                                    d3.selectAll(".pollen-legend")
-                                      .classed("hide",true);
-                                    d3.selectAll(".ostracode-legend")
-                                      .classed("hide",true);
-                                    break;
-                                  default:
-                                    break;
-                                }
-
-                                //configure stratigraphic charts
-                                //this.configurePollenDiagram(this._datasetResponse.DefChronologyID);
-                                
                                 // not busy
                                 this.toggleStandby(false);
                             } else {
@@ -404,10 +341,6 @@
                     // not busy
                     this.toggleStandby(false);
                 }
-            },
-            configureFaunaDiagram: function(data) {
-                //console.log(data.variables);
-                //console.log(JSON.stringify(data));
             },
             _loadGeoChronPublications: function (datasetId, datasetPIs) {
                 // clear out any previous publications
@@ -578,7 +511,7 @@
                                 outVariables[varId] = newVariable;
                             }
                             
-                            // see if value is presence/abscense
+                            // see if value is presence/absense
                             thisValue = inSampleData.value;
                             if (inSampleData.variableunits === "present/absent") {
                                 if (thisValue === 1) {
@@ -1754,7 +1687,6 @@
                                     if (this[0]._chronologyChartData["defaultChron"]) {
                                         //console.log("chart default chron: " + JSON.stringify(this[0]._chronologyChartData["defaultChron"]));
                                         this[0]._displayChronologiesChart(this[0]._chronologyChartData["defaultChron"].chronologyid);
-                                        dlg.configureStratigraphicDiagram(dlg.currentDatasetId, dlg._datasetType, dlg._datasetResponse.defchronologyid, chrons);
                                     }
 
                                     // enable chronology tab
@@ -1772,212 +1704,9 @@
                     alert("_retrieveChrons error: " + e.message);
                 }
             },
-            diagram: null,
-            onToggle5x: function(cbxValue){
-              d3.selectAll(".exaggerate-5x").classed(["hide"],!cbxValue);
-            },
-            yAxisChangeHandler: null,
-            //params: datasetid, datasetType, defaultChronId, chronologies
-            configureStratigraphicDiagram: function(datasetid, datasetType, defaultChronId, chronologies) {
-              
-                // get potential y axes
-                //var yaxes = [{ chronName: "Depth", chronId: -9999 }];
-                //chronologies = sheetResponse.sampleChrons;
-                var yaxes = [{ chronologyname: "Depth", chronologyid: -9999 }];
-                //check if any chronologies provided
-                if ( chronologies instanceof Array ){
-                  //check if provided chronology is enumerated
-                  if (chronologies[0].chronologyname != "default chronology" ){
-                    yaxes = yaxes.concat(chronologies);
-                  }
-                }
-
-                // populate yAxisSelect
-                this.yAxisSelect.set("store",
-                    new Memory({
-                        //idProperty: "chronId",
-                        idProperty: "chronologyid",
-                        data: yaxes
-                    })
-                );
-                // set y axis as default chron if available; else, default to depth
-                if (!isNaN(parseInt(defaultChronId))) {
-                    this.yAxisSelect.set("value", defaultChronId);
-                } else { //  use depth
-                    this.yAxisSelect.set("value", -9999);
-                }
-                
-
-                // create tooltip for group explanation
-                new Tooltip({
-                    connectId: ["groupHelp"],
-                    label: "<div class='ttThin'>If the box is checked next to a genus, counts of its species will be summed and presented as a single group.</div>"
-                });
-
-                //set config object
-                // get selected chronology info
-                var selectedChron = this.yAxisSelect.get("item");
-                                                
-                // set config object
-                var config = {
-                    picea: (this.cbPicea.get("value") === "on") ? true : false,
-                    pinus: (this.cbPinus.get("value") === "on") ? true : false,
-                    fraxinus: (this.cbFraxinus.get("value") === "on") ? true : false,
-                    show5x: (this.cb5x.get("value") === "on") ? true : false,
-                    datasetId: this.currentDatasetId,
-                    chronology: selectedChron,
-                    chronologies: chronologies
-                    //defaultChron: defaultYAxis
-                };
-
-
-            },
-            handleDatasetIDChange: function(id) {
-              //get group selections
-              var grpTaxa = [];
-              var grpPicea = this.cbPicea.get("value");
-              if(grpPicea){
-                grpTaxa.push("picea");
-              }
-              var grpPinus = this.cbPinus.get("value");
-              if(grpPinus){
-                grpTaxa.push("pinus");
-              }
-              var grpFraxinus = this.cbFraxinus.get("value");
-              if(grpFraxinus){
-                grpTaxa.push("fraxinus");
-              }
-              var grpParam = grpTaxa.join("$");
-              var explorerDlg = this;
-              
-              require(["dojo/request/xhr", "dojo/topic"],
-                    function (xhr, topic) {
-                        
-
-                        //clear chart & existing chronologies
-                        if(dojo.config.diagrammer){
-                          dojo.config.diagrammer.clearChart();
-                          dojo.config.diagrammer.chronologies = [];
-                        }
-
-                        //set stratigraphicDiagram yScale
-                        // get selected chronology info
-                        var selectedChron = explorerDlg.yAxisSelect.get("item");  
-                        dojo.config.diagrammer._setCurrentChronology(selectedChron);
-                        //instead, parse chronologies from tilia in stratigraphic diagram
-                        //dojo.config.diagrammer.chronologies = explorerDlg.chronologies;
-                        
-                        // show standby
-                        topic.publish("diagrammer/ShowStandby");
-
-                        // get data for datasetid
-                        xhr.get("https://tilia.neotomadb.org/Retrieve",
-                               {
-                                   handleAs: "json",
-                                   query: {
-                                       method: "GetDatasetTopTaxaData",
-                                       DATASETID: id,
-                                       TOPX: 10,
-                                       GROUPTAXA: grpParam
-                                   },
-                                   headers: {
-                                       "X-Requested-With": null
-                                   }
-                               }
-                           ).then(
-                               function (data) {
-                                   //set handler for yAxis change
-                                   explorerDlg.setYAxisChangeHandler();
-                                   //draw diagram
-                                   dojo.config.diagrammer.ready(null, data, dojo.config.diagrammer.config);
-                                   // hide standby
-                                   topic.publish("diagrammer/HideStandby");
-                                   
-                               },
-                               function (error) {
-                                   // hide standby
-                                   topic.publish("diagrammer/HideStandby");
-                                   alert("request error " + error);
-                               }
-                           );
-
-                    });
-          },
-            drawDiagram: function () {
-                
-                // get selected chronology info
-                var selectedChron = this.yAxisSelect.get("item");
-                //get default y axis for chart
-                var defaultYAxis = this._chronologyChartData["defaultChron"];
-                //var chronologies = this._chronologyChartData["chronologies"];
-                                
-                // set config object
-                var config = {
-                    picea: (this.cbPicea.get("value") === "on") ? true : false,
-                    pinus: (this.cbPinus.get("value") === "on") ? true : false,
-                    fraxinus: (this.cbFraxinus.get("value") === "on") ? true : false,
-                    show5x: (this.cb5x.get("value") === "on") ? true : false,
-                    datasetId: this.currentDatasetId,
-                    chronology: selectedChron,
-                    chronologies: null, //chronologies,
-                    defaultChron: defaultYAxis
-                };
-
-                dojo.config.diagrammer.config = config;
-                //dojo.config.diagrammer.chronologies = chronologies;
-                dojo.config.diagrammer._setCurrentChronology(selectedChron);
-
-                // draw
-                //this.diagram.initializePollenDiagram(JSON.stringify(data), JSON.stringify(config));
-                //this.diagrammer.ready(null, JSON.stringify(data));//, JSON.stringify(config));
-                
-                
-                this.handleDatasetIDChange(this.currentDatasetId);
-
-            },
-            setYAxisChangeHandler: function (){
-                 //var chron = this._chronologyChartData["chronologies"];
-                 this.yAxisChangeHandler = on(this.yAxisSelect, "Change", lang.hitch(this, function(e){  
-                  //var allchron = this._chronologyChartData["chronologies"];
-                  var selectedChron = this.yAxisSelect.get("item");
-                  /*
-                  var chron = {
-                      id: selectedChron.chronId,
-                      name: selectedChron.chronName
-                  };
-                  */
-
-                                
-                  topic.publish("diagrammer/ChronologyChange", [selectedChron]);
-                  
-                }));
-            },
-            clearYAxisChangeHandler: function(){
-              if(this.yAxisChangeHandler){
-                this.yAxisChangeHandler.remove();
-              }
-            },
+           
             postCreate: function () {
                 this.inherited(arguments);
-                
-                /*
-                on.once(this.yAxisSelect, "Change", lang.hitch(this,function(e){
-                  this.watchChron();
-                }))
-
-                var stgStandby = this.stratigraphicStandby;
-
-                topic.subscribe("diagrammer/ShowStandby",
-                    function () {
-                        stgStandby.show();
-                    }
-                );
-                topic.subscribe("diagrammer/HideStandby",
-                    function () {
-                        stgStandby.hide();
-                    }
-                );
-                */
                
             }
         });

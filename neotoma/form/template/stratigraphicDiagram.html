@@ -1,2 +1,95 @@
-﻿<div id="diagram-panel" >
+﻿ <div id="sd-container-node" style="height: 100%;width:100%">
+    <div id="diagramContainer" data-dojo-type="dijit/layout/BorderContainer" data-dojo-attach-point="diagramTab" data-dojo-props="gutters:true, liveSplitters:false">
+        <div id="diagramPane" data-dojo-attach-point="diagramPane" data-dojo-props="region:'center'" data-dojo-type="dijit/layout/ContentPane" style="">
+            
+            <div class="taxa-labels"></div>
+            <div class="charts"></div>
+            
+            <div data-dojo-type="dojox/widget/Standby" data-dojo-props="target:'diagramContainer'" data-dojo-attach-point="stratigraphicStandby"></div>
+            <div style="width:850px"></div>
+        </div>
+        <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'left', splitter:true" style="width: 210px;padding:0">
+            <div data-dojo-type="dijit/layout/TabContainer" class="sd-tabcontainer" data-dojo-attach-point="sdTabContainer" tabPosition="bottom" style="width: 100%; height: 100%;">
+                <div data-dojo-type="dijit/layout/ContentPane" title="Legend" data-dojo-props="selected:true" data-dojo-attach-point="legendTab" data-dojo-attach-event="">
+                    <h4 class="legend-title">Ecology Group ID</h4>
+                    <div class="legend-container">
+                    </div>
+                    
+                </div>
+                 <div data-dojo-type="dijit/layout/ContentPane" title="Settings" data-dojo-props="" data-dojo-attach-point="settingsTab" data-dojo-attach-event="">
+
+                    <label class="sd-bold-label" for="fsSelectYaxis">Primary axis</label></br>
+                    <div class="control-row">
+
+                        <div data-dojo-type="dojo/store/Memory"
+                            data-dojo-attach-point="yAxisStore"
+                            data-dojo-id="yAxisStore"
+                            data-dojo-props="data: [{domainname: 'Depth', chronologyid: null, unittype: 'Depth' }]">
+                        </div>
+                       
+                        <div data-dojo-type="dijit/form/FilteringSelect" id="fsSelectYAxis"
+                             data-dojo-attach-point="fsSelectYAxis"
+                             data-dojo-props="searchAttr: 'domainname', placeHolder:'select y axis domain', promptMessage: 'Type or select chronology or depth'">
+                        </div>
+                    </div>
+
+                    <div class="control-row">
+                            <label class="sd-bold-label" for="fsVariableUnit">Variable Unit</label>
+                            </br>
+                            <select data-dojo-type="dijit/form/FilteringSelect"
+                                id="fsVariableUnits" 
+                                data-dojo-attach-point="fsVariableUnits"
+                                data-dojo-props="searchAttr:'variableunits', placeHolder:'select variable units', autoComplete: true, required: false"></select>
+                    </div>
+
+                        <label class="sd-bold-label" for="chartTypeForm">Chart type</label>
+                        <form id="chartTypeForm"  name="chartTypeForm" data-dojo-type="dijit/form/Form" data-dojo-attach-point="chartTypeForm" >
+                            <div class="control-row">        
+                                <input data-dojo-type="dijit/form/RadioButton" data-dojo-attach-point="radioFilledArea" class="chartRadio" name="chartTypeRadioButtons" data-lpignore="true" id="radioFilledArea" name="chartType" value="FilledArea" ><label for="radioFilledArea">Filled Area</label></br>
+                                
+                                
+                                <input data-dojo-type="dijit/form/RadioButton" data-dojo-attach-point="radioBarChart"  class="chartRadio"  name="chartTypeRadioButtons" data-lpignore="true"  id="radioBarChart" name="chartType" value="BarChart"><label for="radioBarChart">Bar Chart</label></br>
+                                
+
+                                <input data-dojo-type="dijit/form/RadioButton" data-dojo-attach-point="radioSymbolPlot" class="chartRadio"  name="chartTypeRadioButtons" data-lpignore="true"  id="radioSymbolPlot" name="chartType" value="SymbolPlot"><label for="radioSymbolPlot">Symbol Plot</label>
+                            </div>
+                        </form>
+                    
+
+                    <div class="area-controls control-row">
+                        <input type="checkbox" data-dojo-type="dijit/form/CheckBox" data-dojo-attach-point="cbShowExaggeration" id ="showExaggeration" checked="true">
+                        <label for="showExaggeration">Show 5x Exaggeration</label>
+                    </div>
+                    <h4 class="sd-settings-header">Filter and Group Data <img src='resources/images/miniQuest.png' id='groupHelp' class='miniHelp'></h4>
+                        <div class="control-row">
+                            <label class="filter-group-labels" for="genusGroup">Group by genus</label>
+                            </br>
+                            <input type="text" name="genusGroup" value=""
+                                data-dojo-type="dijit/form/TextBox"
+                                data-dojo-attach-point="tbGenusGroup"
+                                data-dojo-props="placeHolder:'Enter genus, separate with ;'" id="genusGroup" />
+
+                        </div>
+                        
+
+                        <div class="control-row">
+                            <label class="filter-group-labels" for="topxSpinner">Top Taxa</label>
+                            <input data-dojo-type="dijit/form/NumberSpinner"
+                                id="topxSpinner"
+                                value="10"
+                                style="width:42px"
+                                data-dojo-attach-point="topxSpinner"
+                                data-dojo-props="smallDelta:1, constraints:{min:5,max:15,places:0},intermediateChanges:true"
+                                name="topxSpinner">
+                        </div>
+                        <div class="control-row">
+                            <button data-dojo-type="dijit/form/Button"
+                                data-dojo-attach-point="btnApplyFilterAndGroup"
+                                id="btnApplyFilterAndGroup">Apply Filter & Group Settings</button>
+                        </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
