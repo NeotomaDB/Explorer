@@ -269,7 +269,7 @@
                                 }
 
                                 //create or update SD content
-                                this.diagramTab.processDataset(this._datasetResponse)
+                                // this.diagramTab.processDataset(this._datasetResponse);
 
                                 // make sure samples tab is active
                                 this.tabContainer.selectChild(this.samplesTab);
@@ -290,10 +290,12 @@
                                 this._parseChronologies(this._datasetResponse.samples, this._datasetResponse.defchronologyid);
                                                                 
                                 // enable tab if appropriate
-                                var DatasetTypesWithSD = ["pollen","diatom", "ostracode", "testate amoebae", "vertebrate fauna"];
+                                var DatasetTypesWithSD = ["pollen", "diatom", "ostracode", "testate amoebae", "vertebrate fauna"];
                                 if ( DatasetTypesWithSD.indexOf(datasetType) > -1 ) {
                                         // enable pollen diagram tab
                                         this.diagramTab.set("disabled", false);
+                                        // process dataset for SD only if one of these dataset types
+                                        this.diagramTab.processDataset(this._datasetResponse);
                                        
                                 } else {
                                         // disable pollen diagram tab
