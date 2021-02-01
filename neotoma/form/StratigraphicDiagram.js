@@ -1011,7 +1011,7 @@
                     on(this.topxSpinner, "change", this.setCurrentTopX);
 
                     handlerChangeVariableUnit = on(this.fsVariableUnits, "change", lang.hitch(this, this.handleVariableUnitChange));
-                    on(this.tbGenusGroup,"change", this.testHandler);//handleGenusGroupChange);
+                    // on(this.tbGenusGroup,"change", this.testHandler);//handleGenusGroupChange);
 
                     on(this.radioSymbolPlot,"change", lang.hitch(this, this.handleChartTypeChange));
                     on(this.radioBarChart,"change", lang.hitch(this, this.handleChartTypeChange));
