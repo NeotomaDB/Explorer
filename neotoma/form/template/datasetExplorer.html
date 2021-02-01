@@ -3,42 +3,8 @@
         <div data-dojo-type="neotoma/widget/TabContainer" data-dojo-attach-point="tabContainer" style="width: 100%; height: 100%;">
             <div data-dojo-type="dijit/layout/ContentPane" title="Samples" data-dojo-props="selected:true" data-dojo-attach-point="samplesTab" data-dojo-attach-event="onShow:refreshDatasetGrids"></div>
             
-            <div id="diagramTab" data-dojo-type="dijit/layout/BorderContainer" title="Diagram" data-dojo-attach-point="diagramTab" data-dojo-props="gutters:true, liveSplitters:false">
-                <div id="diagramPane" data-dojo-attach-point="diagramPane" data-dojo-props="region:'center'" data-dojo-type="dijit/layout/ContentPane" style="width:900px;">
-                    <div class="taxa-labels"></div>
-                    <div data-dojo-type="neotoma/form/StratigraphicDiagram" id="diagrammer" class="charts">
-                      
-                    </div>
-                <div data-dojo-type="dojox/widget/Standby" data-dojo-props="target:'diagramTab'" data-dojo-attach-point="stratigraphicStandby"></div>    
+                <div id="diagramForm" data-dojo-type="neotoma/form/StratigraphicDiagram" data-dojo-props="selected:true" title="Diagram" data-dojo-attach-point="diagramTab" >
                 </div>
-                <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'left', splitter:true" style="width: 200px;">
-                    <table class="stratDiagram">
-                        <tr class="lbl"><td colspan="2">Primary axis</td></tr>
-                        <tr><td colspan="2"><select id="yAxisSelect" data-dojo-attach-point="yAxisSelect" data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="searchAttr:'chronologyname', labelAttr:'chronologyname'" style="width:160px;"></select></td></tr>
-                        <tr><td class="c1"><input data-dojo-attach-point="cb5x" data-dojo-attach-event="onChange:onToggle5x" type="checkbox" data-dojo-type="dijit/form/CheckBox" checked="checked"/></td><td>Show 5x exaggeration</td></tr>
-                        <tr class="lbl pollen-legend"><td colspan="2">Group<img src='resources/images/miniQuest.png' id='groupHelp' class='miniHelp'></td></tr>
-                        <tr class="pollen-legend"><td class="c1"><input data-dojo-attach-point="cbPicea" type="checkbox" data-dojo-type="dijit/form/CheckBox" checked="checked"/></td><td>Picea</td></tr>
-                        <tr class="pollen-legend"><td class="c1"><input data-dojo-attach-point="cbPinus" type="checkbox" data-dojo-type="dijit/form/CheckBox" checked="checked"/></td><td>Pinus</td></tr>
-                        <tr class="pollen-legend"><td class="c1"><input data-dojo-attach-point="cbFraxinus" type="checkbox" data-dojo-type="dijit/form/CheckBox" checked="checked"/></td><td>Fraxinus</td></tr>
-                    </table>
-                    <div class="spacer legend">
-                        <button type="button" data-dojo-type="dijit/form/Button" data-dojo-attach-event="onClick:drawDiagram" data-dojo-attach-point="pollenDiagramDrawBtn" >Draw</button>
-                        <!--<button type="button" title="Temporary fix for disappearing diagram" data-dojo-type="dijit/form/Button" data-dojo-attach-event="onClick:redrawDiagram" data-dojo-attach-point="pollenDiagramRedrawBtn" data-dojo-props="disabled:'disabled'">Redraw</button>-->
-                    </div>
-                    <table class="stratDiagram">
-                        <tr class="lbl"><td colspan="2">Legend</td></tr>
-                        <tr class="pollen-legend"><td class="c1"><img src="./resources/images/legendTRSH.png" height="14px" width="14px"></td><td>Trees & shrubs</td></tr>
-                        <tr class="pollen-legend"><td class="c1"><img src="./resources/images/legendUPHE.png" height="14px" width="14px"></td><td>Upland herbs</td></tr>
-                        <tr class="pollen-legend"><td class="c1"><img src="./resources/images/legendVACR.png" height="14px" width="14px"></td><td>Terrestrial vascular cryptograms</td></tr>
-                        <tr class="diatom-legend"><td class="c1"><img src="./resources/images/legendDIAT.png" height="14px" width="14px"></td><td>Diatom</td></tr>
-                        <tr class="ostracode-legend"><td class="c1"><img src="./resources/images/legendBNTH.png" height="14px" width="14px"></td><td>Benthic</td></tr>
-                        <tr class="ostracode-legend"><td class="c1"><img src="./resources/images/legendNEKT.png" height="14px" width="14px"></td><td>Nektonic</td></tr>
-                        <tr class="ostracode-legend"><td class="c1"><img src="./resources/images/legendOCOD.png" height="14px" width="14px"></td><td>Undifferentiated</td></tr>
-
-
-                    </table>
-                </div>
-            </div>
 
             <div data-dojo-type="dijit/layout/ContentPane" title="Site" data-dojo-attach-point="siteTab"></div>
 
