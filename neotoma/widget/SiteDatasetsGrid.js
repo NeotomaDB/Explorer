@@ -1,5 +1,5 @@
-﻿define(["dojo/_base/declare", "dgrid/OnDemandGrid", "dojo/store/Memory", "dojo/_base/lang", "dijit/form/Button", "dijit/popup", "dijit/Toolbar", "dijit/TooltipDialog", "dojo/topic", "dojo/dom-construct", "dojo/on", "dojo/query", "dojo/dom-style", "dojo/mouse", "neotoma/app/neotoma", "dojo/aspect", "dojo/dom-class"],
-    function (declare, OnDemandGrid, Memory, lang, Button, popup, Toolbar, TooltipDialog, topic, domConstruct, on, query, domStyle, mouse, neotoma, aspect, domClass) {
+﻿define(["dojo/request/script", "dojo/_base/config", "dojo/_base/declare", "dgrid/OnDemandGrid", "dojo/store/Memory", "dojo/_base/lang", "dijit/form/Button", "dijit/popup", "dijit/Toolbar", "dijit/TooltipDialog", "dojo/topic", "dojo/dom-construct", "dojo/on", "dojo/query", "dojo/dom-style", "dojo/mouse", "neotoma/app/neotoma","dojo/aspect", "dojo/dom-class"],
+    function (script, config, declare, OnDemandGrid, Memory, lang, Button, popup, Toolbar, TooltipDialog, topic, domConstruct, on, query, domStyle, mouse, neotoma, aspect, domClass) {
         return declare([OnDemandGrid], {
             showHeader: false,
             site: null, // used to have site if metadata is needed
@@ -84,6 +84,7 @@
                             );
 
                             // add buttons
+                            // view
                             domConstruct.create("button", {
                                 type: "button",
                                 title: "View Dataset",
@@ -100,6 +101,7 @@
                                 }
                             }, buttonsDiv);
 
+                            // add to tray
                             domConstruct.create("button", {
                                 type: "button",
                                 title: "Add to tray",
@@ -110,6 +112,33 @@
                                 }
                             }, buttonsDiv);
 
+                            // doi
+                            domConstruct.create("button", {
+                              type: "button",
+                              title: "Visit DOI page",
+                              "class": "dsDOI",
+                              click: function () {
+                                script.get(config.dataServicesLocation + "/datasets/?datasetids=" + row.datasetid,
+                                  { jsonp: "callback" }
+                                ).then(lang.hitch(this, function (response) {
+                                    if (response.success) {
+                                      var datasetDOI = response.data[0].doi;
+                                      if (!datasetDOI) {
+                                        alert("A DOI does not yet exist for this dataset.");
+                                      } else {
+                                        var url = "https://doi.org/" + datasetDOI;
+                                        window.open(url);
+                                      }
+                                    } else {
+                                      alert("error getting doi for this dataset: " + response.message);
+                                    }
+                                  }),
+                                  function (response) {
+                                      alert("error sending request for dataset: " + response);
+                                  }
+                                );
+                              }
+                            }, buttonsDiv);
 
                             // add event handlers
                             on(cellDiv, mouse.enter,lang.hitch(cellDiv,
