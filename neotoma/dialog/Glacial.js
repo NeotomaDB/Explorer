@@ -153,7 +153,7 @@
                 }));
 
                 // create glacial layer
-                this.glacialLayer = new OpenLayers.Layer.MapServer("Glacial", "http://ceiwin10.cei.psu.edu/maps?",
+                this.glacialLayer = new OpenLayers.Layer.MapServer("Glacial", "http://e2-web01.ad.psu.edu/maps?",
 	                { map: "../../../maps/neotoma/main.map", layers: "glacial", map_imagetype: "png" },
 	                { isBaseLayer: false, singleTile: true, visibility: false, opacity:0.7 }
                 );
