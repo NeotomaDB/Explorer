@@ -1032,6 +1032,7 @@
                                     } else {
                                         if (thisAge.age < chronologies[ai].minage) {
                                             chronologies[ai].minage = thisAge.age;
+                                            chronologies[ai].mindepth = thisSample.analysisunitdepth;
                                         }
                                         //if (thisAge.Age < chronologies[ai].MaxDepth) {
                                         //    chronologies[ai].MaxDepth = thisSample.AnalysisUnitDepth;
@@ -1058,8 +1059,6 @@
                                     } else {
                                         if (thisAge.age > chronologies[ai].maxage) {
                                             chronologies[ai].maxage = thisAge.age;
-                                        }
-                                        if (thisAge.age > chronologies[ai].maxdepth) {
                                             chronologies[ai].maxdepth = thisSample.analysisunitdepth;
                                         }
                                     }
@@ -1071,7 +1070,6 @@
                         this._chronologyChartData["chronologies"] = chronologies;
                         this._chronologyChartData["chartData"] = chartData;
                         this._chronologyChartData["defaultChron"] = defaultChron;
-                        //console.log(this._chronologyChartData);
 
                         // destroy any existing chart
                         if (this._chronologyChart) {
@@ -1538,6 +1536,7 @@
             _geochronGrid: null,
             _samplesHeaderGrid: null,
             _createHeaderRecordsNew: function (allData) {
+              allData[Object.keys(allData)[1]].sort((a, b) => (a.depth > b.depth) ? 1 : -1);
                 var columns = [
                     { label: 'Name', field: 'name' },
                     {
