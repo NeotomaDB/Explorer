@@ -5,7 +5,6 @@
             templateString: template,
             currentSearchFormHeight: 400,
             heightIncrement: 50,
-            selectedRb: "basic",
             addTokenClick_oldDgrid: function() {
                 // get token
                 var token = this.newToken.get("value");
@@ -144,82 +143,16 @@
             },
             show: function () {
                 this.inherited(arguments);
-                if (this.selectedRb === "basic") {
-                    this.rbBasic.set("checked", true);
-                } else {
-                    this.rbAdvanced.set("checked", true);
-                }
-                
             },
             hide: function () {
                 this.inherited(arguments);
                 
                 // create settings object
                 var settings = {
-                    defaultSearchForm: "basic",
                     searchFormHeight: this.currentSearchFormHeight
                 }
-                if (this.rbAdvanced.get("checked")) {
-                    settings.defaultSearchForm = "advanced";
-                }
-
                 // save settings
                 localStorage.setItem("neotomaExplorer", JSON.stringify(settings));
-            },
-            postCreate: function () {
-                this.inherited(arguments);
-
-                try {
-                    // populate with current values
-                    var settingsJSON = localStorage.getItem("neotomaExplorer");
-                    if (settingsJSON !== null) {
-                        // parse settings
-                        var settings = JSON.parse(settingsJSON);
-
-                        // do form height
-                        if (settings.searchFormHeight) {
-                            // set in this form
-                            this.currentSearchFormHeight = settings.searchFormHeight;
-
-                            // update height spinner value and do resize
-                            registry.byId("spinFormHt").set("value", this.currentSearchFormHeight)
-                            topic.publish("neotoma/search/NewFormHeight", settings.searchFormHeight);
-                        } else {
-                            this.currentSearchFormHeight = 400;
-                        }
-
-                        // do default form
-                        if (settings.defaultSearchForm) {
-                            if (settings.defaultSearchForm === "advanced") {
-                                //alert("set advanced rb");
-                                // set in this form
-                                this.rbAdvanced.set("checked", true);
-                                this.selectedRb = "advanced";
-                                //alert("advanced rb checked: " + this.rbAdvanced.get("checked"));
-                                //alert("basic rb checked: " + this.rbBasic.get("checked"));
-                                // set in search form
-                                topic.publish("neotoma/search/SetForm", "advanced");
-                            } else {
-                                // set in search form
-                                topic.publish("neotoma/search/SetForm", "basic");
-                            }
-                        }
-
-                        //// set access tokens
-                        //this.tokensGrid.set("collection",
-                        //    new LocalDB({
-                        //        dbConfig: dojo.config.localDbConfig,
-                        //        storeName: 'tokens'
-                        //    })
-                        //);
-
-                        //// update dojo.config.app.tokens
-                        //this.tokensGrid.updateAppTokens();
-                    }
-                } catch (e) {
-                    alert("Error in form/UserSettings.postCreate: " + e.message);
-                }
-
-           }
+            }
         });
 });

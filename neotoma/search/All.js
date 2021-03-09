@@ -1,4 +1,4 @@
-﻿define(["dojo/_base/declare", "neotoma/widget/Dialog", "dijit/_TemplatedMixin", "dojo/text!./template/all.html", "dijit/_WidgetsInTemplateMixin", "dojo/_base/lang", "dojo/store/Memory", "dojo/_base/array", "dojo/dom", "dojo/dom-construct", "dojo/dom-class", "dojo/number", "dijit/popup", "dojo/request/script", "dojo/topic", "dojo/_base/config", "dojo/dom-style", "dijit/layout/ContentPane", "dijit/TitlePane", "./Metadata", "./Space", "./Time", "./Taxa", "dijit/form/Button", "dojox/widget/Standby", "dijit/Toolbar", "neotoma/search/Basic"],
+﻿define(["dojo/_base/declare", "neotoma/widget/Dialog", "dijit/_TemplatedMixin", "dojo/text!./template/all.html", "dijit/_WidgetsInTemplateMixin", "dojo/_base/lang", "dojo/store/Memory", "dojo/_base/array", "dojo/dom", "dojo/dom-construct", "dojo/dom-class", "dojo/number", "dijit/popup", "dojo/request/script", "dojo/topic", "dojo/_base/config", "dojo/dom-style", "dijit/layout/ContentPane", "dijit/TitlePane", "./Metadata", "./Space", "./Time", "./Taxa", "dijit/form/Button", "dojox/widget/Standby", "dijit/Toolbar"],
     function (declare, Dialog, _TemplatedMixin, template, _WidgetsInTemplateMixin, lang, Memory, array, dom, domConstruct, domClass, numberUtil, popup, script, topic, config, domStyle) {
         // define widget
         return declare([Dialog, _TemplatedMixin, _WidgetsInTemplateMixin], {
@@ -23,9 +23,7 @@
                             placeHolder: ""
                         }
                     );
-                } else {
-                    this.basicForm.clearAll();
-                }
+                } 
             },
             datasetTypeChanged: function(val) {
                 if (val) {
@@ -57,13 +55,6 @@
                 var curHeight = 0;
                 var newHeight = 0;
                 switch (evt.currentTarget.name) {
-                    case "basicSearch":
-                        this.forms.selectChild(this.basicPane);
-                        // set height
-                        domStyle.set(this.basicPane.domNode, "height", "120px");
-                        // set search name
-                        topic.publish("neotoma/search/NewSearchName", "");
-                        break;
                     case "advancedSearch":
                         this.forms.selectChild(this.advancedPane);
                         // set height
@@ -115,15 +106,8 @@
                 }
             },
             searchClick: function () {
-                // make sure a search name is entered
-                if (this.searchName.get("value") === "") {
-                    alert("Please enter a search name first.");
-                    return;
-                }
-
-                // see whether doing basic or advanced search
-                if (this.forms.selectedChildWidget === this.basicPane) {
-                    this.basicForm.doSearch(this.searchName.get("value"));
+                if (this.forms.selectedChildWidget === this.advancedPane) {
+                    this.doSearch(this.searchName.get("value"));
                 } else {
                     this.doSearch();
                 }
@@ -163,8 +147,7 @@
                 // make sure there is a search name
                 var searchName = this.searchName.get("value");
                 if (searchName === "") {
-                    alert("Please enter a search name.");
-                    return;
+                    this.searchName.set("value", "Search 1");
                 }
 
                 // send search request
@@ -319,3 +302,4 @@
             }
         });
     });
+    
