@@ -7,15 +7,11 @@
 	</div>
 	<div data-dojo-attach-point="containerNode" class="dijitDialogPaneContent">
         <div data-dojo-type="dijit/Toolbar" class="sitePopupToolbar">
-            <button type="button" name="basicSearch" title="Basic search" data-dojo-props="showLabel:true, iconClass:'basicSearchButtonIcon'" data-dojo-type="dijit/form/Button" data-dojo-attach-event="onClick:toolbarClick">Basic</button>
-            <button type="button" name="advancedSearch" title="Advanced search" data-dojo-props="showLabel:true, iconClass:'advSearchButtonIcon'" data-dojo-type="dijit/form/Button" data-dojo-attach-event="onClick:toolbarClick">Advanced</button>
+            <span name="advancedSearch" title="Advanced search" data-dojo-props="showLabel:true, iconClass:'advSearchButtonIcon'"></span>
             <button type="button" name="toggleSections" title="Expand/Collapse all sections" data-dojo-props="showLabel:false, iconClass:'toggleButtonIcon'" data-dojo-type="dijit/form/Button" data-dojo-attach-event="onClick:toolbarClick"></button>
             <button type="button" name="clearAll" title="Clear all" data-dojo-props="showLabel:false, iconClass:'clearAllButtonIcon'" data-dojo-type="dijit/form/Button" data-dojo-attach-event="onClick:toolbarClick"></button>
         </div>
         <div data-dojo-type="dijit/layout/StackContainer" data-dojo-attach-point="forms">
-            <div data-dojo-type="dijit/layout/ContentPane" data-dojo-attach-point="basicPane"> 
-                <div data-dojo-type="neotoma/search/Basic" data-dojo-attach-point="basicForm"></div>  
-            </div>
             <div data-dojo-type="dijit/layout/ContentPane" data-dojo-attach-point="advancedPane">
                 <table class="advSearch">
                     <tr class="fixht">
