@@ -112,7 +112,6 @@
                 return "globals Cleared";
             },
             processDataset: function(dataset){             
-              console.log("processDataset");
               this.updateChartTitle(dataset);
               if ( ! this._tooltip){
                  this.buildtooltip();
@@ -1059,7 +1058,7 @@
 
                 //until api updated, check the following
                 //api may return int, may return null, may return empty array, may return empty object
-                metadata.defchronid = null;
+                metadata.defchronologyid = null;
                 var defchronid;
                 if (dataset.defchronologyid){
                   //case integer returned
@@ -1067,7 +1066,7 @@
                     defchronid = dataset.defchronologyid;
                   }
                   //case array of objects returned
-                  else if (dataset.defchronologyid.length > 0){
+                  else if (dataset.defchronologyid.length > -1){
                     if ( dataset.defchronologyid[0].hasOwnProperty("chronologyid")){
                       defchronid = dataset.defchronologyid[0].chronologyid;
                     }
@@ -1968,7 +1967,7 @@
                       .attr("height",2)
                 }
 
-                if(metadata.charttypeselection == "Symbol Plot"){
+                if(metadata.charttypeselection == "SymbolPlot"){
                     console.log("plot symbols");
                 }
                 //check if 5x should be drawn  

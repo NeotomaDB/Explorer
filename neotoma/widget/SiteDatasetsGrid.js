@@ -78,7 +78,7 @@
                             // add div to contain buttons
                             var buttonsDiv = domConstruct.create("div",
                                 {
-                                    style: "display:none;float:right;"
+                                    style: "display:block;float:right;"
                                 },
                                 cellDiv
                             );
@@ -139,31 +139,6 @@
                                 );
                               }
                             }, buttonsDiv);
-
-                            // add event handlers
-                            on(cellDiv, mouse.enter,lang.hitch(cellDiv,
-                                function (evt) {
-                                    // show toolbar
-                                    var toolbar = query("div", this)[0];
-                                    if (toolbar) {
-                                        domStyle.set(toolbar, {
-                                            display: "block"
-                                        });
-                                    }
-                                }
-                            ));
-
-                            on(cellDiv, mouse.leave, lang.hitch(cellDiv,
-                               function (evt) {
-                                   // hide toolbar
-                                   var toolbar = query("div", this)[0];
-                                   if (toolbar) {
-                                       domStyle.set(toolbar, {
-                                           display: "none"
-                                       });
-                                   }
-                               }
-                           ));
 
                             return cellDiv;
                         } catch (e) {

@@ -240,7 +240,6 @@
                     } else {
                         // show main tabs
                         this.datasetExplorerTabsContainer.selectChild(this.tabContainer);
-                    }
    
 /****STUB FOR CLEAR CHARTS
                     //clear prior chart if one exists
@@ -260,7 +259,10 @@
                                     this.toggleStandby(false);
                                     return;
                                 }
-                                this._datasetResponse = response.data[0];
+      
+                                var dataset = JSON.stringify(response.data[0]);
+                                this._datasetResponse = JSON.parse(dataset);
+                                var datasetForSD = response.data[0];
 
                                 // see if first time
                                 var initRun = true;
@@ -288,19 +290,6 @@
 
                                 // load chronologies & retreive additional chronology data; return parsed chronology array
                                 this._parseChronologies(this._datasetResponse.samples, this._datasetResponse.defchronologyid);
-                                                                
-                                // enable tab if appropriate
-                                var DatasetTypesWithSD = ["pollen", "diatom", "ostracode", "testate amoebae", "vertebrate fauna"];
-                                if ( DatasetTypesWithSD.indexOf(datasetType) > -1 ) {
-                                        // enable pollen diagram tab
-                                        this.diagramTab.set("disabled", false);
-                                        // process dataset for SD only if one of these dataset types
-                                        this.diagramTab.processDataset(this._datasetResponse);
-                                       
-                                } else {
-                                        // disable pollen diagram tab
-                                        this.diagramTab.set("disabled", true);
-                                }
 
                                 // load site meta data
                                 this._loadSiteMetadata(this._datasetResponse.site);
@@ -310,6 +299,19 @@
 
                                 // change title
                                 this.getParent().set("title", "Dataset ID: " + datasetId + " | " + this._datasetResponse.databasename);
+                                                                
+                                // enable tab if appropriate
+                                var DatasetTypesWithSD = ["pollen", "diatom", "ostracode", "testate amoebae", "vertebrate fauna"];
+                                if ( DatasetTypesWithSD.indexOf(datasetType) > -1 ) {
+                                        // enable pollen diagram tab
+                                        this.diagramTab.set("disabled", false);
+                                        // process dataset for SD only if one of these dataset types
+                                        this.diagramTab.processDataset(datasetForSD);
+                                       
+                                } else {
+                                        // disable pollen diagram tab
+                                        this.diagramTab.set("disabled", true);
+                                }
 
                                 //HACK. 
                                 if (initRun) {
@@ -338,6 +340,7 @@
                             this.toggleStandby(false);
                         }
                     })); // end then function
+                  }
                 } catch (e) {
                     alert("error in form/DatasetExplorer.loadDataset" + e.message);
                     // not busy
@@ -1039,19 +1042,6 @@
                                         //}
                                     }
 
-                                    // make sure can get chart data for this chronology
-                                    if (!chartData[thisAge.chronologyid]) {
-                                        this.chronologyTab.set("disabled", true);
-                                        return;
-                                    }
-
-                                    // add to chart data
-                                    chartData[thisAge.chronologyid].push({
-                                        SampleID: thisSample.sampleid,
-                                        AnalysisUnitDepth: thisSample.analysisunitdepth,
-                                        Age: thisAge.age
-                                    });
-
                                     // set each to max since are in age order
                                     if (!chronologies[ai].maxage) {
                                         chronologies[ai].maxage = thisAge.age;
@@ -1062,6 +1052,21 @@
                                             chronologies[ai].maxdepth = thisSample.analysisunitdepth;
                                         }
                                     }
+
+                                    // make sure can get chart data for this chronology
+                                    if (!chartData[thisAge.chronologyid]) {
+                                      this.chronologyTab.set("disabled", true);
+                                      return;
+                                    }
+
+                                    // add to chart data
+                                    chartData[thisAge.chronologyid].push({
+                                      SampleID: thisSample.sampleid,
+                                      AnalysisUnitDepth: thisSample.analysisunitdepth,
+                                      Age: thisAge.age
+                                    });
+                                    // sort data by age to avoid graph rendering issues
+                                    chartData[thisAge.chronologyid].sort((a, b) => (a.Age > b.Age) ? 1 : -1)
                                 }
                             } // end loop over ages  
                         } // end loop over samples
