@@ -231,6 +231,11 @@
                       this.setChartType("BarChart");
                     }
                     break;
+                  case "testate amoebae":
+                    if(metadata.variableunit == "NISP"){
+                      this.setChartType("FilledArea");
+                    }
+                    break;
                   default:
                     //not always appropriate but draws for all VariableUnits
                     this.setChartType("SymbolPlot");
@@ -474,11 +479,11 @@
                   case "MNI":
                     filteredTaxaRenderObjects.forEach(function(d){
                       //calc maxAbundance for Taxon
-                      d.countmni = 0;
+                      d.maxmni = 0;
                       //pass EcolGroupID to container
                       d.ecolgroupid = d.values[0].ecolgroupid;
                       d.values.forEach(function(e){
-                        var mni = summaryDataBySampleID.get(e.sampleid).get(variableUnit).summni;
+                        var mni = e.value;//summaryDataBySampleID.get(e.sampleid).get(variableUnit).summni;
                         //track a maxValue for all numeric VariableUnits
                         d.maxmni < mni ? d.maxmni = mni : d.maxmni = d.maxmni;
                         d.maxvalue = mni;
@@ -629,7 +634,7 @@
                                   obj.nisp = value.totalValue;
                                   break;
                                 case "MNI":
-                                  obj.summni = value.totalValue;
+                                  obj.value = value.totalValue;
                                   break;
                                 case "present/absent":
                                   obj.countpresent = value.totalValue;
@@ -975,7 +980,7 @@
                   this.radioFilledArea.set('disabled',false);
                   //this.radioFilledArea.set("checked",true);
                   this.radioBarChart.setDisabled(false);
-                  this.radioSymbolPlot.setDisabled(true);
+                  this.radioSymbolPlot.setDisabled(false);
                 }
             },  
             handleChartTypeChange: function(evt){
@@ -1088,6 +1093,9 @@
                     //no EcolGroupID filter
                     break;
                   case "diatom":
+                    //no EcolGroupID filter
+                    break;
+                  case "testate amoebae":
                     //no EcolGroupID filter
                     break;
                    default:
@@ -1898,6 +1906,28 @@
             updateChart: function(){
               //case#1: VariableUnit changes
               taxaRenderObjects = this.createTaxaObjectsToRenderAsChart(metadata.variableunit);
+
+              if (metadata.variableunit == "NISP") {
+                this.radioFilledArea.set("disabled",false);
+                this.radioBarChart.set("disabled",false);
+                this.radioSymbolPlot.set("disabled",true);
+                if (metadata.charttypeselection == "SymbolPlot") {
+                  this.setChartType("FilledArea");
+                }
+              }
+              else if (metadata.variableunit == "MNI") {
+                this.radioFilledArea.set("disabled",true);
+                this.radioBarChart.set("disabled",false);
+                this.radioSymbolPlot.set("disabled",true);
+                if (metadata.charttypeselection == "SymbolPlot" || metadata.charttypeselection == "FilledArea") {
+                  this.setChartType("BarChart");
+                }
+              }
+              else {
+                this.setChartType("SymbolPlot");
+                this.radioBarChart.set("disabled",true);
+                this.radioFilledArea.set("disabled",true);
+              }
               
               //prepareUI callback
               sortedtaxaRenderObjects = this.sortFilterData(taxaRenderObjects);

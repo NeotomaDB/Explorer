@@ -302,7 +302,7 @@
                                                                 
                                 // enable tab if appropriate
                                 var DatasetTypesWithSD = ["pollen", "diatom", "ostracode", "testate amoebae", "vertebrate fauna"];
-                                if ( DatasetTypesWithSD.indexOf(datasetType) > -1 ) {
+                                if ( DatasetTypesWithSD.indexOf(datasetType) > -1 && datasetForSD.defchronologyid.length != 0 ) {
                                         // enable pollen diagram tab
                                         this.diagramTab.set("disabled", false);
                                         // process dataset for SD only if one of these dataset types
