@@ -480,15 +480,21 @@
                     filteredTaxaRenderObjects.forEach(function(d){
                       //calc maxAbundance for Taxon
                       d.maxmni = 0;
+                      d.maxvalue = 0;
+                      var mni = 0;
                       //pass EcolGroupID to container
                       d.ecolgroupid = d.values[0].ecolgroupid;
+
                       d.values.forEach(function(e){
-                        var mni = e.value;//summaryDataBySampleID.get(e.sampleid).get(variableUnit).summni;
+                          
+                        mni += e.value;//summaryDataBySampleID.get(e.sampleid).get(variableUnit).summni;
                         //track a maxValue for all numeric VariableUnits
                         d.maxmni < mni ? d.maxmni = mni : d.maxmni = d.maxmni;
-                        d.maxvalue = mni;
+                        if (d.maxvalue < e.value) {
+                          d.maxvalue = e.value;
+                        }
 
-                      })
+                      });
                       
                     })
                     break;  
@@ -717,7 +723,7 @@
                     var sortByAgeYoungerFunc = this.returnSortByAgeYounger(this);
                     //insure samples are sorted ascending
                     //if Vertebrate Fauna, order by AgeYounger-- samples are not in chronological order
-                    if(metadata.datasettype == "vertebrate fauna"){
+                    if(metadata.datasettype == "vertebrate fauna" || metadata.yaxisunittype == "Age"){
                           //order by age, not sampleid
                         nonNullEcoGrpRenderObjects.forEach(function(d){
                             d.values = d.values.sort(sortByAgeYoungerFunc);
@@ -1702,7 +1708,7 @@
                                 }
                                 html += "<div class='point-label'><span>SampleID:"+ptdata.sampleid +"<span><br>";
                                 html += "<span>"+metadata.yaxisunittype +": "+ sdcontext.lookupYValueBySampleID(ptdata.sampleid) + " " +metadata.yaxislabel + "</span><br>";
-                                html += "<span>MNI: "+cntLabel + " (of "+summaryDataBySampleID.get(ptdata.sampleid).get(ptdata.variableunits).summni +")</span></div>";
+                                html += "<span>MNI: "+cntLabel; //+ " (of "+summaryDataBySampleID.get(ptdata.sampleid).get(ptdata.variableunits).summni +")</span></div>";
                                 break;      
                              default:
                                 cntLabel = d3.format("c")(ptdata.value); //integer
