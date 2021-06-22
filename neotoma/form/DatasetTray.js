@@ -116,24 +116,31 @@
                 if (store) {
                     array.forEach(store.data,
                        lang.hitch(this, function (dataset) {
-                           datasetIds.push(dataset.datasetId);
+                           datasetIds.push(dataset.datasetid);
                        }
                    ));
                 }
 
-                // if is chrome or firefox and only one dataset in tray, download directly from client
-                if (((has("chrome")) || (has("mozilla"))) && (datasetIds.length === 1)) {
+                // if is chrome, mozilla, safari, or opera and dataset in tray, download directly from client
+                if (((has("chrome")) || (has("mozilla")) || (has("safari")) || (has("opera"))) && (datasetIds.length >= 1)) {
                     // download directly from browser
-                    this.saveDataset(datasetIds[0]);
-                } else {
-                    // send request for zip
-                    var requestUrl = config.dataServicesLocation + "/Downloads/" + datasetIds.join(",") + "?format=csv";
-
-                    if (dojo.config.app.tokens !== "") {
-                        requestUrl = requestUrl + "&tokens=" + dojo.config.app.tokens;
+                    for (var i = 0; i < datasetIds.length; i++) {
+                        this.saveDataset(datasetIds[i]);
                     }
+                } else {
+                    alert("Data downloads are only supported in chrome, firefox, safari, and opera at this time.");
 
-                    window.open(requestUrl, "_blank");
+                    //// legacy api supported zip downloads when more than one dataset was in tray 
+                    //// saving code reference below to reconsider this approach when 2.0 is in place
+                    
+                    //     // send request for zip
+                    //     var requestUrl = config.dataServicesLocation + "/Downloads/" + datasetIds.join(",") + "?format=csv";
+    
+                    //     if (dojo.config.app.tokens !== "") {
+                    //         requestUrl = requestUrl + "&tokens=" + dojo.config.app.tokens;
+                    //     }
+    
+                    //     window.open(requestUrl, "_blank");
                 }
             },
             _formatSheet: function (inSamples) {
