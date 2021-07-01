@@ -302,7 +302,7 @@
                 var atts = this.sites[this.siteIndex].attributes;
                 // load all datasets if site doesn't have them
                 if (!atts.alldatasets) { // need to get all datasets and then display
-                    script.get(config.dataServicesLocation + "/Datasets", { jsonp: "callback", query: { siteid: atts.siteid } }).then(
+                    script.get(config.dataServicesLocation + "/Datasets", { jsonp: "callback", query: { siteids: atts.siteid } }).then(
                         lang.hitch({ atts: atts, dialog: this }, function (response) {
                             if (response.success) {
                                 var datasets = response.data;

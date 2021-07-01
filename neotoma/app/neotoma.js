@@ -189,8 +189,16 @@
                                         return;
                                     }
 
+                                    // remove duplicate dataset entries from the response 
+                                    var result = response.data.reduce((unique, o) => {
+                                      if(!unique.some(obj => obj.datasetid === o.datasetid)) {
+                                        unique.push(o);
+                                      }
+                                      return unique;
+                                    },[]);
+
                                     // convert response to Explorer Search response
-                                    var searchResponse = this.datasetsToExplorerSearchResponse(response.data);
+                                    var searchResponse = this.datasetsToExplorerSearchResponse(result);
 
                                     // publish topic with new response
                                     topic.publish("neotoma/search/NewResult", {

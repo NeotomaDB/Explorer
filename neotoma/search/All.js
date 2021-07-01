@@ -147,6 +147,7 @@
                 // make sure there is a search name
                 var searchName = this.searchName.get("value");
                 if (searchName === "") {
+                    searchName = "Search 1";
                     this.searchName.set("value", "Search 1");
                 }
 
