@@ -254,11 +254,6 @@
                                 }
                             }));
 
-                            // see if a dataset id was passed
-                            var datasetId = urlUtil.getParameterByName("datasetid") || urlUtil.getParameterByName("datasetId") || urlUtil.getParameterByName("datasetID");
-                            if (datasetId) {
-                                neotoma.loadDataset(datasetId);
-                            }
 
                             // see if datasetids were passed
                             var idsPassed = false;
