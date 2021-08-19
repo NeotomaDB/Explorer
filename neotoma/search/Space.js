@@ -200,26 +200,44 @@
                             // no spatial component
                             break;
                         case "extent":
-                            // get map extent
-                            response["bbox"] = dojo.config.map.getExtent().transform(dojo.config.app.wmProj,dojo.config.app.llProj).toGeometry().toString();
+                            // get map extent, transform/format geom, send request
+                            var formatter = new ol.format.WKT();
+                            var extent = dojo.config.map.getView().calculateExtent(dojo.config.map.getSize());
+                            var transformedExtent = new ol.proj.transformExtent(extent, 'EPSG:3857', 'EPSG:4326');
+                            var extentGeom = new ol.geom.Polygon.fromExtent(transformedExtent);
+                            response["bbox"] = formatter.writeGeometry(extentGeom);
+
                             break;
                         case "shape":
                             // get user shape
-                            var layers = dojo.config.map.getLayersByName("spatialSelectionLayer");
-                            if (layers.length === 0) {
-                                alert("Can't find selection layer. Please draw a selection area on the map.");
-                                return null;
-                            } else {
-                                var layer = layers[0];
-                                if (layer.features.length === 0) {
-                                    alert("The selection layer is empty. Please draw a selection area on the map.");
+                            var layers = dojo.config.map.getLayers();
+                            layers.forEach(function (layer) {
+                              if (layer.get("id") == "spatialSelectionLayer") {
+                                var layer = layer;
+                                if (layer.getSource().getFeatures().length === 0) {
+                                  alert("The selection layer is empty. Please draw a selection area on the map.");
                                     return null;
                                 } else {
-                                    var geom = layer.features[0].geometry.clone();
-                                    geom.transform(dojo.config.app.wmProj, dojo.config.app.llProj);
-                                    response["wkt"] = geom.toString();
+                                  // get features
+                                  layer.getSource().getFeatures().forEach(function (feature) {
+                                    // get circle feature, transform to polygon, format geometry, send request
+                                    var formatter = new ol.format.WKT();
+                                    var polygonGeom;
+                                    if (feature.getGeometry().getType() === "Circle") {
+
+                                      var circleGeom = feature.getGeometry().transform('EPSG:3857', 'EPSG:4326');
+                                      polygonGeom = new ol.geom.Polygon.fromCircle(circleGeom);
+                                      
+                                      response["wkt"] = formatter.writeGeometry(polygonGeom);
+                                      
+                                    } else if (feature.getGeometry().getType() === "Polygon") {
+                                      polygonGeom = feature.getGeometry().transform('EPSG:3857', 'EPSG:4326');
+                                      response["wkt"] = formatter.writeGeometry(polygonGeom);
+                                    }
+                                  });
                                 }
-                            }
+                              }
+                            });
                             break;
                     }
 
@@ -278,3 +296,4 @@
             }
         });
     });
+    

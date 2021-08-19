@@ -13,32 +13,29 @@
         var modernRangeLoaded = function (response) {
             try {
                 // make sure layer is on map. If it is already, remove all features before loading new ones
-                var modernRangeLayers = dojo.config.map.getLayersByName("ModernRange");
-                var modernRangeLayer = null;
-                if (modernRangeLayers.length > 0) {
-                    modernRangeLayer = modernRangeLayers[0];
-                }
-                if (!modernRangeLayer) {
-                    var styleRange = new OpenLayers.Style({ fillColor: '#FF0000', fillOpacity: 0.4, strokeColor: '#FF0000', strokeWidth: 2, pointRadius: 5 });
-                    var styleSelectedRange = new OpenLayers.Style({ fillColor: '#FFFC00', fillOpacity: 0.4, strokeColor: '#FFFC00', strokeWidth: 3, pointRadius: 5 });
-                    var styleMapRange = new OpenLayers.StyleMap({ 'default': styleRange, 'select': styleSelectedRange, 'temporary': styleRange, 'delete': styleRange });
-                    // create layer
-                    modernRangeLayer = new OpenLayers.Layer.Vector("ModernRange", {
-                        visibility: true,
-                        styleMap: styleMapRange
+                var modernRangeSource = new ol.source.Vector({});
+                
+                dojo.config.map.getLayers().forEach(function (layer) {
+                  if (layer.get("id") == "ModernRange") {
+                    layer.getSource().clear();
+                    dojo.config.map.removeLayer(layer);
+                  } else {
+                    var modernRangeLayer = new ol.layer.Vector({
+                      source: modernRangeSource,
+                      properties: {
+                        id: "ModernRange"
+                      }
                     });
-                    // add layer to map
-                    dojo.config.map.addLayers([modernRangeLayer]);
-                }
-                else { // clear out features
-                    modernRangeLayer.removeAllFeatures();
-                }
+                    dojo.config.map.addLayer(modernRangeLayer);
+                  }
+                });
 
                 // add new range
-                //var range = Ext.decode(response.responseText); // json
                 var range = response; // jsonp
-                var reader = new OpenLayers.Format.GeoJSON();
-                modernRangeLayer.addFeatures(reader.read(range));
+                var reader = new ol.format.GeoJSON();
+                modernRangeSource.addFeatures(reader.readFeatures(range));
+                var modernRangeLayerExtent = modernRangeSource.getExtent();
+                dojo.config.map.getView().fit(modernRangeLayerExtent, { duration: 1000 });
                 //modernRangeStandby.hide();
 
                 // make sure checkbox is checked.
@@ -50,26 +47,11 @@
 
         var removeLayer = function (searchId) {
             try {
-                var layers = dojo.config.map.getLayersByName(searchId.toString());
-                if (layers.length === 0) {
-                    alert("Can't find layer with searchid: " + searchId);
-                    return;
+              dojo.config.map.getLayers().forEach(function (layer) {
+                if (layer.get("id") == searchId) {
+                  dojo.config.map.removeLayer(layer);
                 }
-                else if (layers.length > 1) {
-                    alert("Found " + layers.length + " layers with the name '" + searchId.toString() + "'");
-                    return;
-                }
-
-                // get layer to remove
-                var layer = layers[0];
-
-                // remove layers from SelectFeature control before destroying layer. Causes errors later if I don't.
-                dojo.config.app.layersSelectControl.setLayer([]);
-
-                // destroy any selected feature
-                layer.selectedFeature = null;
-
-                layer.destroy();
+              });
             } catch (e) {
                 if ((e.message.indexOf("this.div.style") === -1) && (e.message !== "this.div is null") && (e.message.indexOf("property 'style'") === -1)) {
                     alert("Error in form/Toolbar.removeLayer: " + e.message);
@@ -266,13 +248,14 @@
                                 topic.subscribe("neotoma/search/SearchVisibilityChanged", function () {
                                     var layerName = arguments[0];
                                     var visible = arguments[1];
-                                    var layers = dojo.config.map.getLayersByName(layerName);
-                                    if (layers.length === 0) {
-                                        alert('No layer named: "' + layerName + '" found on the map.');
-                                        return;
-                                    }
-                                    var layer = layers[0];
-                                    layer.setVisibility(visible);
+                                    dojo.config.map.getLayers().forEach(function (layer) {
+                                      if (layer.get("id") == layerName) {
+                                        layer.setVisible(visible);
+                                      } else {
+                                        // alert('No layer named: "' + layerName + '" found on the map.');
+                                        // return;
+                                      }
+                                  });
                                 });
                               
                                 // listen for a search to be deleted
@@ -286,7 +269,7 @@
 
                                         // update select control to remove layer
                                         //neotoma.setSelectControl(searchId, true);
-                                        neotoma.updateSelectControl();
+                                        //neotoma.updateSelectControl();
 
                                         // remove from grid if is currently displayed
                                         var tableSearches = registry.byId("tableSearches");
@@ -363,12 +346,13 @@
                                 // listen for modern ranges to be shown and hidden
                                 topic.subscribe("neotoma/ModernRange/DisplayChanged", function () {
                                     var display = arguments[0];
-                                    var layers = dojo.config.map.getLayersByName("ModernRange");
-                                    var layer = null;
-                                    if (layers.length > 0) {
-                                        layer = layers[0];
-                                        layer.setVisibility(display);
-                                    }
+                                    var modernRangeLayer = null;
+                                    dojo.config.map.getLayers().forEach(function (layer) {
+                                      if (layer.get("id") == "ModernRange") {
+                                        modernRangeLayer = layer;
+                                        modernRangeLayer.setVisible(display);
+                                      }
+                                    });
                                 });
                             }
                             dlg.show();
@@ -508,14 +492,14 @@
                 alert("evt.currentTarget.name: " + evt.currentTarget.name);
                 
                 return;
-                var lyrs = dojo.config.map.getLayersByName(menuItem.get("label"));
-                // make sure a layer was found
-                if (lyrs.length === 0) {
-                    alert("No layer named: '" + menuItem.get("label") + "' was found.");
-                    return;
-                }
-                // set new base layer
-                dojo.config.map.setBaseLayer(lyrs[0]);
+                // var lyrs = dojo.config.map.getLayers(menuItem.get("label"));
+                // // make sure a layer was found
+                // if (lyrs.length === 0) {
+                //     alert("No layer named: '" + menuItem.get("label") + "' was found.");
+                //     return;
+                // }
+                // // set new base layer
+                // dojo.config.map.setBaseLayer(lyrs[0]);
             },
             print: function () {
                 try {
@@ -550,7 +534,6 @@
                             window.mapData = lang.clone(registry.byId("mapPane"));
 
                             // restore nav control
-                            dojo.config.app.navControl = new OpenLayers.Control.PanZoomBar();
                             dojo.config.map.addControl(dojo.config.app.navControl);
 
                             // open print page
@@ -631,3 +614,4 @@
             }
         });
     });
+    

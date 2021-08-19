@@ -1,14 +1,16 @@
 ﻿define(["dojo/_base/declare", "dijit/form/ComboButton", "dojo/_base/lang", "dojo/topic", "dojo/_base/array", "dijit/registry", "dojo/dom-style", "dijit/DropDownMenu", "dijit/RadioMenuItem"],
     function (declare, ComboButton, lang, topic, array, registry, domStyle, DropDownMenu, RadioMenuItem) {
         var setBaseLayer = function (name) {
-            var lyrs = dojo.config.map.getLayersByName(name);
-            // make sure a layer was found
-            if (lyrs.length === 0) {
-                alert("No layer named: '" + name + "' was found.");
-                return;
+          // get layers, set layer id = name visibile
+          dojo.config.map.getLayers().forEach(function (layer) {
+            if (layer.get("id") == name) {
+              layer.setVisible(true);
+              layer.setZIndex(0);
             }
-            // set new base layer
-            dojo.config.map.setBaseLayer(lyrs[0]);
+            else if (!(layer instanceof ol.layer.Vector)) {
+              layer.setVisible(false);
+            }
+          });
         }
 
 
@@ -23,30 +25,30 @@
 
                 // add menu items to drop down
                 dropDown.addChild(new RadioMenuItem({
-                    name: "google.terrain",
+                    name: "osm.standard",
                     group: "map",
                     checked: true,
-                    label: "Google Terrain",
+                    label: "OSM Standard",
                     onChange: function () {
-                        setBaseLayer("Google Terrain");
+                        setBaseLayer("OSMStandard");
                     }
                 }));
 
                 dropDown.addChild(new RadioMenuItem({
-                    name: "google.street",
+                    name: "esri.worldtopo",
                     group: "map",
-                    label: "Google Streets",
+                    label: "ESRI World Topo",
                     onChange: function () {
-                        setBaseLayer("Google Streets");
+                        setBaseLayer("ESRIWorldTopo");
                     }
                 }));
 
                 dropDown.addChild(new RadioMenuItem({
-                    name: "google.hybrid",
+                    name: "esri.satellite",
                     group: "map",
-                    label: "Google Hybrid",
+                    label: "ESRI Satellite",
                     onChange: function () {
-                        setBaseLayer("Google Hybrid");
+                        setBaseLayer("ESRISatellite");
                     }
                 }));
 
@@ -55,3 +57,4 @@
             }
         });
     });
+    

@@ -108,82 +108,72 @@
                             //    }).play();
                             //}
 
-                            // project geographic coords to Web Mercator. Default for world
-                            //var centerPoint = new OpenLayers.LonLat(0, 3515100); //world
-                            var centerPoint = new OpenLayers.LonLat(-10309900, 4215100); //US
+                            // map view and parameters
+                            var mapView = new ol.View({
+                              center: ol.proj.fromLonLat([0, 0]),
+                              zoom: 2,
+                            });
+                            
+                            var zoom = new ol.control.Zoom();
+                            var scaleLine = new ol.control.ScaleLine();
+                            var attribution = new ol.control.Attribution();
 
                             // create map
-                            dojo.config.map = new OpenLayers.Map({
-                                div: "mapPane",
-                                theme: null,
-                                projection: new OpenLayers.Projection("EPSG:900913"),
-                                units: "m",
-                                numZoomLevels: 22,
-                                zoomMethod: null,
-                                /*,
-                                maxExtent: new OpenLayers.Bounds(
-                                    -20037508.34, -20037508.34, 20037508.34, 20037508.34
-                                ),
-                                */
-                                controls: [],
-                                center: this.userCenterPoint || centerPoint // user
+                            dojo.config.map = new ol.Map({
+                              controls: [zoom, scaleLine, attribution],                
+                              target: "mapPane",
+                              view: mapView,
+                              attributionOptions: {
+                                collapsible: true
+                              }
                             });
 
-                            // define google layers
-                            var gstreet = new OpenLayers.Layer.Google(
-                                "Google Streets",
-                                { numZoomLevels: 20, wrapDateLine: false, animationEnabled: false }
-                            );
+                            // basemap layers
 
-                            var gphy = new OpenLayers.Layer.Google(
-                                "Google Terrain",
-                                { type: google.maps.MapTypeId.TERRAIN, numZoomLevels: 20, wrapDateLine: true, animationEnabled: false }
-                            );
+                            // OSM standard layer
+                            var openStreetMapStandard = new ol.layer.Tile({
+                              source: new ol.source.OSM(),
+                              visible: true,
+                              title: 'OSMStandard',
+                              properties: {
+                                id: 'OSMStandard'
+                              }
+                             
+                            });
+                            // ESRI world TOPO layer
+                            var esriWorldTopo = new ol.layer.Tile({
+                              source: new ol.source.XYZ({
+                                attributions:
+                                  ['Tiles © <a href="https://services.arcgisonline.com/ArcGIS/' +
+                                  'rest/services/World_Topo_Map/MapServer">ArcGIS</a>'],
+                                url:
+                                  'https://server.arcgisonline.com/ArcGIS/rest/services/' +
+                                  'World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
+                              }),
+                              visible: false,
+                              title: 'ESRIWorldTopo',
+                              properties: {
+                                id: 'ESRIWorldTopo'
+                              }
+                            });
+                            // ESRI satellite imagery layer
+                            var satelliteImagery = new ol.layer.Tile({
+                              source: new ol.source.XYZ({
+                                attributions: ['Powered by Esri',
+                                               'Source: Esri, DigitalGlobe, GeoEye, Earthstar Geographics, CNES/Airbus DS, USDA, USGS, AeroGRID, IGN, and the GIS User Community'],
+                                url: 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+                                maxZoom: 23,
+                              }),
+                              visible: false,
+                              title: 'ESRISatellite',
+                              properties: {
+                                id: 'ESRISatellite'
+                              }
+                            });
 
-                            var ghyb = new OpenLayers.Layer.Google(
-                                "Google Hybrid",
-                                { type: google.maps.MapTypeId.HYBRID, numZoomLevels: 20, wrapDateLine: true, animationEnabled: false }
-                            );
-
-                            //dojo.config.map.addLayers([gphy, gstreet, ghyb]);
-                            dojo.config.map.addLayers([ghyb, gphy, gstreet]);
-
-                            // set zoom level
-                            //map.zoomTo(4); // US
-                            //map.zoomTo(2); // world
-                            
-                            if (this.userCenterPoint) {
-                                var zoom = this.minimumZoom(4, true);
-                            } else {
-                                var zoom = this.minimumZoom(2, true); // world
-                            }
-
-                            //zoom = this.minimumZoom(0,true);
-                            //dojo.config.map.zoomTo(zoom); // set according to user's screen size.
-                            dojo.config.map.zoomTo(2);
-
-                            // add other controls
-                            dojo.config.app.navControl = new OpenLayers.Control.PanZoomBar();
-                            dojo.config.map.addControl(dojo.config.app.navControl);
-                            dojo.config.map.addControl(new OpenLayers.Control.Navigation());
-                            dojo.config.map.addControl(new OpenLayers.Control.ScaleLine());
-                            dojo.config.map.addControl(new OpenLayers.Control.ZoomBox());
-
-                            // make map into a drop zone
-                            var mapNode = dom.byId("mapPane");
-                            dojo.connect(mapNode, 'dragover', dropCancel);
-                            dojo.connect(mapNode, 'dragenter', dropCancel);
-                            dojo.connect(mapNode, 'drop', function (e) {
-                                // prevent default browser behavior
-                                if (e.preventDefault) e.preventDefault();
-                                //// handle the file
-                                var files = e.dataTransfer.files;
-                                array.forEach(files, function (file) {
-                                    handleSearchFile(file);
-                                });
-                                return false;
-                            }
-                            );
+                            dojo.config.map.addLayer(openStreetMapStandard);
+                            dojo.config.map.addLayer(esriWorldTopo);
+                            dojo.config.map.addLayer(satelliteImagery);
 
                             // listen for new search results.
                             topic.subscribe("neotoma/search/NewResult", lang.hitch(this, function () {
@@ -343,7 +333,6 @@
                             // switch to gphy
                             setTimeout(
                                 function () {
-                                    dojo.config.map.setBaseLayer(gphy);
                                     setTimeout(
                                         function () {
                                             // get overlay div. quit if it doesn't exist
@@ -378,41 +367,6 @@
                     })
                 );
             },
-            centerMap: function(coords) {
-                if (coords) {
-                    this.userCenterPoint = new OpenLayers.LonLat(coords.longitude, coords.latitude).transform(dojo.config.app.llProj, dojo.config.app.wmProj);
-                    dojo.config.map.setCenter(this.userCenterPoint, this.minimumZoom(4, true));
-                }
-            },
-            minimumZoom: function (minZoom, init) {
-                var newZoom = null;
-                var curZoom = dojo.config.map.getZoom();
-	
-                // calculate minimum zoom level for current map width
-                var wLog2 = Math.log(dojo.config.map.getSize().w) * Math.LOG2E;
-                if (wLog2 >= 8) {
-                    newZoom = (wLog2 - 8);
-                }
-                else {
-                    newZoom = 0;
-                }
-
-                // return minimum zoom
-                if (init) { // initializing map
-                    if (newZoom > minZoom) {
-                        return Math.floor(newZoom);
-                    } else {
-                        return Math.floor(minZoom);
-                    }
-                } else { // maybe updating extent
-                    if (newZoom > curZoom) {
-                        return Math.floor(newZoom);
-                    } else {
-                        return Math.floor(curZoom);
-                    }
-                }
-            },
-
             toasterAlert: function () {
                 // cache the original alert function
                 window._alert = window.alert;

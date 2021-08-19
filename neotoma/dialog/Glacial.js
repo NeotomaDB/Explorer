@@ -16,7 +16,7 @@
             glacialAgeChanged: function (val) {
                 if (val === "") {
                     // hide layer
-                    this.glacialLayer.setVisibility(false);
+                    this.glacialLayer.setVisible(false);
 
                 } else {
                     // set map layer's server layer to glacialAge
@@ -27,7 +27,7 @@
                     this.glacialLayer.redraw(true);
 
                     // make sure layer is visible
-                    this.glacialLayer.setVisibility(true);
+                    this.glacialLayer.setVisible(true);
                 }
                
             },
@@ -88,7 +88,7 @@
             advanceAnimation: function () {
                 try {
                     // make sure visible
-                    this.glacialLayer.setVisibility(true);
+                    this.glacialLayer.setVisible(true);
 
                     // see if done
                     if (this.ageIndex === this.playAges.length) {
@@ -112,14 +112,14 @@
             show: function() {
                 this.inherited(arguments);
                 if (this.playAges !== null) {
-                    this.glacialLayer.setVisibility(true);
+                    this.glacialLayer.setVisible(true);
                 }
             },
             hide: function () {
                 this.inherited(arguments);
 
                 // hide layer
-                this.glacialLayer.setVisibility(false);
+                this.glacialLayer.setVisible(false);
 
                 // stop animation
                 clearTimeout(this.animationTimeout);
