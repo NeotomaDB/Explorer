@@ -28,22 +28,24 @@
                                 dlg.startup();
                             }
 
-                            // need to see if there are any other sites at the location
-                            var thisSiteId = site.attributes.siteid;
-                            var sites = [site];
-                            var siteGeom = site.geometry;
-                            //alert("thisSiteId: " + thisSiteId);
-                            array.forEach(site.layer.features, function (feature) {
-                                if (thisSiteId !== feature.attributes.siteid) { // see if the same
-                                    if (siteGeom.distanceTo(feature.geometry, { edge: false, details: false }) === 0) {
-                                        sites.push(feature);
-                                        //alert("add site");
-                                    }
-                                }
+                            var sites = [];
+                            var control = null; 
+                            dojo.config.map.getInteractions().forEach((interaction) => {
+                              if (interaction instanceof ol.interaction.Select) {
+                                control = interaction;
+                              }
                             });
+                            var selectedFeatures = control.getFeatures().getArray();
+
+                            selectedFeatures.forEach((f) => {
+                              sites.push(f.j)
+                            });
+                           
+                            var uniqueSites = [];
+                            sites.map(x => uniqueSites.filter(a => a.attributes.siteid == x.attributes.siteid).length > 0 ? null : uniqueSites.push(x));
 
                             // set site(s)
-                            dlg.set("sites", sites);
+                            dlg.set("sites", uniqueSites);
 
                             // hide other dialogs
                             mainToolbar.closeAllDialogs();
@@ -52,7 +54,7 @@
                             dlg.show();
                         }
                     } catch (e) {
-                        alert("Error in app/neotoma.onSiteSelect: " + e.message + "\n" + e.description);
+                        //alert("Error in app/neotoma.onSiteSelect: " + e.message + "\n" + e.description);
                     }
                 }
             );
@@ -160,7 +162,7 @@
                                         data: searchResponse,
                                         searchName: "DatasetIDs: " + datasetIds,
                                         request: { datasetids: datasetIds },
-                                        symbol: { "color": "ff0000", "shape": "Square", "size": "Large" }
+                                        symbol: { "color": "ff0000", "shape": "Point", "size": "Large" }
                                     }
                                     );
                                 } else {
@@ -223,46 +225,68 @@
             },
             selectedSite: null,
             selectSite: function (siteid) {
-                try {
-                    // get the search layer
-                    var searchId = registry.byId("tableSearches").get("value");
-                    var layers = dojo.config.map.getLayersByName(searchId);
-                    if (layers.length === 0) {
-                        alert("Can't find map layer to select site.");
-                        return;
-                    }
-                    var searchLayer = layers[0];
+              // TODO //
+                // try {
+                //   var control = null; 
+                //   var selectStyle = new ol.style.Style({
+                //     image: new ol.style.Circle({
+                //       radius: 8,
+                //       fill: new ol.style.Fill({
+                //         color:  '#fffc00'
+                //       })
+                //     })    
+                //   });
+                //   dojo.config.map.getInteractions().forEach((interaction) => {
+                //     if (interaction instanceof ol.interaction.Select) {
+                //       control = interaction;
+                //     }
+                //   });
+                //   var selectedFeatures = control.getFeatures().getArray();
+                //     // get the search layer
+                //     var searchId = registry.byId("tableSearches").get("value");
+                //     var layers = dojo.config.map.getLayers();
+                //     var site = [];
+                //     layers.forEach(function (layer) {
+                //       if (layer.get("id") == searchId) {
+                //         layer.getSource().forEachFeature(function (feature) {
+                //           var featureProperties = feature.getProperties();
+                //           //var siteid = featureProperties.attributes.siteid;
+                //           if (featureProperties.attributes.siteid === siteid) {
+                //             selectedFeatures.push(feature);
+                //           }
+                //         });
+                //       }
+                //     });
 
-                    // get site
-                    var sites = searchLayer.getFeaturesByAttribute("siteid", siteid);
-                    if (sites.length === 0) {
-                        alert("Can't find site to select.");
-                        return;
-                    }
-                    var site = sites[0];
+                //     var site = selectedFeatures[0];
+                //     site.setStyle(selectStyle);
+                //     //control.on('select', onSiteSelect(site);
 
-                    // get the select control
-                    var controls = dojo.config.map.getControlsBy("name", "selectSite");
-                    if (controls.length === 0) {
-                        alert("Can't select site on map.");
-                        return;
-                    }
-                    var control = controls[0];
+                   
+                    
+                //     control.dispatchEvent({
+                //       type: 'select',
+                //       selected: [site],
+                //       deselected: []
+                //     });
 
-                    // clear any current selected site
-                    if (control.handlers.feature.lastFeature) {
-                        control.unselect(control.handlers.feature.lastFeature);
-                        // make the feature handler believe it unselected the feature
-                        control.handlers.feature.lastFeature = null;
-                    }
-
-                    // select site
-                    control.select(site);
-                    // make the feature handler believe it selected the feature
-                    control.handlers.feature.lastFeature = site;
-                } catch (e) {
-                    alert("Error in app/neotoma.selectSite: " + e.message);
-                } 
+                //     // control.on('select', function(evt) {
+                //     //   console.log("evt",evt);
+                //     //   if (evt) {
+                //     //     evt.selected.forEach(function(each) {
+                //     //       console.log("each",each);
+                //     //       each.setStyle(selectStyle);
+                //     //     });
+                //     //   }
+                     
+                //     //   // evt.deselected.forEach(function(each) {
+                //     //   //   each.setStyle(null); // more likely you want to restore the original style
+                //     //   // });
+                //     // });
+                
+                // } catch (e) {
+                //     alert("Error in app/neotoma.selectSite: " + e.message);
+                // } 
             },
             onSiteSelect: function (site, isMap) {
                 onSiteSelect(site, isMap);
@@ -288,22 +312,58 @@
                             markerSize = 7;
                             break;
                     }
+                    // search style
+                    var style = new ol.style.Style({
+                      image: new ol.style.Circle({
+                        radius: markerSize,
+                        fill: new ol.style.Fill({
+                          color: symbol.color
+                        })
+                      })    
+                    });
                     
-                    // set styles
-                    var styleField = new OpenLayers.Style({ fillColor: "#" + symbol.color, fillOpacity: 1.0, strokeColor: "#" + symbol.color, strokeWidth: 1, pointRadius: markerSize, graphicName: symbol.shape.toLowerCase() });
-                    //var styleField = new OpenLayers.Style({ fillColor: symbol.color, fillOpacity: 1.0, strokeColor: symbol.color, strokeWidth: 1, pointRadius: markerSize, graphicName: symbol.shape.toLowerCase() });
-                    var styleSelectedField = new OpenLayers.Style({ fillColor: '#fffc00', fillOpacity: 1.0, strokeColor: '#fffc00', strokeWidth: 3, pointRadius: markerSize });
-                    var styleMapField = new OpenLayers.StyleMap({ 'default': styleField, 'select': styleSelectedField, 'temporary': styleField, 'delete': styleField });
-   
-                    // create and add layer
-                    var layer = new OpenLayers.Layer.Vector(searchId, { visibility: true, styleMap: styleMapField, displayInLayerSwitcher: false });
-                    dojo.config.map.addLayers([layer]);
+                    // search source and layer definition
+                    var source = new ol.source.Vector({});
+                    var layer = new ol.layer.Vector( {
+                      source: source,
+                      style: style,
+                      properties: {
+                        id: searchId
+                      },
+                      name: 'selectable'
+                    });
+                    dojo.config.map.addLayer(layer);
 
-                    // update or create SelectFeature control
-                    this.setSelectControl(layer);
+                    // select style
+                    var selectStyle = new ol.style.Style({
+                      image: new ol.style.Circle({
+                        radius: 8,
+                        fill: new ol.style.Fill({
+                          color:  '#fffc00'
+                        })
+                      })    
+                    });
 
-                    // clear out existing features
-                    layer.destroyFeatures();
+                    // select interaction control
+                    var selectControl = new ol.interaction.Select({
+                      condition: ol.events.condition.singleClick,
+                      style: selectStyle,
+                      multi: true,
+                      filter: function(feature, layer) {
+                        if (feature) {
+                          if (layer.get('name') === 'selectable') {
+                            return true;
+                          }
+                        } else {
+                          selectControl.setActive(false);
+                        }
+                      }
+                    });
+                    dojo.config.map.addInteraction(selectControl);
+                    
+                    selectControl.on(
+                      'select', onSiteSelect  
+                    );
 
                     // add each site to features array
                     var numSites = data.length;
@@ -325,95 +385,32 @@
                             ageyoungest: rec.ageyoungest || rec.minage,
                             datasets: rec.datasets
                         };
-                        var pt = new OpenLayers.Geometry.Point(rec.longitude, rec.latitude).transform(dojo.config.app.llProj, dojo.config.app.wmProj);
-                        //console.log("(x,y): (" + pt.x + "," + pt.y + ")");
-                        features.push(new OpenLayers.Feature.Vector(pt, atts));
+                        var pt = new ol.geom.Point([rec.longitude, rec.latitude]).transform("EPSG:4326", "EPSG:3857");
+
+                        features.push(new ol.Feature(
+                          {
+                            attributes: atts,
+                            geometry: pt
+                          })
+                        )
                     }
 
-                    // add features to layer
+                    // add features to layer, zoom to extent
                     if (features.length > 0) {
-                        layer.addFeatures(features);
+                      source.addFeatures(features);
+                      var extent = layer.getSource().getExtent();
+                      dojo.config.map.getView().fit(extent, { duration: 1000, padding: [15,15,15,15], maxZoom: 10 });
                     }
                     return layer;
                 } catch (e) {
-                    alert("Error in neotoma/app/neotoma.loadSitesOnMap: " + e.message);
+                    //alert("Error in neotoma/app/neotoma.loadSitesOnMap: " + e.message);
                 } 
             },
             updateSelectControl: function() {
-                var selectLayers = [];
-                // get all search layers on map
-                for (var i = 0; i < dojo.config.map.getNumLayers() ; i++) {
-                    if (dojo.config.map.layers) {
-                        var lyr = dojo.config.map.layers[i];
-                        // make sure a vector layer with a numeric name
-                        if ((lyr.CLASS_NAME === "OpenLayers.Layer.Vector") && (miscUtil.isNumeric(lyr.name))) {
-                            if (!lyr.isBaseLayer) {
-                                selectLayers.push(lyr);
-                            }
-                        }
-                    }
-                }
-
-                dojo.config.app.layersSelectControl.setLayer(selectLayers);
+             
             },
             setSelectControl: function (layer, reset) {
-                var selectLayers = [];
-                if (dojo.config.app.layersSelectControl) {
-                    // get all search layers except the one removing
-                    for (var i = 0; i < dojo.config.map.getNumLayers() ; i++) {
-                        if (dojo.config.map.layers) {
-                            var lyr = dojo.config.map.layers[i];
-                            // make sure a vector layer with a numeric name
-                            if ((lyr.CLASS_NAME === "OpenLayers.Layer.Vector") && (miscUtil.isNumeric(lyr.name))) {
-                                if (reset) {
-                                    if ((!lyr.isBaseLayer) && (lyr.name !== layer.name) && (lyr.features.length !== 0)) {
-                                        selectLayers.push(lyr);
-                                    }
-                                } else {
-                                    if (!lyr.isBaseLayer) {
-                                        selectLayers.push(lyr);
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    // try setting control's layers
-                    dojo.config.app.layersSelectControl.setLayer(selectLayers);
-
-                    //// try removing control and creating another
-                    //dojo.config.map.removeControl(dojo.config.app.layersSelectControl);
-                    //dojo.config.app.layersSelectControl = null;
-
-                    //// remove all SelectFeature controls from map
-                    //mapUtil.removeAllSelectFeatureControls(dojo.config.map);
-                    ////mapUtil.removeSelectFeatureContainerLayers(dojo.config.map);
-
-                    //// create new control
-                    //if (selectLayers.length > 0) {
-                    //    var selectControl = new OpenLayers.Control.SelectFeature(selectLayers, {
-                    //        autoActivate: true,
-                    //        onSelect: onSiteSelect,
-                    //        name: "selectSite",
-                    //        hover: false
-                    //    });
-                    //    dojo.config.map.addControl(selectControl);
-                    //    // store control to reuse
-                    //    dojo.config.app.layersSelectControl = selectControl;
-                    //}
-                } else { // need to create
-                    if (layer != null) {
-                        var selectControl = new OpenLayers.Control.SelectFeature(layer, {
-                            autoActivate: true,
-                            onSelect: onSiteSelect,
-                            name: "selectSite",
-                            hover: false
-                        });
-                        dojo.config.map.addControl(selectControl);
-                        // store control to reuse
-                        dojo.config.app.layersSelectControl = selectControl;
-                    }
-                }
+                
             },
             addAllToTray: function () {
                 try {
@@ -620,11 +617,11 @@
 
 
                 // get projected extent coordinates
-                var minpt = new OpenLayers.Geometry.Point(minx, miny).transform(dojo.config.app.llProj, dojo.config.app.wmProj);
-                var maxpt = new OpenLayers.Geometry.Point(maxx, maxy).transform(dojo.config.app.llProj, dojo.config.app.wmProj);
+                var ext = ol.extent.boundingExtent([[minx, miny], [maxx, maxy]]);
+                ext = ol.proj.transformExtent(ext, ol.proj.get('EPSG:4326'), ol.proj.get('EPSG:3857'));
 
                 // zoom map
-                dojo.config.map.zoomToExtent([minpt.x, minpt.y, maxpt.x, maxpt.y]);
+                dojo.config.map.getView().fit(ext, { duration: 1000, padding: [15,15,15,15], maxZoom: 10 });
 
                 // return sites
                 return reformattedSites;

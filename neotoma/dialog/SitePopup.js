@@ -9,10 +9,11 @@
             toolbarClick: function(evt) {
                 switch (evt.currentTarget.name) {
                     case "zoomToSite":
-                        // get site
+                        // get site, create geom, zoom to location
                         var site = this.sites[this.siteIndex];
-                        // zoom map
-                        dojo.config.map.setCenter(new OpenLayers.LonLat(site.geometry.x, site.geometry.y), 15);
+                        var siteGeom = new ol.geom.Point(ol.proj.transform([site.attributes.longitude, site.attributes.latitude], 'EPSG:4326', 'EPSG:3857'));
+                        dojo.config.map.getView().fit(siteGeom, { duration: 1000, maxZoom: 14 });
+                        
                         break;
                     case "addAllDatasets":
                         neotoma.addAllToTray();
@@ -31,40 +32,58 @@
                             }
 
                             // create bbox
-                            var bounds = new OpenLayers.Bounds(parseFloat(atts.longitudewest), parseFloat(atts.latitudesouth), parseFloat(atts.longitudeeast), parseFloat(atts.latitudenorth));
-                            var poly = bounds.toGeometry();
-                            poly.transform(dojo.config.app.llProj, dojo.config.app.wmProj);
-
+                            var bounds = ol.extent.boundingExtent([[atts.longitudewest, atts.latitudesouth], [atts.longitudeeast, atts.latitudenorth]]);
+                            bounds = ol.proj.transformExtent(bounds, ol.proj.get('EPSG:4326'), ol.proj.get('EPSG:3857'));
+                            
                             // find layer. Create if doesn't exist
                             if (this.bbLayer == null) {
-                                this.bbLayer = new OpenLayers.Layer.Vector("bbLayer",
-                                   {
-                                       visibility: true,
-                                       styleMap: layerUtil.getStyleMap(),
-                                       displayInLayerSwitcher: false
-                                   }
-                               );
-                                dojo.config.map.addLayers([this.bbLayer]);
-                            }
 
+                              // create empty layer source
+                              this.bbLayerSource = new ol.source.Vector({});
+
+                              // create layer
+                              this.bbLayer = new ol.layer.Vector({
+                                source: this.bbLayerSource,
+                                properties: {
+                                  id: "bbLayer"
+                                }
+                               
+                              });
+                              // add layer to map
+                              dojo.config.map.addLayer(this.bbLayer);
+
+                            } 
+                          
                             // if there is no feature, add it. If there is one, remove it.
-                            if (this.bbLayer.features.length > 0) { // bbox visible, remove it
-                                this.bbLayer.destroyFeatures();
+                            if (this.bbLayer.getSource().getFeatures().length > 0) {
 
-                                // set button class
-                                domClass.remove(this.bboxButton.domNode, "bboxOn");
-                                domClass.add(this.bboxButton.domNode, "bboxOff");
+                              // clear source features
+                              this.bbLayerSource.clear();
+
+                              // set button class
+                              domClass.remove(this.bboxButton.domNode, "bboxOn");
+                              domClass.add(this.bboxButton.domNode, "bboxOff");
+
                             } else { // no bbox, add it
-                                this.bbLayer.addFeatures([new OpenLayers.Feature.Vector(poly, null)]);
 
-                                // set button class
-                                domClass.remove(this.bboxButton.domNode, "bboxOff");
-                                domClass.add(this.bboxButton.domNode, "bboxOn");
+                              // create feature
+                              var polygon = new ol.geom.Polygon.fromExtent(bounds);
+                              var feature = new ol.Feature(polygon);
+                              // add feature, zoom to extent
+                              this.bbLayerSource.addFeatures([feature]);
+                              dojo.config.map.getView().fit(bounds, { duration: 1000 });
+
+                              // set button class
+                              domClass.remove(this.bboxButton.domNode, "bboxOff");
+                              domClass.add(this.bboxButton.domNode, "bboxOn");
+
                             }
 
-                            // refresh layer
-                            this.bbLayer.redraw();
-                            break;
+                          // refresh layer
+                          //this.bbLayerSource.refresh();
+                          //this.bbLayer.setStyle(this.bbLayer.getStyle());
+                          break;
+      
                         } catch (e) {
                             alert("Error in dialog/SitePopup.toolbarClick: " + e.message);
                         }  
@@ -76,7 +95,7 @@
 
                     // clear out any previous bounding box
                     if (this.bbLayer) {
-                        this.bbLayer.destroyFeatures();
+                      this.bbLayerSource.clear();
                     }
 
                     // get attributes to read id
@@ -180,7 +199,7 @@
                     countMessage += " of " + this.sites.length;
                     this.siteCountDisplay.set("content", countMessage);
                 } catch (e) {
-                    alert("error in SitePopup.displaySite: " + e.message);
+                    //alert("error in SitePopup.displaySite: " + e.message);
                 }
             },
             setDatasets: function (data) {
@@ -244,16 +263,18 @@
                 if (this.sites) {
                     array.forEach(this.sites, function (site) {
                         if (dojo.config.app.layersSelectControl) {
-                            dojo.config.app.layersSelectControl.unselect(site);
+                          dojo.config.app.layersSelectControl.getFeatures().clear();
                         }
                     });
                 }
 
                 // clear out any drawn boxes
-                var layers = dojo.config.map.getLayersByName("bbLayer");
-                if (layers.length === 1) {
-                    layers[0].destroyFeatures();
-                }
+                var layers = dojo.config.map.getLayers();
+                layers.forEach(function (layer) {
+                  if ((layer.get("id") == "bbLayer") && (layer.getSource().getFeatures().length === 1)) {
+                    layer.getSource().clear();
+                  }
+                });
             },
             show: function () {
                 this.inherited(arguments);

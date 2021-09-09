@@ -16,14 +16,13 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <title>Neotoma Explorer</title>
     <link rel="stylesheet" href="./js/dojo/1.9.3/dijit/themes/claro/claro.css"/>
-    <link rel="stylesheet" href="./js/ol2-13-edited/theme/default/style.css" type="text/css"/>
-    <link rel="stylesheet" href="./js/ol2-13-edited/theme/default/google.css" type="text/css"/>
+    <link rel="stylesheet" href="./js/v6.6.1-dist/ol.css">
     <link rel="stylesheet" type="text/css" href="./js/dojo/1.9.3/dojox/widget/Toaster/Toaster.css" >
     <link rel="stylesheet" type="text/css" href="css/app.css" >
     <link rel="stylesheet" type="text/css" href="css/showtime.css" >
     <link rel="stylesheet" type="text/css" href="js/dojo/dgrid-1.1.0/css/dgrid.css"/>
     <link rel="stylesheet" type="text/css" href="css/stratigraphic.css" >
-    <script type="text/javascript" src="./js/ol2-13-edited/OpenLayers.debug.js"></script>
+    <script type="text/javascript" src="./js/v6.6.1-dist/main.js"></script> 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.6.0/d3.min.js" charset="utf-8"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-queue/3.0.3/d3-queue.min.js"></script>
     <script src="https://d3js.org/d3-request.v1.min.js"></script>
@@ -56,8 +55,8 @@
                 }
             },
             app: {
-                wmProj: new OpenLayers.Projection("EPSG:900913"),
-                llProj: new OpenLayers.Projection("EPSG:4326"),
+                wmProj: new ol.proj.Projection("EPSG:3857"),
+                llProj: new ol.proj.Projection("EPSG:4326"),
                 allSearchResults: null,
                 userSearches: null,
                 forms: {
@@ -73,17 +72,17 @@
                     //    3: "#FFFF00"
                     //},
                     colors: {
-                        0: "red",
-                        1: "limegreen",
-                        2: "royalblue",
-                        3: "lightgreen",
-                        4: "darkred",
-                        5: "darkcyan",
-                        6: "lavender",
-                        7: "plum",
-                        8: "cyan",
-                        9: "magenta",
-                        10: "yellow"
+                        0: "#6a3d9a", // purple
+                        1: "#006d2c", // green
+                        2: "#de0d0f", // red
+                        3: "#b15928", // brown
+                        4: "#ff7f00", // orange
+                        5: "#e7298a", // pink
+                        6: "#e6ab02", // gold
+                        7: "#666666", // grey
+                        8: "#ffff33", // yellow
+                        9: "#bc80bd", // light purple
+                        10: "#d95f02" // burnt orange
                     },
                     currentIndex: 0,
                     maxIndex:10
@@ -131,7 +130,7 @@
     </script>
     
     
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAthD-twrZkdmn6NLMbnf6VKO3F3Ccl4YQ&callback=googleLoaded"
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=&callback=googleLoaded"
         type="text/javascript"></script>  
   </head> 
   <body class="claro">

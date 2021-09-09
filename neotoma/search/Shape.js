@@ -74,65 +74,158 @@
                 return new OpenLayers.StyleMap({ default: style, temporary: style, select:selectedStyle });
             },
             boxClick: function(evt) {
-                // active correct control
-                for (var key in this.drawControls) {
-                    var control = this.drawControls[key];
-                    if (key === "box") {
-                        control.activate();
-                    } else {
-                        control.deactivate();
-                    }
-                }
-                // show buffer controls
+              
+                // remove any previous draw interactions
+                dojo.config.map.getInteractions().forEach(function (interaction) {
+                  if (interaction instanceof ol.interaction.Draw) {
+                    dojo.config.map.removeInteraction(interaction);
+                  }
+                });
+                
+                // hide buffer controls
                 this.bufferDistance.set("disabled", true);
+                this.bufferDistance.set("value", "");
                 this.bufferUnits.set("disabled", true);
+                this.bufferUnits.set("value", "");
                 domStyle.set("bufferLabel", "color", "lightgray");
+
+                 // clear features, define box source
+                 this.drawLayerSource.clear();
+                 var boxSource = this.drawLayerSource;
+                 // add draw interaction
+                 var boxInteraction = new ol.interaction.Draw({
+                   source: boxSource,
+                   type: "Circle",
+                   geometryFunction: new ol.interaction.Draw.createRegularPolygon(4)
+                 });
+                 dojo.config.map.addInteraction(boxInteraction);
+
+                // interaction on draw start
+                boxInteraction.on('drawstart', function(e) {
+                  // if previous features exist, clear them
+                  if (boxSource.getFeatures().length > 0) {
+                    boxSource.clear();
+                  }                  
+                });
+                // interaction on draw end
+                boxInteraction.on('drawend', function(e) {
+                  dojo.config.map.removeInteraction(boxInteraction);       
+                });
             },
             pointClick: function (evt) {
-                try {
-                    // active correct control
-                    for (var key in this.drawControls) {
-                        var control = this.drawControls[key];
-                        if (key === "point") {
-                            control.activate();
-                        } else {
-                            control.deactivate();
-                        }
-                    }
-                   
-                } catch (e) {
-                    control.activate();
-                }
 
-                // show buffer controls
-                this.bufferDistance.set("disabled", false);
-                this.bufferUnits.set("disabled", false);
-                domStyle.set("bufferLabel", "color", "black");
+                  // remove any previous draw interactions
+                  dojo.config.map.getInteractions().forEach(function (interaction) {
+                    if (interaction instanceof ol.interaction.Draw) {
+                      dojo.config.map.removeInteraction(interaction);
+                    }
+                  });
+             
+                  // show buffer controls
+                  var distanceDiv = this.bufferDistance;
+                  var unitsDiv = this.bufferUnits;
+
+                  distanceDiv.set("disabled", false);
+                  unitsDiv.set("disabled", false);
+                  domStyle.set("bufferLabel", "color", "black");
+
+                  // clear features, define point source
+                  this.drawLayerSource.clear();
+                  var pointSource = this.drawLayerSource;
+                  // add draw interaction
+                  var pointInteraction = new ol.interaction.Draw({
+                    source: pointSource,
+                    type: "Point"
+                  });
+                  dojo.config.map.addInteraction(pointInteraction);
+
+                  // interaction on draw start
+                  pointInteraction.on('drawstart', function(e) {
+                    // make sure havea distance
+                    if (distanceDiv.get("value") === "") {
+                      alert("Please enter a buffer distance.");
+                      dojo.config.map.removeInteraction(pointInteraction);
+                      return false;
+                    }
+                    // if previous features exist, clear them
+                    if (pointSource.getFeatures().length > 0) {
+                      pointSource.clear();
+                    }                  
+                  });
+                  // interaction on draw end
+                  pointInteraction.on('drawend', function(e) {
+
+                    //get feature coords, buffer distance, and units
+                    var coords = e.feature.getGeometry().getCoordinates();
+                    var bufferDistance = distanceDiv.get("value");
+                    var units = unitsDiv.get("value");
+                    // convert units to meters
+                    if (units === "km") {
+                      bufferDistance *= 1000;
+                    } else if (units === "ft") {
+                      bufferDistance /= 3.2808;
+                    } else if (units === "mi") {
+                      bufferDistance /= 0.00062137;
+                    } else if (units === "m") {
+                      bufferDistance = bufferDistance;
+                    }
+                    // create circle, add to source
+                    var circle = new ol.Feature(new ol.geom.Circle(coords, bufferDistance));
+                    pointSource.addFeature(circle);
+                    
+                   
+                    // reset search params, remove interaction
+                    distanceDiv.set("disabled", true);
+                    distanceDiv.set("value", "");
+                    unitsDiv.set("disabled", true);
+                    unitsDiv.set("value", "");
+                    dojo.config.map.removeInteraction(pointInteraction);
+                
+                  });
                 
             },
             polygonClick: function (evt) {
-               try {
-                    // active correct control
-                    for (var key in this.drawControls) {
-                        var control = this.drawControls[key];
-                        if (key === "polygon") {
-                            control.activate();
-                        } else {
-                            control.deactivate();
-                        }
-                    }
-                } catch (e) {
-                    control.activate();
+
+              // remove any previous draw interactions
+              dojo.config.map.getInteractions().forEach(function (interaction) {
+                if (interaction instanceof ol.interaction.Draw) {
+                  dojo.config.map.removeInteraction(interaction);
                 }
-                
-                // show buffer controls
-                this.bufferDistance.set("disabled", true);
-                this.bufferUnits.set("disabled", true);
-                domStyle.set("bufferLabel", "color", "lightgray");
+              });
+
+              // hide buffer controls
+              this.bufferDistance.set("disabled", true);
+              this.bufferDistance.set("value", "");
+              this.bufferUnits.set("disabled", true);
+              this.bufferUnits.set("value", "");
+              domStyle.set("bufferLabel", "color", "lightgray");
+
+              // clear features, define polygon source
+              this.drawLayerSource.clear();
+              var polygonSource = this.drawLayerSource;
+              // add draw interaction
+              var polygonInteraction = new ol.interaction.Draw({
+                source: polygonSource,
+                type: "Polygon",
+                //geometryFunction: new ol.interaction.Draw.createRegularPolygon(4)
+              });
+              dojo.config.map.addInteraction(polygonInteraction);
+
+              // interaction on draw start
+              polygonInteraction.on('drawstart', function(e) {
+                // if previous features exist, clear them
+                if (polygonSource.getFeatures().length > 0) {
+                  polygonSource.clear();
+                }                  
+              });
+              // interaction on draw end
+              polygonInteraction.on('drawend', function(e) {
+                dojo.config.map.removeInteraction(polygonInteraction);       
+              });
             },
             clearClick: function (evt) {
                 // remove all drawn features from map
-                this.drawLayer.destroyFeatures();
+                this.drawLayerSource.clear();
             },
             searchMapExtentChanged: function (evt) {
                 try {
@@ -159,106 +252,25 @@
                 }
             },
             initializeDrawing: function () {
+
+                var pointStyleInit = new ol.style.Style({
+                  fill: new ol.style.Fill({color: 'rgba(255, 0, 0, 0.35)'}),
+                });
                 // add layer to draw into
                 if (this.drawLayer === null) {
-                    this.drawLayer = new OpenLayers.Layer.Vector("spatialSelectionLayer",
-                        {
-                            visibility: true,
-                            styleMap: this.getStyleMap(),
-                            displayInLayerSwitcher: false
-                        }
-                    );
-                    dojo.config.map.addLayers([this.drawLayer]);
-                }
-                
-                // listen for features to be added. Intercept points and add a circle with the buffer radius
-                this.drawLayer.events.register("beforefeatureadded", null,
-                    lang.hitch(this, function (obj) {
-                        try {
-                            // clear out any existing features
-                            this.drawLayer.destroyFeatures();
 
-                            // handle different geometry types
-                            switch (obj.feature.geometry.CLASS_NAME) {
-                                case "OpenLayers.Geometry.Point":
-                                    var distance = this.bufferDistance.get("value");
-                                    var units = this.bufferUnits.get("value");
-                                    
-                                    // make sure havea distance
-                                    if (distance === "") {
-                                        alert("Please enter a buffer distance.");
-                                        return false;
-                                    }
-
-                                    // convert distance to meters
-                                    switch (units) {
-                                        case "km":
-                                            distance *= 1000;
-                                            break;
-                                        case "ft":
-                                            distance /= 3.2808;
-                                            break;
-                                        case "mi":
-                                            distance /= 0.00062137;
-                                            break;
-                                    }
-                                    
-                                    obj.feature.geometry = OpenLayers.Geometry.Polygon.createRegularPolygon(obj.feature.geometry, distance, 30, 30);
-                                    break;
-                                case "OpenLayers.Bounds":
-                                    // get box coordinates in map units
-                                    var coords = obj.feature.geometry.toArray();
-                                    var swLonLat = dojo.config.map.getLonLatFromPixel({ x: coords[0], y: coords[1] });
-                                    var neLonLat = dojo.config.map.getLonLatFromPixel({ x: coords[2], y: coords[3] });
-
-                                    // Create linearring first for polygon
-                                    var ring = new OpenLayers.Geometry.LinearRing();
-
-                                    // clockwise ring
-                                    ring.addComponent(new OpenLayers.Geometry.Point(swLonLat.lon, swLonLat.lat), 0);
-                                    ring.addComponent(new OpenLayers.Geometry.Point(swLonLat.lon, neLonLat.lat), 1);
-                                    ring.addComponent(new OpenLayers.Geometry.Point(neLonLat.lon, neLonLat.lat), 2);
-                                    ring.addComponent(new OpenLayers.Geometry.Point(neLonLat.lon, swLonLat.lat), 3);
-
-                                    // change obj's geometry to polygon
-                                    obj.feature.geometry = new OpenLayers.Geometry.Polygon([ring]);
-
-                                    //return false;
-                                    break;
-                                default:
-                                    break;
-                            }
-
-                            // stop drawing
-                            // HACK: try to figure out what is null instead of ignoring the exception
-                            //var controlKey = null;
-                            try {
-                                for (var controlKey in this.drawControls) {
-                                    this.drawControls[controlKey].deactivate();
-                                }
-                            } catch (e) {
-                                //_alert(e.message);
-                                this.drawControls[controlKey].deactivate();
-                            } 
-                        } catch (e) {
-                            alert("error in search/Shape beforefeatureadded: " + e.message);
-                        }
-                    })
-                );
-
-                // add draw controls
-                this.drawControls = {
-                    point: new OpenLayers.Control.DrawFeature(this.drawLayer,
-                        OpenLayers.Handler.Point),
-                    box: new OpenLayers.Control.DrawFeature(this.drawLayer,
-                        OpenLayers.Handler.Box),
-                    polygon: new OpenLayers.Control.DrawFeature(this.drawLayer,
-                        OpenLayers.Handler.Polygon)
-                };
-
-                // add handlers to map
-                for (var key in this.drawControls) {
-                    dojo.config.map.addControl(this.drawControls[key]);
+                  this.drawLayerSource = new ol.source.Vector({});
+                  
+                  this.drawLayer = new ol.layer.Vector({
+                    source: this.drawLayerSource,
+                    properties: {
+                      id: "spatialSelectionLayer"
+                    },
+                    visible: true,
+                    style: pointStyleInit
+                  });
+                   
+                  dojo.config.map.addLayer(this.drawLayer);
                 }
             },
             addSelected: function() {
@@ -362,19 +374,19 @@
                 // handle showing, hiding, and clearing drawing layer
                 topic.subscribe("neotoma/search/HideDrawingLayer",
                     lang.hitch(this,function () {
-                        this.drawLayer.setVisibility(false);
+                        this.drawLayer.setVisible(false);
                     })
                 );
 
                 topic.subscribe("neotoma/search/ShowDrawingLayer",
                     lang.hitch(this,function () {
-                        this.drawLayer.setVisibility(true);
+                        this.drawLayer.setVisible(true);
                     })
                 );
 
                 topic.subscribe("neotoma/search/ClearDrawingLayer",
                     lang.hitch(this, function () {
-                        this.drawLayer.destroyFeatures();
+                        this.drawLayerSource.clear();
                     })
                 );
             }

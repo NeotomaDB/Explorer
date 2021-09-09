@@ -184,6 +184,9 @@
                 case "NISP":
                   metadata.xscaleinput = "abundance";
                   break;
+                case "NISP digitized":
+                  metadata.xscaleinput = "abundance";
+                  break;
                 case "valves/g":
                   //todo, should use "concentration"
                   metadata.xscaleinput = "valves/g";
@@ -232,7 +235,7 @@
                     }
                     break;
                   case "testate amoebae":
-                    if(metadata.variableunit == "NISP"){
+                    if(metadata.variableunit == "NISP" || metadata.variableunit == "NISP digitized"){
                       this.setChartType("FilledArea");
                     }
                     break;
@@ -476,6 +479,22 @@
                       })
                     })
                     break;
+                  case "NISP digitized":
+                    filteredTaxaRenderObjects.forEach(function(d){
+                      //calc maxAbundance for Taxon
+                      d.maxabundance = 0;
+                      //pass EcolGroupID to container
+                      d.ecolgroupid = d.values[0].ecolgroupid;
+                      d.values.forEach(function(e){
+                        var abundance = +((e.value / summaryDataBySampleID.get(e.sampleid).get(variableUnit).sumnisp)*100).toFixed(2);
+                        e.abundance = abundance;
+                        e.nisp = e.value;
+                        d.maxabundance < abundance ? d.maxabundance = abundance : d.maxabundance = d.maxabundance;
+                        //track a maxValue for all numeric VariableUnits
+                        d.maxvalue = d.maxabundance;
+                      })
+                    })
+                    break;
                   case "MNI":
                     filteredTaxaRenderObjects.forEach(function(d){
                       //calc maxAbundance for Taxon
@@ -639,6 +658,10 @@
                                   obj.abundance = sampleAggregate;
                                   obj.nisp = value.totalValue;
                                   break;
+                                case "NISP digitized":
+                                  obj.abundance = sampleAggregate;
+                                  obj.nisp = value.totalValue;
+                                  break;
                                 case "MNI":
                                   obj.value = value.totalValue;
                                   break;
@@ -665,6 +688,33 @@
                       //to add other metrics specific to datatype 
                       case "NISP":
                          //now calc summary status for EcolGroup for NISP
+                          ecoGrpRenderObjects.forEach(function(d){
+                            d.variableunits = variableUnit;
+                            var abundanceExtent = d3.extent(d.values,function(f){
+                              return f.abundance;
+                            });
+
+                            var valueExtent = d3.extent(d.values, function(f){
+                              return f.maxvalue;
+                            })
+
+                            if(abundanceExtent){
+                              d.maxabundance = abundanceExtent[1];
+                            } else {
+                              console.log("Error calculating maxAbundance");
+                              d.maxabundance = 0;
+                            }
+
+                            if(valueExtent){
+                              d.maxvalue = valueExtent[1];
+                            } else {
+                              console.log("Error calculating maxValue");
+                              d.maxvalue = 0;
+                            }
+                          });
+                          break;
+                      case "NISP digitized":
+                        //now calc summary status for EcolGroup for NISP
                           ecoGrpRenderObjects.forEach(function(d){
                             d.variableunits = variableUnit;
                             var abundanceExtent = d3.extent(d.values,function(f){
@@ -745,6 +795,11 @@
                 var aggValue = null;
                 switch(currentVariableUnit){
                   case "NISP":
+                    if(summaryDataBySampleID.get(sampleid).get(currentVariableUnit).sumnisp > 0){
+                      aggValue = +((value/summaryDataBySampleID.get(sampleid).get(currentVariableUnit).sumnisp) * 100).toFixed(2);
+                    }
+                    break;
+                  case "NISP digitized":
                     if(summaryDataBySampleID.get(sampleid).get(currentVariableUnit).sumnisp > 0){
                       aggValue = +((value/summaryDataBySampleID.get(sampleid).get(currentVariableUnit).sumnisp) * 100).toFixed(2);
                     }
@@ -1272,6 +1327,12 @@
                           counttaxa: values.length
                         }
                         break;
+                      case "NISP digitized":
+                        return {
+                          sumnisp: d3.sum(values, function(d){ return d.value}),
+                          counttaxa: values.length
+                        }
+                        break;
                       case "valves/g":
                         return {
                         meanconcentration: d3.mean(values, function(d){ return d.value}),
@@ -1349,6 +1410,9 @@
                         var label;
                         switch(variableUnit){
                             case "NISP":
+                                label = "Abundance (%)";
+                                break;
+                            case "NISP digitized":
                                 label = "Abundance (%)";
                                 break;
                             case "valves/g":
@@ -1699,6 +1763,24 @@
                                 html += "<span>Abundance: "+pctLabel + " (of "+summaryDataBySampleID.get(ptdata.sampleid).get(ptdata.variableunits).sumnisp +")</span><br>";
                                 html += "<span>Total Count: " + cntLabel + "</span></div>";
                                 break;
+                            case "NISP digitized":
+                              var pctLabel = d3.format(".1%")(ptdata.abundance/100);
+                              var cntLabel;
+                              if(ptdata.nisp){
+                                  cntLabel = d3.format("c")(ptdata.nisp); //integer
+                              } else {
+                                  cntLabel = d3.format("c")(ptdata.value); //integer
+                              }
+                              var html = "";
+                              if(ptdata.ecolgroupid){
+                                  var taxonName = ptdata.taxonname ? " | " +  ptdata.taxonname : " | (multiple)";
+                                  html = "<h3>"+ptdata.ecolgroupid+ taxonName + "</h3>";
+                              }
+                              html += "<div class='point-label'><span>SampleID:"+ptdata.sampleid +"<span><br>";
+                              html += "<span>"+metadata.yaxisunittype +": "+ sdcontext.lookupYValueBySampleID(ptdata.sampleid) + " " +metadata.yaxislabel + "</span><br>";
+                              html += "<span>Abundance: "+pctLabel + " (of "+summaryDataBySampleID.get(ptdata.sampleid).get(ptdata.variableunits).sumnisp +")</span><br>";
+                              html += "<span>Total Count: " + cntLabel + "</span></div>";
+                              break;
                             case "MNI":
                                 cntLabel = d3.format("c")(ptdata.value); //integer
                                 var html ="";
@@ -1913,7 +1995,7 @@
               //case#1: VariableUnit changes
               taxaRenderObjects = this.createTaxaObjectsToRenderAsChart(metadata.variableunit);
 
-              if (metadata.variableunit == "NISP") {
+              if (metadata.variableunit == "NISP" || metadata.variableunit == "NISP digitized") {
                 this.radioFilledArea.set("disabled",false);
                 this.radioBarChart.set("disabled",false);
                 this.radioSymbolPlot.set("disabled",true);

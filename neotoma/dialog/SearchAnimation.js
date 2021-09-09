@@ -53,7 +53,7 @@
                     array.forEach(dojo.config.map.layers,
                         lang.hitch(this,function (layer) {
                             if ((!layer.isBaseLayer) && (layer.name !== this.animationLayer.name)) {
-                                layer.setVisibility(false);
+                                layer.setVisible(false);
                             }
                         })
                     );
@@ -96,7 +96,7 @@
 
                 // make sure animation layer is visible
                 if (this.animationLayer) {
-                    this.animationLayer.setVisibility(true);
+                    this.animationLayer.setVisible(true);
                 }
             },
             hide: function () {
@@ -105,13 +105,13 @@
                 // make sure animation layer is hidden and features are removed
                 if (this.animationLayer) {
                     this.animationLayer.destroyFeatures();
-                    this.animationLayer.setVisibility(false);
+                    this.animationLayer.setVisible(false);
                 }
 
                 // show layers that were hidden for animation
                 array.forEach(this.searchLayers,
                     function (layer) {
-                        layer.setVisibility(true);
+                        layer.setVisible(true);
                     }
                 );
             },
@@ -190,3 +190,4 @@
             }
         });
     });
+    
