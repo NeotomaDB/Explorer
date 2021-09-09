@@ -317,7 +317,7 @@
                       image: new ol.style.Circle({
                         radius: markerSize,
                         fill: new ol.style.Fill({
-                          color:  "#" + symbol.color
+                          color: symbol.color
                         })
                       })    
                     });

@@ -200,7 +200,7 @@
                                             alert("Can't find next search color at index: " + searchColors.currentIndex);
                                             return;
                                         }
-                                        var newColor = searchColors.colors[searchColors.currentIndex].replace("#", "");
+                                        var newColor = searchColors.colors[searchColors.currentIndex];
 
                                         // convert color to rgb
                                         newColor = new Color(newColor).toHex();
@@ -209,7 +209,7 @@
                                         if (newColor == null) {
                                             alert("newColor is null");
                                         }
-                                        thisSymbol.color = newColor.replace("#", "");
+                                        thisSymbol.color = newColor;
                                         thisSymbol.size = "Medium";
                                         thisSymbol.shape = "Circle";
                                         // set next color. Do here because the color is used by both map and searches list
