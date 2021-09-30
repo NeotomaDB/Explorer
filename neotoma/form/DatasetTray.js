@@ -23,7 +23,7 @@
                         try {
                             if (response.success) {
                                 // create file name
-                                var fileName = "dataset" + datasetId;
+                                var fileName = "dataset" + datasetId + "_site" + response.data[0].site.siteid;
 
                                 // read response
                                 var datasetResponse = response.data[0];
