@@ -2,16 +2,7 @@
     function (declare, OnDemandGrid, Selection, selector, Memory, lang, Button, popup, Toolbar, TooltipDialog, topic, registry, domConstruct, on, query, domStyle, mouse, array, exExport, miscUtil) {
 
         var setSearchSymbology = function (search) {
-            // get searchid as string
-            var searchId = search.id.toString();
-            // find the layer
-            var layers = dojo.config.map.getLayersByName(searchId);
-            if (layers.length === 0) {
-                alert("setSearchSymbology() Can't find layer with searchid: " + searchId);
-                return;
-            }
-            var layer = layers[0];
-
+            // define styles
             // get size
             var markerSize = 5;
             switch (search.symbol.size) {
@@ -25,12 +16,69 @@
                     markerSize = 7;
                     break;
             }
+            // define styles based on selected shape
+            var style;
+            if (search.symbol.shape == "Circle") {
+              style = new ol.style.Style({
+                image: new ol.style.Circle({ 
+                  fill: new ol.style.Fill({
+                      color: search.symbol.color
+                  }),
+                  radius: markerSize
+                })
+              });
+            } else if (search.symbol.shape == "Square") {
+              style = new ol.style.Style({
+                image: new ol.style.RegularShape({ 
+                  fill: new ol.style.Fill({
+                      color: search.symbol.color
+                  }),
+                  radius: markerSize,
+                  points: 4,
+                  angle: Math.PI / 4
+                })
+              });
+            } else if (search.symbol.shape == "Star") {
+              style = new ol.style.Style({
+                image: new ol.style.RegularShape({ 
+                  fill: new ol.style.Fill({
+                      color: search.symbol.color
+                  }),
+                  radius: markerSize,
+                  radius2: markerSize/2,
+                  points: 5,
+                  angle: 0
+                })
+              });
+            } else if (search.symbol.shape == "Triangle") {
+              style = new ol.style.Style({
+                image: new ol.style.RegularShape({ 
+                  fill: new ol.style.Fill({
+                      color: search.symbol.color
+                  }),
+                  radius: markerSize,
+                  points: 3,
+                  rotation: Math.PI / 4,
+                  angle: 0
+                })
+              });
+            }
 
-            // change layer style
-            var styleField = new OpenLayers.Style({ fillColor: "#" + search.symbol.color, fillOpacity: 1.0, strokeColor: "#" + search.symbol.color, strokeWidth: 1, pointRadius: markerSize, graphicName: search.symbol.shape.toLowerCase() });
-            var styleSelectedField = new OpenLayers.Style({ fillColor: '#fffc00', fillOpacity: 1.0, strokeColor: '#fffc00', strokeWidth: 3, pointRadius: markerSize });
-            layer.styleMap = new OpenLayers.StyleMap({ 'default': styleField, 'select': styleSelectedField });
-            layer.redraw();
+            // clear selected points
+            dojo.config.map.getInteractions().forEach((interaction) => {
+              if (interaction instanceof ol.interaction.Select) {
+                interaction.getFeatures().clear();
+              }
+            });
+           // get layers, set style
+            var layers = dojo.config.map.getLayers();
+            layers.forEach(function (layer) {
+              if (layer.get("id") == search.id) {
+                layer.getSource().forEachFeature(function(feature) {
+                   feature.setStyle(style);
+                });
+              }
+            });
         };
 
         var openSearchProperties = function (searchName) {
@@ -128,7 +176,7 @@
                             type: 'button',
                             name: row.name,
                             id: row.id,
-                            style: 'cursor:pointer;background-color:#' + row.symbol.color + ';width:18px;height:18px;margin:0px;border:none;vertical-align:middle;',
+                            style: 'cursor:pointer;background-color:' + row.symbol.color + ';width:18px;height:18px;margin:0px;border:none;vertical-align:middle;',
                             click: function (evt) {
                                 try {
                                     var event = require("dojo/_base/event");
@@ -166,29 +214,31 @@
                             },
                             cellDiv
                         );
+                        //// TODO: FIGURE OUT HOW TO FIX LAYER ORDERING IN CURRENT SEARCH PANE /////
+                        ////
+                        ////
+                        // // add up button
+                        // domConstruct.create("button", {
+                        //     type: "button",
+                        //     title: "Move Search Result Up",
+                        //     "class": "dsUp",
+                        //     name: "up",
+                        //     click: function () {
+                        //         dojo.config.app.allSearchResults.allSearchesList.moveSearchUp(row.id);
+                        //     }
+                        // }, buttonsDiv);
 
-                        // add up button
-                        domConstruct.create("button", {
-                            type: "button",
-                            title: "Move Search Result Up",
-                            "class": "dsUp",
-                            name: "up",
-                            click: function () {
-                                dojo.config.app.allSearchResults.allSearchesList.moveSearchUp(row.id);
-                            }
-                        }, buttonsDiv);
-
-                        // add down button
-                        domConstruct.create("button", {
-                            type: "button",
-                            title: "Move Search Result Down",
-                            "class": "dsDown",
-                            name: "down",
-                            click: function() {
-                                dojo.config.app.allSearchResults.allSearchesList.moveSearchDown(row.id);
-                            }
+                        // // add down button
+                        // domConstruct.create("button", {
+                        //     type: "button",
+                        //     title: "Move Search Result Down",
+                        //     "class": "dsDown",
+                        //     name: "down",
+                        //     click: function() {
+                        //         dojo.config.app.allSearchResults.allSearchesList.moveSearchDown(row.id);
+                        //     }
                                 
-                        }, buttonsDiv);
+                        // }, buttonsDiv);
 
                         // add datasets to tray button
                         domConstruct.create("button", {
@@ -388,12 +438,23 @@
                 thisSearch.order = aboveOrder;
                 this.set("sort", "order", true);
 
-                // get map layer
-                var layers = dojo.config.map.getLayersByName(searchId);
-                if (layers.length === 0) {
+                var layers = dojo.config.map.getLayers();
+                layers.forEach(function (layer) {
+                  if (layer.get("id") == searchId) {
+                    // see how many layers to move up
+                    var numToMove = this.getNewLayerIndexDifference(searchId, "up");
+                    if (numToMove === false) {
+                      alert("Couldn't figure out how many layers to move up.");
+                      return false;
+                    }
+
+                    // move layer up
+                    dojo.config.map.raiseLayer(layers[0], numToMove);
+                  } else {
                     alert("Can't find layer with searchid: " + searchId);
                     return;
-                }
+                  }
+                });
 
                 //// log layer info before change index
                 //var myLayers = [];
@@ -415,15 +476,7 @@
                 //    }
                 //);
 
-                // see how many layers to move up
-                var numToMove = this.getNewLayerIndexDifference(searchId, "up");
-                if (numToMove === false) {
-                    alert("Couldn't figure out how many layers to move up.");
-                    return false;
-                }
-
-                // move layer up
-                dojo.config.map.raiseLayer(layers[0], numToMove);
+                
 
                 //// log layers aftewards
                 //myLayers = [];
@@ -463,21 +516,24 @@
                 this.set("sort", "order", true);
 
                 // get map layer
-                var layers = dojo.config.map.getLayersByName(searchId);
-                if (layers.length === 0) {
+                var layers = dojo.config.map.getLayers();
+                layers.forEach(function (layer) {
+                  if (layer.get("id") == searchId) {
+                    // see how many layers to move down
+                    var numToMove = this.getNewLayerIndexDifference(searchId, "down");
+                    if (numToMove === false) {
+                      alert("Couldn't figure out how many layers to move down.");
+                      return false;
+                    }
+
+                    // move layer down
+                    dojo.config.map.raiseLayer(layers[0], numToMove);
+                  } else {
                     alert("Can't find layer with searchid: " + searchId);
                     return;
-                }
-
-                // see how many layers to move down
-                var numToMove = this.getNewLayerIndexDifference(searchId, "down");
-                if (numToMove === false) {
-                    alert("Couldn't figure out how many layers to move down.");
-                    return false;
-                }
-
-                // move layer down
-                dojo.config.map.raiseLayer(layers[0], numToMove);
+                  }
+                });
+              
             },
             getNewLayerIndexDifference: function(layerName,direction) {
                 // get the map layers

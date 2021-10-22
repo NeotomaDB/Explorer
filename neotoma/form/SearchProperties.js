@@ -91,7 +91,7 @@
                             alert("Please select a color.");
                             return null;
                         }
-                        color = color.toLowerCase().replace("#", "");
+                        color = color.toLowerCase();
 
                         // get current properties from form
                         var props = {
@@ -136,3 +136,4 @@
             }
         );
     });
+    
