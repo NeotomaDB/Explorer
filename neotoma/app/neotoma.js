@@ -112,7 +112,7 @@
                                         data: searchResponse,
                                         searchName: "datasetid: " + datasetId,
                                         request: { datasetid: datasetId },
-                                        symbol: { "color": "ff0000", "shape": "Square", "size": "Large" }
+                                        symbol: { "color": "#ff0000", "shape": "Square", "size": "Large" } // TODO -- figure out why color is the only property rendering
                                     }
                                     );
 
@@ -162,7 +162,7 @@
                                         data: searchResponse,
                                         searchName: "DatasetIDs: " + datasetIds,
                                         request: { datasetids: datasetIds },
-                                        symbol: { "color": "ff0000", "shape": "Point", "size": "Large" }
+                                        symbol: { "color": "#ff0000", "shape": "Point", "size": "Large" } // TODO -- figure out why color is the only property rendering
                                     }
                                     );
                                 } else {
@@ -207,7 +207,7 @@
                                         data: searchResponse,
                                         searchName: "SiteIds: " + siteIds,
                                         request: { siteids: siteIds },
-                                        symbol: { "color": "ff0000", "shape": "Square", "size": "Large" }
+                                        symbol: { "color": "#ff0000", "shape": "Square", "size": "Large" } // TODO -- figure out why color is the only property rendering
                                     }
                                     );
                                 } else {
