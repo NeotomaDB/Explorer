@@ -112,7 +112,7 @@
                                         data: searchResponse,
                                         searchName: "datasetid: " + datasetId,
                                         request: { datasetid: datasetId },
-                                        symbol: { "color": "ff0000", "shape": "Square", "size": "Large" }
+                                        symbol: { "color": "#ff0000", "shape": "Square", "size": "Large" }
                                     }
                                     );
 
@@ -162,7 +162,7 @@
                                         data: searchResponse,
                                         searchName: "DatasetIDs: " + datasetIds,
                                         request: { datasetids: datasetIds },
-                                        symbol: { "color": "ff0000", "shape": "Point", "size": "Large" }
+                                        symbol: { "color": "#ff0000", "shape": "Point", "size": "Large" }
                                     }
                                     );
                                 } else {
@@ -207,7 +207,7 @@
                                         data: searchResponse,
                                         searchName: "SiteIds: " + siteIds,
                                         request: { siteids: siteIds },
-                                        symbol: { "color": "ff0000", "shape": "Square", "size": "Large" }
+                                        symbol: { "color": "#ff0000", "shape": "Square", "size": "Large" } 
                                     }
                                     );
                                 } else {
@@ -299,7 +299,8 @@
                     // make the id a string for the name
                     searchId = searchId.toString();
 
-                    // get markersize
+                    // define styles
+                    // get size
                     var markerSize = 5;
                     switch (symbol.size) {
                         case "Small":
@@ -312,15 +313,48 @@
                             markerSize = 7;
                             break;
                     }
-                    // search style
-                    var style = new ol.style.Style({
-                      image: new ol.style.Circle({
-                        radius: markerSize,
-                        fill: new ol.style.Fill({
-                          color: symbol.color
+                    // define styles based on selected shape
+                    var style;
+                    var selectStyle;
+                    if (symbol.shape == "Circle") {
+                      style = new ol.style.Style({
+                        image: new ol.style.Circle({ 
+                          fill: new ol.style.Fill({
+                              color: symbol.color
+                          }),
+                          radius: markerSize
                         })
-                      })    
-                    });
+                      });
+                      selectStyle = new ol.style.Style({
+                        image: new ol.style.Circle({ 
+                          fill: new ol.style.Fill({
+                              color: '#fffc00'
+                          }),
+                          radius: markerSize
+                        })
+                      });
+                    } else if (symbol.shape == "Square") {
+                      style = new ol.style.Style({
+                        image: new ol.style.RegularShape({ 
+                          fill: new ol.style.Fill({
+                              color: symbol.color
+                          }),
+                          radius: markerSize,
+                          points: 4,
+                          angle: Math.PI / 4
+                        })
+                      });
+                      selectStyle = new ol.style.Style({
+                        image: new ol.style.RegularShape({ 
+                          fill: new ol.style.Fill({
+                              color: '#fffc00'
+                          }),
+                          radius: markerSize,
+                          points: 4,
+                          angle: Math.PI / 4
+                        })
+                      });
+                    }
                     
                     // search source and layer definition
                     var source = new ol.source.Vector({});
@@ -333,16 +367,6 @@
                       name: 'selectable'
                     });
                     dojo.config.map.addLayer(layer);
-
-                    // select style
-                    var selectStyle = new ol.style.Style({
-                      image: new ol.style.Circle({
-                        radius: 8,
-                        fill: new ol.style.Fill({
-                          color:  '#fffc00'
-                        })
-                      })    
-                    });
 
                     // select interaction control
                     var selectControl = new ol.interaction.Select({
