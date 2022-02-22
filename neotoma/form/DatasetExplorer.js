@@ -424,7 +424,7 @@
             },
             _loadPublications: function (datasetId, datasetPIs) {
                 // clear out any previous publications
-                this.publicationsTab.set("content", "");
+                this.publicationsMetadataDiv.set("content", "");
                 // get publications for dataset
                 script.get(config.dataServicesLocation + "/Publications/",
                         { jsonp: "callback", query: {datasetid:datasetId} }
@@ -433,7 +433,7 @@
                             var content = null;
                             var authorsList = null;
                             var authors = null;
-                            var pt = this.publicationsTab;
+                            var pt = this.publicationsMetadataDiv;
 
                             if (resp.success) {
                                 // create string of PI names
@@ -1609,6 +1609,7 @@
                 }
             },
             loadGeochronSiteMetadata: function (site) {
+              var currentSiteObj = dojo.config.app.forms.sitePopup.sites[dojo.config.app.forms.sitePopup.siteIndex];
                 try {
                     if (!site) {
                         return;
@@ -1623,22 +1624,22 @@
                     // create and rows
                     var row = domConstruct.create("tr", { class: "fixht" }, table);
                     domConstruct.place(domConstruct.create("td", { innerHTML: "Site ID", class: "col1" }), row);
-                    domConstruct.place(domConstruct.create("td", { innerHTML: site.siteid, class: "col2" }), row);
+                    domConstruct.place(domConstruct.create("td", { innerHTML: currentSiteObj.attributes.siteid, class: "col2" }), row);
                     var row = domConstruct.create("tr", { class: "fixht" }, table);
                     domConstruct.place(domConstruct.create("td", { innerHTML: "Longitude", class: "col1" }), row);
-                    domConstruct.place(domConstruct.create("td", { innerHTML: numberUtil.format(site.longitude, { pattern: "#.######" }), class: "col2" }), row);
+                    domConstruct.place(domConstruct.create("td", { innerHTML: numberUtil.format(currentSiteObj.attributes.longitude, { pattern: "#.######" }), class: "col2" }), row);
                     var row = domConstruct.create("tr", { class: "fixht" }, table);
                     domConstruct.place(domConstruct.create("td", { innerHTML: "Latitude", class: "col1" }), row);
-                    domConstruct.place(domConstruct.create("td", { innerHTML: numberUtil.format(site.latitude, { pattern: "#.######" }), class: "col2" }), row);
+                    domConstruct.place(domConstruct.create("td", { innerHTML: numberUtil.format(currentSiteObj.attributes.latitude, { pattern: "#.######" }), class: "col2" }), row);
                     if (site.sitedescription) {
                         var row = domConstruct.create("tr", { class: "fixht" }, table);
                         domConstruct.place(domConstruct.create("td", { innerHTML: "Description", class: "col1" }), row);
-                        domConstruct.place(domConstruct.create("td", { innerHTML: site.sitedescription, class: "col2" }), row);
+                        domConstruct.place(domConstruct.create("td", { innerHTML: currentSiteObj.attributes.sitedescription, class: "col2" }), row);
                     }
                     if (site.sitenotes) {
                         var row = domConstruct.create("tr", { class: "fixht" }, table);
                         domConstruct.place(domConstruct.create("td", { innerHTML: "Notes", class: "col1" }), row);
-                        domConstruct.place(domConstruct.create("td", { innerHTML: site.sitenotes, class: "col2" }), row);
+                        domConstruct.place(domConstruct.create("td", { innerHTML: currentSiteObj.attributes.sitenotes, class: "col2" }), row);
                     }
 
                     // add class to table
@@ -1646,7 +1647,7 @@
 
                     // create site name header
                     if (site) {
-                        var header = domConstruct.create("h3", { innerHTML: site.sitename });
+                        var header = domConstruct.create("h3", { innerHTML: currentSiteObj.attributes.sitename });
                     }
                     
                     // add header to contents

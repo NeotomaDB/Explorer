@@ -397,6 +397,9 @@ button.mini {
 .mini button.dsDOI {
   background: url("../resources/images/doi.png") no-repeat center;
 }
+.mini button.dsLP {
+  background: url("../resources/images/inspect16.png") no-repeat center;
+}
 .mini button.dsUp {
     background: url("../resources/images/arrow_up16.png") no-repeat center;
 }
