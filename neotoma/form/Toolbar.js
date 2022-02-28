@@ -362,7 +362,7 @@
                     }
                 );
             },
-            showDatasetExplorer: function (datasetId, datasetType,databaseName, responseWithSite) {
+            showDatasetExplorer: function (datasetId, datasetType, databaseName, responseWithSite) {
                 require(["neotoma/dialog/DatasetExplorer"],
                     function (DatasetExplorer) {
                         try {
@@ -399,7 +399,9 @@
                                     "class": "dsSave",
                                     click: function () {
                                         var datasetId = dlg.datasetExplorer.currentDatasetId;
-                                        var fileName = "dataset" + datasetId + ".csv";
+                                        var currentSiteObj = dojo.config.app.forms.sitePopup.sites[dojo.config.app.forms.sitePopup.siteIndex];
+                                        var siteId = currentSiteObj.attributes.siteid;
+                                        var fileName = "dataset" + datasetId + "_site" + siteId + ".csv";
                                         exExport.save(dlg.datasetExplorer.downloadData(), fileName);
                                     }
                                 }, buttonBar);
@@ -428,21 +430,38 @@
                                     }
                                 }, buttonBar);
 
-                                // doi
-                                domConstruct.create("button", {
-                                  type: "button",
-                                  title: "Visit DOI page",
-                                  "class": "dsDOI",
-                                  click: function () {
-                                      var datasetDOI = dlg.datasetExplorer._datasetResponse.doi;
-                                      if (!datasetDOI) {
-                                        alert("A DOI does not yet exist for this dataset.");
-                                      } else {
-                                        var url = "https://doi.org/" + datasetDOI;
-                                        window.open(url);
-                                      }
-                                  }
-                              }, buttonBar);
+                                // doi or landing page
+                                if (datasetType !== "geochronologic") {
+
+                                  domConstruct.create("button", {
+                                    type: "button",
+                                    title: "Visit DOI page",
+                                    "class": "dsDOI",
+                                    click: function () {
+                                        var datasetDOI = dlg.datasetExplorer._datasetResponse.site.collectionunit.dataset.doi[0];
+                                        if (!datasetDOI) {
+                                          alert("A DOI does not yet exist for this dataset.");
+                                        } else {
+                                          var url = "https://doi.org/" + datasetDOI;
+                                          window.open(url);
+                                        }
+                                    }
+                                  }, buttonBar);
+
+                                } else if (datasetType === "geochronologic") {
+
+                                  domConstruct.create("button", {
+                                    type: "button",
+                                    title: "Visit dataset landing page",
+                                    "class": "dsLP",
+                                    click: function () {
+                                      var datasetId = dlg.datasetExplorer.currentDatasetId;
+                                      var url = "https://data.neotomadb.org/" + datasetId;
+                                      window.open(url);
+                                    }
+                                  }, buttonBar);
+    
+                                }
 
                                 // will load data so show busy
                                 dlg.datasetExplorer.toggleStandby(true);

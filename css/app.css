@@ -397,6 +397,9 @@ button.mini {
 .mini button.dsDOI {
   background: url("../resources/images/doi.png") no-repeat center;
 }
+.mini button.dsLP {
+  background: url("../resources/images/inspect16.png") no-repeat center;
+}
 .mini button.dsUp {
     background: url("../resources/images/arrow_up16.png") no-repeat center;
 }
@@ -451,11 +454,25 @@ button.mini {
     color: #898A8B;
     width: 80px;
     vertical-align: top;
+    padding-bottom: 5px;
 }
 .sitemeta .col2 {
-    padding-left: 10px;
-    max-width: 500px;
+    padding-left: 15px;
+    padding-bottom: 10px;
+    max-width: 700px;
     vertical-align: top;
+}
+.sitemeta .col3 {
+  font-weight: bold;
+  color: #898A8B;
+  width: 80px;
+  vertical-align: top;
+}
+.sitemeta .col4 {
+  padding-left: 10px;
+  padding-bottom: 10px;
+  max-width: 700px;
+  vertical-align: top;
 }
 
 /* publications */

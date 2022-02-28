@@ -173,7 +173,7 @@
               //now set the chart x-scale for the variableunit
               //if default called, likely an invalid set of charts
               //todo: define charts for each xscale domain (metric)
-              this.setMetricByVariableUnit(metadata.variableunits)
+              this.setMetricByVariableUnit(metadata.units)
               
             },
             //metric associated with each variableunit
@@ -407,8 +407,8 @@
                   2. calc abundance value
                 */
                 var varUnitFilteredSamples = sampleData.filter(function(d){
-                  return d.variableunits == variableUnit;
-                })
+                  return d.units == variableUnit;
+                });
 
 /*  Aggregation not right; creates duplicate entries by genus at sample, not sum of values
 
@@ -441,7 +441,7 @@
                 //if grouping by genus, assign genus alias to taxaname                
                 if ( metadata.applygrouping ){
                    varUnitFilteredSamples.forEach(function(d){
-                        d.taxonname = genusMatch(d.taxonname);
+                        d.variablename = genusMatch(d.variablename);
                     })
                 } 
 
@@ -450,14 +450,14 @@
                 //update totals by sample and taxonname
                 var updatedUnitFilteredSamples = d3.nest()
                   .key(function(d){
-                    return d.taxonname
+                    return d.variablename
                   })
                   .entries(varUnitFilteredSamples)
 //***********************
 */
                 var filteredTaxaRenderObjects = d3.nest()
                   .key(function(d){
-                    return d.taxonname
+                    return d.variablename;
                   })
                   .entries(varUnitFilteredSamples);
 
@@ -468,7 +468,7 @@
                       //calc maxAbundance for Taxon
                       d.maxabundance = 0;
                       //pass EcolGroupID to container
-                      d.ecolgroupid = d.values[0].ecolgroupid;
+                      d.ecologicalgroup = d.values[0].ecologicalgroup;
                       d.values.forEach(function(e){
                         var abundance = +((e.value / summaryDataBySampleID.get(e.sampleid).get(variableUnit).sumnisp)*100).toFixed(2);
                         e.abundance = abundance;
@@ -484,7 +484,7 @@
                       //calc maxAbundance for Taxon
                       d.maxabundance = 0;
                       //pass EcolGroupID to container
-                      d.ecolgroupid = d.values[0].ecolgroupid;
+                      d.ecologicalgroup = d.values[0].ecologicalgroup;
                       d.values.forEach(function(e){
                         var abundance = +((e.value / summaryDataBySampleID.get(e.sampleid).get(variableUnit).sumnisp)*100).toFixed(2);
                         e.abundance = abundance;
@@ -502,7 +502,7 @@
                       d.maxvalue = 0;
                       var mni = 0;
                       //pass EcolGroupID to container
-                      d.ecolgroupid = d.values[0].ecolgroupid;
+                      d.ecologicalgroup = d.values[0].ecologicalgroup;
 
                       d.values.forEach(function(e){
                           
@@ -520,7 +520,7 @@
                   default:
                     filteredTaxaRenderObjects.forEach(function(d){
                       //pass EcolGroupID to container
-                      d.ecolgroupid = d.values[0].ecolgroupid;
+                      d.ecologicalgroup = d.values[0].ecologicalgroup;
                     })
                     break;
                 }
@@ -590,14 +590,14 @@
                 return aggregatedRenderObjects;
             },
             sortEcolGroupThenTaxonName: function(a,b){
-                if(a.ecolgroupid == b.ecolgroupid){
+                if(a.ecologicalgroup == b.ecologicalgroup){
                     var x = a.key;
                     var y = b.key;
 
                     return x < y ? -1 : x > y ? 1 : 0;
                 }
-                var x = a.ecolgroupid;
-                var y = b.ecolgroupid;
+                var x = a.ecologicalgroup;
+                var y = b.ecologicalgroup;
                 return x < y ? -1 : x > y ? 1 : 0;
             },
             groupByEcolGroupID: function(theArray, variableUnit){
@@ -605,16 +605,16 @@
                     var ecoGrpRenderObjects = [];
                     metadata.allecolgroupids.forEach(function(d){
                       var obj = {};
-                      obj.ecolgroupid = d;
+                      obj.ecologicalgroup = d;
                       obj.values = [];
                       ecoGrpRenderObjects.push(obj); 
                     });
-
                     //for each groupID, get all samples, aggregate by SampleID
                     ecoGrpRenderObjects.forEach(function(d){
                       var filteredByEcoGrp = theArray.filter(function(e){
-                        return e.ecolgroupid === d.ecolgroupid;
-                      })
+                        return e.ecologicalgroup === d.ecologicalgroup;
+                      });
+                      
                       //append all values objects to EcolGroup collection
                       filteredByEcoGrp.forEach(function(f){
                         //concatenate arr of objects
@@ -642,7 +642,7 @@
                               .map(d.values);
                       
                           //for each EcolGroupID, generate a display object aggregating properties for each SampleID   
-                          d.key = "Other "+d.ecolgroupid;
+                          d.key = "Other "+d.ecologicalgroup;
                           d.values = [];
 
                           nest.each(function(value, key){
@@ -672,8 +672,8 @@
                                   //no custom attibutes
                                   break;
                               }          
-                              obj.ecolgroupid = d.ecolgroupid;
-                              obj.variableunits = variableUnit;
+                              obj.ecologicalgroup = d.ecologicalgroup;
+                              obj.units = variableUnit;
                               obj.maxvalue = value.totalValue;
                               d.values.push(obj);
                             });
@@ -689,7 +689,7 @@
                       case "NISP":
                          //now calc summary status for EcolGroup for NISP
                           ecoGrpRenderObjects.forEach(function(d){
-                            d.variableunits = variableUnit;
+                            d.units = variableUnit;
                             var abundanceExtent = d3.extent(d.values,function(f){
                               return f.abundance;
                             });
@@ -716,7 +716,7 @@
                       case "NISP digitized":
                         //now calc summary status for EcolGroup for NISP
                           ecoGrpRenderObjects.forEach(function(d){
-                            d.variableunits = variableUnit;
+                            d.units = variableUnit;
                             var abundanceExtent = d3.extent(d.values,function(f){
                               return f.abundance;
                             });
@@ -743,7 +743,7 @@
                       default:
                          //now calc summary status for EcolGroup for other VariableUnits
                           ecoGrpRenderObjects.forEach(function(d){
-                            d.variableunits = variableUnit;
+                            d.units = variableUnit;
                             d.values.forEach(function(e){
                               e["max"+variableUnit.toLowerCase()] = +e.maxvalue.toFixed(2);
                             })
@@ -997,12 +997,12 @@
               var filteredSamples = [];
               
 
-              dataset.samples.forEach(function(d){
+              dataset.site.collectionunit.dataset.samples.forEach(function(d){
                 var filteredSampleData = [];
-                filteredSampleData = d.sampledata.filter(function(e){
-                  return includeEcolGroupIDs.indexOf(e.ecolgroupid) > -1;
+                filteredSampleData = d.datum.filter(function(e){
+                  return includeEcolGroupIDs.indexOf(e.ecologicalgroup) > -1;
                 })
-                d.sampledata = filteredSampleData;
+                d.datum = filteredSampleData;
 
               });
               //filtered dataset
@@ -1113,7 +1113,7 @@
                 
 
                 metadata = {};
-                metadata.datasettype = dataset.datasettype.toLowerCase();
+                metadata.datasettype = dataset.site.collectionunit.dataset.datasettype.toLowerCase();
                 metadata.charttypeselection = null;
                 metadata.yaxisdomainname = null;
                 metadata.yaxislabel = null;
@@ -1126,19 +1126,19 @@
                 //api may return int, may return null, may return empty array, may return empty object
                 metadata.defchronologyid = null;
                 var defchronid;
-                if (dataset.defchronologyid){
+                if (dataset.site.collectionunit.defaultchronology){
                   //case integer returned
-                  if ( Number.isInteger(dataset.defchronologyid)){
-                    defchronid = dataset.defchronologyid;
+                  if ( Number.isInteger(dataset.site.collectionunit.defaultchronology)){
+                    defchronid = dataset.site.collectionunit.defaultchronology;
                   }
                   //case array of objects returned
-                  else if (dataset.defchronologyid.length > -1){
-                    if ( dataset.defchronologyid[0].hasOwnProperty("chronologyid")){
-                      defchronid = dataset.defchronologyid[0].chronologyid;
+                  else if (dataset.site.collectionunit.defaultchronology.length > -1){
+                    if ( dataset.site.collectionunit.defaultchronology[0].hasOwnProperty("chronologyid")){
+                      defchronid = dataset.site.collectionunit.defaultchronology[0].chronologyid;
                     }
                   }
                 }
-                
+
                 metadata.defchronologyid =  defchronid;//"defchronologyid":[{"chronologyid":917}]
 
                 //filter for EcolGroupID(s) of interest
@@ -1163,18 +1163,17 @@
                      //no EcolGroupID filter
                      break;
                 }
-                
-
+              
                 //get set of unique SampleID values
-                var SampleIDs = d3.set(dataset.samples, function(d){
+                var SampleIDs = d3.set(dataset.site.collectionunit.dataset.samples, function(d){
                   return "s"+d.sampleid;
                 }).values();
 
                 //create map of SampleID, Depth
                 var sampleDepths;
                 sampleDepths = d3.map();
-                dataset.samples.forEach(function(d){
-                  sampleDepths.set("s"+d.sampleid, d.analysisunitdepth);
+                dataset.site.collectionunit.dataset.samples.forEach(function(d){
+                  sampleDepths.set("s"+d.sampleid, d.depth);
                 });
                 var depthExtent;
                 depthExtent = d3.extent(sampleDepths.values());
@@ -1186,7 +1185,7 @@
 
                 //create ageCollection of SampleID, Age maps for each chronology
                 var ageCollection = [];
-                dataset.samples[0].sampleages.forEach(function(d){
+                dataset.site.collectionunit.dataset.samples[0].ages.forEach(function(d){
                   var ageObj = {};
                   ageObj.agetype = d.agetype;
                   ageObj.chronologyid = d.chronologyid;
@@ -1201,22 +1200,25 @@
                 //{}8 properties: TaxonName, VariableUnits, VariableElement, VariableContext, TaxaGroup, Value, EcolGroupID, + SampleID
                 sampleData = [];
                 var ageData = [];
-                dataset.samples.forEach(function(d,i){
+                dataset.site.collectionunit.dataset.samples.forEach(function(d,i){
                   var theSampleID = "s"+d.sampleid;
 
-                  d.sampledata.forEach(function(e,j){
+                  d.datum.forEach(function(e,j){
                     e.sampleid = theSampleID;
                   })
-                  d.sampleages.forEach(function(f,k){
+                  d.ages.forEach(function(f,k){
                     f.sampleid = theSampleID;
                   })
-                  sampleData = sampleData.concat(d.sampledata);
-                  ageData = ageData.concat(d.sampleages);
-                })
-
+                  sampleData = sampleData.concat(d.datum);
+                  ageData = ageData.concat(d.ages);
+                });
+                // remove duplicate entries by sampleid and variablename
+                sampleData = [...new Map(sampleData.map(v => [JSON.stringify([v.sampleid,v.variablename]), v])).values()];
+                sampleData.sort((a, b) => a.sampleid - b.sampleid);
+                
                 //extract unique values for VariableUnits, TaxonName, EcolGroupID 
                 var allVarUnits = [];
-                allVarUnits = d3.set(sampleData,function(d){return d.variableunits}).values();
+                allVarUnits = d3.set(sampleData,function(d){return d.units}).values();
                 metadata.allvarunits = allVarUnits;
 
                 /**Set Defaults: round 1 
@@ -1227,10 +1229,10 @@
                 
 
                 var allTaxaNames = [];
-                allTaxaNames = d3.set(sampleData,function(d){return d.taxonname}).values();
+                allTaxaNames = d3.set(sampleData,function(d){return d.variablename}).values();
                 metadata.alltaxanames = allTaxaNames; 
 
-                metadata.allecolgroupids = d3.set(sampleData,function(d){return d.ecolgroupid}).values();
+                metadata.allecolgroupids = d3.set(sampleData,function(d){return d.ecologicalgroup}).values();
 
                 //all possible y axis scales {Depth, ChronID#1, ChronID#2, ...}
                 ageCollection.forEach(function(d){
@@ -1302,7 +1304,7 @@
                     return d.sampleid;
                   })
                   .key(function(d){
-                    return d.variableunits;
+                    return d.units;
                   })
                   //.rollup(function(values){
                   //  return {
@@ -1316,10 +1318,10 @@
                     return d.sampleid;
                   })
                   .key(function(d){
-                    return d.variableunits;
+                    return d.units;
                   })
                   .rollup(function(values){
-                    var currentKey = values[0].variableunits;//JSON.stringify(values);
+                    var currentKey = values[0].units;//JSON.stringify(values);
                     switch(currentKey){
                       case "NISP":
                         return {
@@ -1522,7 +1524,7 @@
                                 return "url(#clip-"+sdcontext.getCleanTaxonName(d.key)+")";
                             })
                             .attr("class", function(d) { 
-                                return d.ecolgroupid + " exaggerate-5x area";
+                                return d.ecologicalgroup + " exaggerate-5x area";
                             })
                             .attr("d", function (d) {
                                 strataXScale.range(sdcontext.calcChartRange(d.maxabundance));
@@ -1533,8 +1535,8 @@
                                 //mixed case of some styled with css, some with this function
                                 
                                 if (cssStyleDatatsetType.indexOf(metadata.datasettype) == -1){
-                                    if(d.ecolgroupid && metadata.allecolgroupids){
-                                        return colors20(metadata.allecolgroupids.indexOf(d.ecolgroupid));
+                                    if(d.ecologicalgroup && metadata.allecolgroupids){
+                                        return colors20(metadata.allecolgroupids.indexOf(d.ecologicalgroup));
                                     } else {
                                         return '#dddddd';
                                     }
@@ -1550,7 +1552,7 @@
                    
                     var paths = taxaGroup.append("path")
                             .attr("class", function(d) { 
-                                return d.ecolgroupid + " standard-scale area";
+                                return d.ecologicalgroup + " standard-scale area";
                             })
                             .attr("d", function(d) {
                                 //strataXScale.range(calcChartRange(d.maxAbundance));
@@ -1565,8 +1567,8 @@
                                 
                                 if (cssStyleDatatsetType.indexOf(metadata.datasettype) == -1){
                                     //attempt to assign by ecolgroupid
-                                    if(d.ecolgroupid && metadata.allecolgroupids){
-                                        return colors20(metadata.allecolgroupids.indexOf(d.ecolgroupid));
+                                    if(d.ecologicalgroup && metadata.allecolgroupids){
+                                        return colors20(metadata.allecolgroupids.indexOf(d.ecologicalgroup));
                                     } else {
                                       //fallback to grey
                                         return '#dddddd';
@@ -1580,7 +1582,7 @@
             if(metadata.charttypeselection == "BarChart"){
                     var bars = taxaGroup.append("g")
                       .attr("class", function(d) {
-                          return "g-barcharts "+d.ecolgroupid;
+                          return "g-barcharts "+d.ecologicalgroup;
                       })
                       .selectAll("rect")
                       .data(function(d){
@@ -1588,12 +1590,12 @@
                               strataXScale.domain(sdcontext.calcChartDomain(d.maxvalue));
                               return d.values;
                             }, function(d){
-                                return d.taxonname;
+                                return d.variablename;
                       })
                       .enter()
                       .append("rect")
                       .attr("class",function(d,i){  
-                        return d.ecolgroupid +" standard-scale rect";
+                        return d.ecologicalgroup +" standard-scale rect";
                       })
                       .attr("width", function(d){
                           //console.log("value: "+d.value+" | metadata.xscaleinput: "+ metadata.xscaleinput + " | "+d[metadata.xscaleinput]);
@@ -1609,8 +1611,8 @@
                         //mixed case of some styled with css, some with this function
                         
                         if (cssStyleDatatsetType.indexOf(metadata.datasettype) == -1){
-                            if(d.ecolgroupid && metadata.allecolgroupids){
-                                return colors20(metadata.allecolgroupids.indexOf(d.ecolgroupid));
+                            if(d.ecologicalgroup && metadata.allecolgroupids){
+                                return colors20(metadata.allecolgroupids.indexOf(d.ecologicalgroup));
                             } else {
                                 return '#dddddd';
                             }
@@ -1623,7 +1625,7 @@
             if(metadata.charttypeselection == "SymbolPlot"){ 
                     var symbols = taxaGroup.append("g")
                       .attr("class", function(d) {
-                          return "g-symbols "+d.ecolgroupid;
+                          return "g-symbols "+d.ecologicalgroup;
                       })
                       .selectAll("cross")
                       .data(function(d){
@@ -1632,12 +1634,12 @@
                               strataXScale.domain([0,1]);
                               return d.values;
                             }, function(d){
-                                return d.taxonname;
+                                return d.variablename;
                       })
                       .enter()
                       .append("path")
                       .attr("class",function(d,i){  
-                        return d.ecolgroupid +" standard-scale";
+                        return d.ecologicalgroup +" standard-scale";
                       })
                       .attr("transform", function(d){
                             return "translate("+strataXScale(0.5)+","+strataYScale(sdcontext.lookupYValueBySampleID(d.sampleid))+")";
@@ -1647,13 +1649,13 @@
                             //mixed case of some styled with css, some with this function
                         if (cssStyleDatatsetType.indexOf(metadata.datasettype) == -1){
                         
-                            if(d.ecolgroupid && metadata.allecolgroupids){
-                                return colors20(metadata.allecolgroupids.indexOf(d.ecolgroupid));
+                            if(d.ecologicalgroup && metadata.allecolgroupids){
+                                return colors20(metadata.allecolgroupids.indexOf(d.ecologicalgroup));
                             } else {
                                 return '#dddddd';
                             }
                         } else {
-                            var c = colorMap[d.ecolgroupid];
+                            var c = colorMap[d.ecologicalgroup];
                             if(c){
                               return c;
                             } else {
@@ -1680,7 +1682,7 @@
             if(metadata.charttypeselection != "SymbolPlot"){
                     taxaGroup.append("g")
                       .attr("class", function(d) {
-                          return "g-points "+d.ecolgroupid;
+                          return "g-points "+d.ecologicalgroup;
                       })
                       .selectAll("circle")
                       .data(function(d){
@@ -1688,19 +1690,19 @@
                           strataXScale.domain(sdcontext.calcChartDomain(d.maxvalue)); 
                           return d.values;
                       }, function(d){
-                        return d.taxonname;
+                        return d.variablename;
                       })
                       .enter()
                       .append("circle")
                       .attr("class",function(d,i){  
-                        return d.ecolgroupid;
+                        return d.ecologicalgroup;
                       })
                       .style("fill",function(d,i){
                         //mixed case of some styled with css, some with this function
                         
                         if (cssStyleDatatsetType.indexOf(metadata.datasettype) == -1){
-                             if(d.ecolgroupid && metadata.allecolgroupids){
-                                    return colors20(metadata.allecolgroupids.indexOf(d.ecolgroupid));
+                             if(d.ecologicalgroup && metadata.allecolgroupids){
+                                    return colors20(metadata.allecolgroupids.indexOf(d.ecologicalgroup));
                              } else {
                                     return '#dddddd';
                              }
@@ -1738,10 +1740,9 @@
                 }
 
                 function constructMouseOverLabel(ptdata){
-                    
                     //cases differ for variableUnit
                     //cases differ for species and 'Other' aggregates
-                    var labelType = ptdata.variableunits//metadata.variableunit;
+                    var labelType = ptdata.units//metadata.variableunit;
 
                     if(labelType){
                         switch(labelType){
@@ -1754,13 +1755,13 @@
                                     cntLabel = d3.format("c")(ptdata.value); //integer
                                 }
                                 var html = "";
-                                if(ptdata.ecolgroupid){
-                                    var taxonName = ptdata.taxonname ? " | " +  ptdata.taxonname : " | (multiple)";
-                                    html = "<h3>"+ptdata.ecolgroupid+ taxonName + "</h3>";
+                                if(ptdata.ecologicalgroup){
+                                    var taxonName = ptdata.variablename ? " | " +  ptdata.variablename: " | (multiple)";
+                                    html = "<h3>" + ptdata.ecologicalgroup + taxonName + "</h3>";
                                 }
-                                html += "<div class='point-label'><span>SampleID:"+ptdata.sampleid +"<span><br>";
-                                html += "<span>"+metadata.yaxisunittype +": "+ sdcontext.lookupYValueBySampleID(ptdata.sampleid) + " " +metadata.yaxislabel + "</span><br>";
-                                html += "<span>Abundance: "+pctLabel + " (of "+summaryDataBySampleID.get(ptdata.sampleid).get(ptdata.variableunits).sumnisp +")</span><br>";
+                                html += "<div class='point-label'><span>SampleID: " + ptdata.sampleid + "<span><br>";
+                                html += "<span>" + metadata.yaxisunittype + ": " + sdcontext.lookupYValueBySampleID(ptdata.sampleid) + " " + metadata.yaxislabel + "</span><br>";
+                                html += "<span>Abundance: " + pctLabel + " (of " + summaryDataBySampleID.get(ptdata.sampleid).get(ptdata.units).sumnisp + ")</span><br>";
                                 html += "<span>Total Count: " + cntLabel + "</span></div>";
                                 break;
                             case "NISP digitized":
@@ -1772,36 +1773,36 @@
                                   cntLabel = d3.format("c")(ptdata.value); //integer
                               }
                               var html = "";
-                              if(ptdata.ecolgroupid){
-                                  var taxonName = ptdata.taxonname ? " | " +  ptdata.taxonname : " | (multiple)";
-                                  html = "<h3>"+ptdata.ecolgroupid+ taxonName + "</h3>";
+                              if(ptdata.ecologicalgroup){
+                                  var taxonName = ptdata.variablename ? " | " +  ptdata.variablename: + " | (multiple)";
+                                  html = "<h3>" + ptdata.ecologicalgroup + taxonName + "</h3>";
                               }
-                              html += "<div class='point-label'><span>SampleID:"+ptdata.sampleid +"<span><br>";
-                              html += "<span>"+metadata.yaxisunittype +": "+ sdcontext.lookupYValueBySampleID(ptdata.sampleid) + " " +metadata.yaxislabel + "</span><br>";
-                              html += "<span>Abundance: "+pctLabel + " (of "+summaryDataBySampleID.get(ptdata.sampleid).get(ptdata.variableunits).sumnisp +")</span><br>";
+                              html += "<div class='point-label'><span>SampleID: "+ptdata.sampleid +"<span><br>";
+                              html += "<span>" + metadata.yaxisunittype + ": " + sdcontext.lookupYValueBySampleID(ptdata.sampleid) + " " + metadata.yaxislabel + "</span><br>";
+                              html += "<span>Abundance: " + pctLabel + " (of " + summaryDataBySampleID.get(ptdata.sampleid).get(ptdata.units).sumnisp + ")</span><br>";
                               html += "<span>Total Count: " + cntLabel + "</span></div>";
                               break;
                             case "MNI":
                                 cntLabel = d3.format("c")(ptdata.value); //integer
                                 var html ="";
-                                if(ptdata.ecolgroupid){
-                                    var taxonName = ptdata.taxonname ? " | " + ptdata.taxonname : " | (multiple)";
-                                    html = "<h3>"+ptdata.ecolgroupid+ taxonName + "</h3>";
+                                if(ptdata.ecologicalgroup){
+                                    var taxonName = ptdata.variablename ? " | " + ptdata.variablename : " | (multiple)";
+                                    html = "<h3>"+ptdata.ecologicalgroup+ taxonName + "</h3>";
                                 }
-                                html += "<div class='point-label'><span>SampleID:"+ptdata.sampleid +"<span><br>";
-                                html += "<span>"+metadata.yaxisunittype +": "+ sdcontext.lookupYValueBySampleID(ptdata.sampleid) + " " +metadata.yaxislabel + "</span><br>";
-                                html += "<span>MNI: "+cntLabel; //+ " (of "+summaryDataBySampleID.get(ptdata.sampleid).get(ptdata.variableunits).summni +")</span></div>";
+                                html += "<div class='point-label'><span>SampleID: "+ptdata.sampleid +"<span><br>";
+                                html += "<span>" + metadata.yaxisunittype +": "+ sdcontext.lookupYValueBySampleID(ptdata.sampleid) + " " + metadata.yaxislabel + "</span><br>";
+                                html += "<span>MNI: " + cntLabel; //+ " (of "+summaryDataBySampleID.get(ptdata.sampleid).get(ptdata.units).summni +")</span></div>";
                                 break;      
-                             default:
+                            default:
                                 cntLabel = d3.format("c")(ptdata.value); //integer
                                 var html ="";
-                                if(ptdata.ecolgroupid){
-                                    var taxonName = ptdata.taxonname ? " | " + ptdata.taxonname : " | (multiple)";
-                                    html = "<h3>"+ptdata.ecolgroupid+ taxonName + "</h3>";
+                                if(ptdata.ecologicalgroup){
+                                    var taxonName = ptdata.variablename ? " | " + ptdata.variablename : " | (multiple)";
+                                    html = "<h3>"+ptdata.ecologicalgroup+ taxonName + "</h3>";
                                 }
-                                html += "<div class='point-label'><span>SampleID:"+ptdata.sampleid +"<span><br>";
-                                html += "<span>"+metadata.yaxisunittype +": "+ sdcontext.lookupYValueBySampleID(ptdata.sampleid) + " " +metadata.yaxislabel + "</span><br>";
-                                html += "<span>"+ptdata.variableunits+": "+cntLabel + " </span><br></div>";
+                                html += "<div class='point-label'><span>SampleID: "+ptdata.sampleid +"<span><br>";
+                                html += "<span>" + metadata.yaxisunittype + ": " + sdcontext.lookupYValueBySampleID(ptdata.sampleid) + " " + metadata.yaxislabel + "</span><br>";
+                                html += "<span>" + ptdata.units + ": " + cntLabel + " </span><br></div>";
                                 break;      
                         }
                     }
@@ -2121,7 +2122,7 @@
                     .enter()
                     .append("g")
                     .attr("class",function(d){
-                      return "entry "+d.ecolgroupid;
+                      return "entry "+d.ecologicalgroup;
                     })
                        .attr("transform",function(d,i){
                          return "translate(0," + (i*(symHt+10)) + ")";
@@ -2141,7 +2142,7 @@
                     .attr("transform","translate(-10,0)")
                     .style("fill",function(d,i){
                       //return colors20(i);
-                      var c = colorMap[d.ecolgroupid];
+                      var c = colorMap[d.ecologicalgroup];
                       if(c){
                         return c;
                       } else {
@@ -2162,7 +2163,7 @@
                     })
                     .attr("transform","translate(10,0)")
                     .style("fill",function(d,i){
-                      var c = colorMap[d.ecolgroupid];
+                      var c = colorMap[d.ecologicalgroup];
                       if(c){
                         return c;
                       } else {
@@ -2192,7 +2193,7 @@
 
                 var labels = lgd.append("text")
                   .text(function(d){
-                    return d.ecolgroupid;//"label"
+                    return d.ecologicalgroup;//"label"
                   })
                   .attr("transform","translate(15,5)");
               },

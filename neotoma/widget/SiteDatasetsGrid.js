@@ -111,35 +111,52 @@
                                     neotoma.addDatasetToTray(row.datasetid);
                                 }
                             }, buttonsDiv);
+                            console.log("row",row.datasettype);
 
-                            // doi
-                            domConstruct.create("button", {
-                              type: "button",
-                              title: "Visit DOI page",
-                              "class": "dsDOI",
-                              click: function () {
-                                script.get(config.dataServicesLocation + "/datasets/?datasetids=" + row.datasetid,
-                                  { jsonp: "callback" }
-                                ).then(lang.hitch(this, function (response) {
-                                    if (response.success) {
-                                      var datasetDOI = response.data[0].doi;
-                                      if (!datasetDOI) {
-                                        alert("A DOI does not yet exist for this dataset.");
+                            // doi or landing page
+                            if (row.datasettype !== "geochronologic") {
+                               
+                              domConstruct.create("button", {
+                                type: "button",
+                                title: "Visit DOI page",
+                                "class": "dsDOI",
+                                click: function () {
+                                  script.get(config.dataServicesLocation + "/datasets/?datasetids=" + row.datasetid,
+                                    { jsonp: "callback" }
+                                  ).then(lang.hitch(this, function (response) {
+                                      if (response.success) {
+                                        var datasetDOI = response.data[0].doi;
+                                        if (!datasetDOI) {
+                                          alert("A DOI does not yet exist for one or more selected datasets.");
+                                        } else {
+                                          var url = "https://doi.org/" + datasetDOI;
+                                          window.open(url);
+                                        }
                                       } else {
-                                        var url = "https://doi.org/" + datasetDOI;
-                                        window.open(url);
+                                        alert("error getting doi for this dataset: " + response.message);
                                       }
-                                    } else {
-                                      alert("error getting doi for this dataset: " + response.message);
+                                    }),
+                                    function (response) {
+                                        alert("error sending request for dataset: " + response);
                                     }
-                                  }),
-                                  function (response) {
-                                      alert("error sending request for dataset: " + response);
-                                  }
-                                );
-                              }
-                            }, buttonsDiv);
+                                  );
+                                }
+                              }, buttonsDiv);
 
+                            } else if (row.datasettype === "geochronologic") {
+
+                              domConstruct.create("button", {
+                                type: "button",
+                                title: "Visit dataset landing page",
+                                "class": "dsLP",
+                                click: function () {
+                                  var url = "https://data.neotomadb.org/" + row.datasetid;
+                                  window.open(url);
+                                }
+                              }, buttonsDiv);
+
+                            }
+  
                             return cellDiv;
                         } catch (e) {
                             alert("error in widget/SiteDatasetsGrid: " + e.message);

@@ -28,7 +28,7 @@
     <script src="https://d3js.org/d3-request.v1.min.js"></script>
     <script>
         var appFolder = "/explorer/";
-        var apiRoot = "https://api.neotomadb.org/v1.5/";
+        var apiRoot = "https://api.neotomadb.org/";
         dojoConfig = {
             isDebug: 1,
             async: 1,
@@ -41,9 +41,10 @@
                 { name: 'neotoma', location: appFolder + 'neotoma' },
                 { name: 'amagimap', location: appFolder + 'amagimap' }
             ],
-            appServicesLocation: apiRoot + "apps",
-            dbServicesLocation: apiRoot + "dbtables",
-            dataServicesLocation: apiRoot + "data",
+            appServicesLocation: apiRoot + "v1.5/apps",
+            dbServicesLocation: apiRoot + "v1.5/dbtables",
+            dataServicesLocation: apiRoot + "v1.5/data",
+            dataServicesLocationV2: apiRoot + "v2.0/data",
             wfsEndPoint: "https://geo.cei.psu.edu/geoserver/cei/ows?",
             map: null,
             localDbConfig: {
