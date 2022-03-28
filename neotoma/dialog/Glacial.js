@@ -19,12 +19,12 @@
                     this.glacialLayer.setVisible(false);
 
                 } else {
-                    // set map layer's server layer to glacialAge
-                    this.glacialLayer.params["layers"] = "glacialAge";
-
                     // set age on layer and refresh
-                    this.glacialLayer.params["age"] = val;
-                    this.glacialLayer.redraw(true);
+                    this.glacialLayer.getSource().updateParams({
+                      "cql_filter=age": val
+                    });
+
+                    this.glacialLayer.getSource().changed();
 
                     // make sure layer is visible
                     this.glacialLayer.setVisible(true);
@@ -42,12 +42,15 @@
                             };
 
                             // set map layer's server layer to glacial
-                            this.glacialLayer.params["layers"] = "glacial";
-  
-                            // set maxAge and minAge on layer and refresh
-                            this.glacialLayer.params["maxAge"] = ages.ageOlder;
-                            this.glacialLayer.params["minAge"] = ages.ageYounger;
-                            this.glacialLayer.redraw(true);
+                            // set age on layer and refresh
+                            this.glacialLayer.getSource().updateParams({
+                              "maxAge": ages.ageOlder
+                            });
+                            this.glacialLayer.getSource().updateParams({
+                              "minAge": ages.ageYounger
+                            });
+                           
+                            this.glacialLayer.getSource().changed();
                             break;
                         case "reverse":
                             // set ages to play
@@ -112,7 +115,7 @@
             show: function() {
                 this.inherited(arguments);
                 if (this.playAges !== null) {
-                    this.glacialLayer.setVisible(true);
+                  this.glacialLayer.setVisible(true);
                 }
             },
             hide: function () {
@@ -152,26 +155,32 @@
                     }
                 }));
 
-                // create glacial layer
-                this.glacialLayer = new OpenLayers.Layer.MapServer("Glacial", "http://e2-web01.ad.psu.edu/maps?",
-	                { map: "../../../maps/neotoma/main.map", layers: "glacial", map_imagetype: "png" },
-	                { isBaseLayer: false, singleTile: true, visibility: false, opacity:0.7 }
-                );
+                this.glacialLayerSource = new ol.source.TileWMS({
+                  url: 'https://geo-ub.cei.psu.edu/geoserver/neotoma/wms?',
+                  properties: {
+                    id: "Glacial"
+                  },
+                  params: {
+                    'SERVICE': 'WMS',
+                    'VERSION': '1.1.0',
+                    'LAYERS': 'neotoma:icesheets',
+                    'TILED': true,
+                    'CRS': 'EPSG:3857',
+                    'FORMAT': 'image/png',
+                  },
+                  serverType: 'geoserver'
+                });
 
-                // add handlers to show/hide spinner
-                this.glacialLayer.events.register("loadstart", null,
-                    function () {
-                        topic.publish("neotoma/glacial/StartBusy");
-                    }
-                );
-                this.glacialLayer.events.register("loadend", null,
-                    function () {
-                        topic.publish("neotoma/glacial/StopBusy");
-                    }
-                );
+                this.glacialLayer = new ol.layer.Tile({
+                  opacity: 0.9,
+                  layer: 'neotoma:icesheets',
+                  visible: false,
+                  preload: Infinity,
+                  source: this.glacialLayerSource
+                });
 
                 // add to map
-                dojo.config.map.addLayers([this.glacialLayer]);
+                dojo.config.map.addLayer(this.glacialLayer);
 
                 // listen for layer opacity to change
                 topic.subscribe("glacial/opacity/new",
@@ -183,8 +192,8 @@
                 // populate ages
                 this.glacialAge.set("store", new Memory(
                         {
-                            idProperty: "calAge",
-                            data: [{ "calAge": 900 }, { "calAge": 1900 }, { "calAge": 3200 }, { "calAge": 4500 }, { "calAge": 5700 }, { "calAge": 6300 }, { "calAge": 6800 }, { "calAge": 7400 }, { "calAge": 7800 }, { "calAge": 8000 }, { "calAge": 8400 }, { "calAge": 8500 }, { "calAge": 8600 }, { "calAge": 8900 }, { "calAge": 9500 }, { "calAge": 10200 }, { "calAge": 10800 }, { "calAge": 10900 }, { "calAge": 11500 }, { "calAge": 12000 }, { "calAge": 12500 }, { "calAge": 12800 }, { "calAge": 13300 }, { "calAge": 13800 }, { "calAge": 14800 }, { "calAge": 15600 }, { "calAge": 16300 }, { "calAge": 17000 }, { "calAge": 17700 }, { "calAge": 18200 }, { "calAge": 18800 }, { "calAge": 19300 }, { "calAge": 19900 }, { "calAge": 20500 }, { "calAge": 21100 }, { "calAge": 21800 }]
+                            idProperty: "age",
+                            data: [{ "age": 1000 }, { "age": 2000 }, { "age": 3000 }, { "age": 4000 }, { "age": 5000 }, { "age": 5500 }, { "age": 6000 }, { "age": 6500 }, { "age": 7000 }, { "age": 7200 }, { "age": 7600 }, { "age": 7700 }, { "age": 7800 }, { "age": 8000 }, { "age": 8500 }, { "age": 9000 }, { "age": 9500 }, { "age": 9600 }, { "age": 10000 }, { "age": 10250 }, { "age": 10500 }, { "age": 11000 }, { "age": 11500 }, { "age": 12000 }, { "age": 12500 }, { "age": 13000 }, { "age": 13500 }, { "age": 14000 }, { "age": 14500 }, { "age": 15000 }, { "age": 15500 }, { "age": 16000 }, { "age": 16500 }, { "age": 17000 }, { "age": 17500 }, { "age": 18000 }]
                         }
                     )
                 );
@@ -193,7 +202,7 @@
                 this.allAges = [];
                 array.forEach(this.glacialAge.get("store").data,
                     lang.hitch(this, function (ageObj) {
-                        this.allAges.push(ageObj.calAge);
+                        this.allAges.push(ageObj.age);
                     })
                 );
            }
