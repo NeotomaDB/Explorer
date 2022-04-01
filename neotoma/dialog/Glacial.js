@@ -21,7 +21,7 @@
                 } else {
                     // set age on layer and refresh
                     this.glacialLayer.getSource().updateParams({
-                      "cql_filter=age": val
+                      "cql_filter=calage": val
                     });
 
                     this.glacialLayer.getSource().changed();
@@ -192,8 +192,8 @@
                 // populate ages
                 this.glacialAge.set("store", new Memory(
                         {
-                            idProperty: "age",
-                            data: [{ "age": 1000 }, { "age": 2000 }, { "age": 3000 }, { "age": 4000 }, { "age": 5000 }, { "age": 5500 }, { "age": 6000 }, { "age": 6500 }, { "age": 7000 }, { "age": 7200 }, { "age": 7600 }, { "age": 7700 }, { "age": 7800 }, { "age": 8000 }, { "age": 8500 }, { "age": 9000 }, { "age": 9500 }, { "age": 9600 }, { "age": 10000 }, { "age": 10250 }, { "age": 10500 }, { "age": 11000 }, { "age": 11500 }, { "age": 12000 }, { "age": 12500 }, { "age": 13000 }, { "age": 13500 }, { "age": 14000 }, { "age": 14500 }, { "age": 15000 }, { "age": 15500 }, { "age": 16000 }, { "age": 16500 }, { "age": 17000 }, { "age": 17500 }, { "age": 18000 }]
+                            idProperty: "calage",
+                            data: [{ "calage": 910 }, { "calage": 2000 }, { "calage": 3200 }, { "calage": 4500 }, { "calage": 5710 }, { "calage": 6300 }, { "calage": 6800 }, { "calage": 7300 }, { "calage": 7900 }, { "calage": 8100 }, { "calage": 8500 }, { "calage": 8700 }, { "calage": 8800 }, { "calage": 9000 }, { "calage": 9600 }, { "calage": 10300 }, { "calage": 10900 }, { "calage": 11000 }, { "calage": 11500 }, { "calage": 11800 }, { "calage": 12100 }, { "calage": 12800 }, { "calage": 13500 }, { "calage": 14200 }, { "calage": 14900 }, { "calage": 15500 }, { "calage": 16100 }, { "calage": 16800 }, { "calage": 17400 }, { "calage": 18000 }, { "calage": 18700 }, { "calage": 19300 }, { "calage": 19500 }, { "calage": 20500 }, { "calage": 21100 }, { "calage": 22100 }]
                         }
                     )
                 );
@@ -202,7 +202,7 @@
                 this.allAges = [];
                 array.forEach(this.glacialAge.get("store").data,
                     lang.hitch(this, function (ageObj) {
-                        this.allAges.push(ageObj.age);
+                        this.allAges.push(ageObj.calage);
                     })
                 );
            }
