@@ -116,7 +116,7 @@
                             // see if need to create
                             var dlg = registry.byId("glacialLayerDialog");
                             if (dlg == null) {
-                                dlg = new Glacial({ id: "glacialLayerDialog", title: "Ice and Lakes", "class": "myDialogs nonModal" });
+                                dlg = new Glacial({ id: "glacialLayerDialog", title: "Ice Sheets", "class": "myDialogs nonModal" });
                                 dlg.startup();
                                 // position
                                 var mapNode = registry.byId("mapPane").domNode;
