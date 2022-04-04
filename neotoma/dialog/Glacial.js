@@ -126,6 +126,9 @@
 
                 // stop animation
                 clearTimeout(this.animationTimeout);
+
+                // clear calage value
+                document.getElementById("calage").value = "";
             },
             postCreate: function () {
                 this.inherited(arguments);
