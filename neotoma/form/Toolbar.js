@@ -14,6 +14,16 @@
             try {
                 // make sure layer is on map. If it is already, remove all features before loading new ones
                 var modernRangeSource = new ol.source.Vector({});
+                // define layer style
+                var modernRangeStyle = new ol.style.Style({
+                  stroke: new ol.style.Stroke({
+                    color: 'red',
+                    width: 1
+                  }),
+                  fill: new ol.style.Fill({
+                    color: 'rgba(203, 24, 29, 0.1)'
+                  })
+                });
                 
                 dojo.config.map.getLayers().forEach(function (layer) {
                   if (layer.get("id") == "ModernRange") {
@@ -22,6 +32,7 @@
                   } else {
                     var modernRangeLayer = new ol.layer.Vector({
                       source: modernRangeSource,
+                      style: modernRangeStyle,
                       properties: {
                         id: "ModernRange"
                       }
@@ -329,7 +340,7 @@
                                         srsName: 'EPSG:900913',
                                         service: 'wfs',
                                         version: '1.1.0',
-                                        typename: 'cei:faunranges',
+                                        typename: 'neotoma:faunranges',
                                         filter: "<filter><PropertyIsEqualTo><PropertyName>sciname</PropertyName><Literal>" + speciesName + "</Literal></PropertyIsEqualTo></filter>"
                                     };
 
@@ -425,7 +436,7 @@
                                     "class": "dsEmail",
                                     click: function () {
                                         var datasetId = dlg.datasetExplorer.currentDatasetId;
-                                        var url = "mailto:?subject=Link%20to%20Neotoma%20dataset%20" + datasetId + "&body=http://apps.neotomadb.org/Explorer/?datasetid=" + datasetId;
+                                        var url = "mailto:?subject=Link%20to%20Neotoma%20dataset%20" + datasetId + "&body=https://apps.neotomadb.org/explorer/?datasetids=" + datasetId;
                                         window.open(url);
                                     }
                                 }, buttonBar);
