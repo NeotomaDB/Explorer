@@ -89,6 +89,18 @@
                         }  
                 }
             },
+            deselectSite: function () {
+                //deselect sites
+                var control = null;
+                dojo.config.map.getInteractions().forEach((interaction) => {
+                    if (interaction instanceof ol.interaction.Select) {
+                        control = interaction;
+                    }
+                });
+                control.getFeatures().clear();
+                // close popup
+                this.onCancel();
+            },
             displaySite: function () {
                 try {
                     var site = this.sites[this.siteIndex];
