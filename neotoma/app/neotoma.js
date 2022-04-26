@@ -112,7 +112,7 @@
                                         data: searchResponse,
                                         searchName: "datasetid: " + datasetId,
                                         request: { datasetid: datasetId },
-                                        symbol: { "color": "#ff0000", "shape": "Square", "size": "Large" }
+                                        symbol: { "shape": "Square", "size": "Large", "color": "#5D5B61" }
                                     }
                                     );
 
@@ -162,7 +162,7 @@
                                         data: searchResponse,
                                         searchName: "DatasetIDs: " + datasetIds,
                                         request: { datasetids: datasetIds },
-                                        symbol: { "color": "#ff0000", "shape": "Point", "size": "Large" }
+                                        symbol: { "shape": "Circle", "size": "Large", "color": "#5D5B61" }
                                     }
                                     );
                                 } else {
@@ -207,7 +207,7 @@
                                         data: searchResponse,
                                         searchName: "SiteIds: " + siteIds,
                                         request: { siteids: siteIds },
-                                        symbol: { "color": "#ff0000", "shape": "Square", "size": "Large" } 
+                                        symbol: { "shape": "Square", "size": "Large", "color": "#5D5B61" } 
                                     }
                                     );
                                 } else {
@@ -328,9 +328,9 @@
                       selectStyle = new ol.style.Style({
                         image: new ol.style.Circle({ 
                           fill: new ol.style.Fill({
-                              color: '#fffc00'
+                              color: '#f03b20'
                           }),
-                          radius: markerSize
+                          radius: markerSize + 1
                         })
                       });
                     } else if (symbol.shape == "Square") {
@@ -347,7 +347,7 @@
                       selectStyle = new ol.style.Style({
                         image: new ol.style.RegularShape({ 
                           fill: new ol.style.Fill({
-                              color: '#fffc00'
+                              color: '#f03b20'
                           }),
                           radius: markerSize,
                           points: 4,
