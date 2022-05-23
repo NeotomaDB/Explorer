@@ -19,7 +19,7 @@
                     formatter: function (value) {
                         // make sure image exists
                         if (dojo.config.app.iconStore.get(value) == null) {
-                            alert("There is no icon for this dataset type");
+                            //alert("There is no icon for this dataset type");
                             return "";
                         }
                         return '<img src="resources/datasetIcons/' + dojo.config.app.iconStore.get(value).image + '" title="' + value + '"></img>';
