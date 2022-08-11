@@ -1239,8 +1239,8 @@
                   var theAge = d.chronologyid;
                   var sampleAges = d3.map();
                   var currentAgeData = ageData.filter(function(e){
-                    return e.chronologyid = theAge;
-                  })
+                    return e.chronologyid == theAge;
+                  });
                   currentAgeData.forEach(function(f){
                     //sampleAges.set(d.SampleID, d.Age);
                     //test vertebrate fauna w/ only youngestAge, oldestAge
