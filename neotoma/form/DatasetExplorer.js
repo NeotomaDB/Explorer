@@ -491,7 +491,7 @@
                         outSample["sampleId"] = inSample.sampleid;
                         outSample["sampleName"] = inSample.samplename || "";
                         outSample["unitName"] = inSample.analysisunitname || "";
-                        outSample["depth"] = inSample.depth || "";
+                        inSample.depth == null ? outSample["depth"] = "" : outSample["depth"] = inSample.depth;
                         outSample["thickness"] = inSample.thickness || "";
 
                         // add to outSamples
