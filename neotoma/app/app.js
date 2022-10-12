@@ -258,13 +258,6 @@
                                     neotoma.loadDatasets(datasetIds);
                                 } 
                             }
-                            var searchParams = urlUtil.getParameterByName("search");
-                            searchParams = JSON.parse(searchParams);
-                            var databaseId = searchParams.metadata.databaseId;
-                            if (databaseId) {
-                              idsPassed = true;
-                              neotoma.loadDataByDBId(databaseId);
-                            }
 
                             // see if site ids were passed
                             var siteIds = urlUtil.getParameterByName("siteids") || urlUtil.getParameterByName("siteIds") || urlUtil.getParameterByName("siteIDs");
