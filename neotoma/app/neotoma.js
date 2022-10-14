@@ -177,6 +177,44 @@
                     alert("error in app/neotoma.loadDatasets: " + e.message);
                 }
             },
+            loadDataByDBId: function (databaseId) {
+              try {
+                  // make request to data/datasets
+                  script.get(config.appServicesLocation + '/Search?search={"metadata":{"databaseId":"' + databaseId + '"}}',
+                          { jsonp: "callback" }
+                      ).then(lang.hitch(this, function (response) {
+                          try {
+                              if (response.success) {
+                                  // make sure data was returned
+                                  if (response.data.length === 0) {
+                                      alert("No datasets found with ids in " + databaseId + ".");
+                                      return;
+                                  }
+
+                                  // convert response to Explorer Search response
+                                  var searchResponse = this.databasesToExplorerSearchResponse(response.data);
+
+                                  // publish topic with new response
+                                  topic.publish("neotoma/search/NewResult", {
+                                      //data: reformattedSites,
+                                      data: searchResponse,
+                                      searchName: "databaseId: " + databaseId,
+                                      request: { databaseid: databaseId },
+                                      symbol: { "shape": "Circle", "size": "medium", "color": "#238b45" }
+                                  }
+                                  );
+                              } else {
+                                  alert(response.message);
+                              }
+                          } catch (e) {
+                              alert("Error in app/neotoma.loadDatasets:" + e.message);
+                          }
+                      }
+                  ));
+              } catch (e) {
+                  alert("error in app/neotoma.loadDatasets: " + e.message);
+              }
+            },
             loadSites: function (siteIds) {
                 try {
                     // make request to data/datasets
@@ -649,6 +687,101 @@
 
                 // return sites
                 return reformattedSites;
+            },
+            databasesToExplorerSearchResponse: function (databasesDataResponse) {
+              // need to keep track of sites because the datasets may be at the same site
+              var siteIds = [];
+              var minx = null;
+              var miny = null;
+              var maxx = null;
+              var maxy = null;
+
+              // format into standard responses
+              var reformattedSite = null;
+              var reformattedSites = [];
+              array.forEach(databasesDataResponse,
+                  function (datasetObj) {
+                      // see if it expands the extent
+                      if (miny === null) {
+                          miny = datasetObj.latitudesouth;
+                          maxy = datasetObj.latitudenorth;
+                          minx = datasetObj.longitudewest;
+                          maxx = datasetObj.longitudeeast;
+                      } else {
+                          if (datasetObj.latitudesouth < miny) {
+                              miny = datasetObj.latitudesouth;
+                          }
+                          if (datasetObj.latitudenorth > maxy) {
+                              maxy = datasetObj.latitudenorth;
+                          }
+                          if (datasetObj.longitudewest < minx) {
+                              minx = datasetObj.longitudewest;
+                          }
+                          if (datasetObj.longitudeeast > maxx) {
+                              maxx = datasetObj.longitudeeast;
+                          }
+                      }
+
+                      // see if already have site or need to create
+                      if (siteIds.indexOf(datasetObj.siteid) !== -1) {
+                          // already created site, just add dataset
+                          var result = array.filter(reformattedSites,
+                              function (item, index, ary) {
+                                  if (item.siteid === datasetObj.siteid) {
+                                      return true;
+                                  }
+                              }
+                          );
+                          reformattedSite = result[0];
+                      } else {
+                          // add new siteid to siteIds
+                          siteIds.push(datasetObj.siteid);
+
+                          // create site with empty datasets
+                          reformattedSite = {
+                              siteid: datasetObj.siteid,
+                              sitename: datasetObj.sitename,
+                              sitedescription: datasetObj.sitedescription,
+                              sitenotes: datasetObj.sitenotes,
+                              latitudesouth: datasetObj.latitudesouth,
+                              latitudenorth: datasetObj.latitudenorth,
+                              longitudewest: datasetObj.longitudewest,
+                              longitudeeast: datasetObj.longitudeeast,
+                              latitude: (datasetObj.latitudesouth + datasetObj.latitudenorth) / 2,
+                              longitude: (datasetObj.longitudewest + datasetObj.longitudeeast) / 2,
+                              ageoldest: datasetObj.ageoldest,
+                              ageyoungest: datasetObj.ageyoungest,
+                              datasets: datasetObj.datasets
+                          };
+                      }
+
+                      // add to reformattedSites
+                      reformattedSites.push(reformattedSite);
+                  }
+              );
+
+
+              // check that there is a width and a height
+              var buf = 0.125;//0.00004;
+              if (miny === maxy) {
+                  miny -= buf;
+                  maxy += buf;
+              }
+              if (minx === maxx) {
+                  minx -= buf;
+                  maxx += buf;
+              }
+
+
+              // get projected extent coordinates
+              var ext = ol.extent.boundingExtent([[minx, miny], [maxx, maxy]]);
+              ext = ol.proj.transformExtent(ext, ol.proj.get('EPSG:4326'), ol.proj.get('EPSG:3857'));
+
+              // zoom map
+              dojo.config.map.getView().fit(ext, { duration: 1000, padding: [15,15,15,15], maxZoom: 10 });
+
+              // return sites
+              return reformattedSites;
             }
         }; // end of return object
     }
