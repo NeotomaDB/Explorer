@@ -271,7 +271,6 @@
                               
                             }
                             
-                            
 
                             // see if site ids were passed
                             var siteIds = urlUtil.getParameterByName("siteids") || urlUtil.getParameterByName("siteIds") || urlUtil.getParameterByName("siteIDs");
