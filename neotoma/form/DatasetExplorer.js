@@ -512,9 +512,9 @@
                                     outChrons["C" + inSampAge.chronologyid] = outChron;
                                 }
                                 // create string representation of sample age (e.g. AgeOlder/Age/AgeYounger) and add to chron's SampAges array
-                                outSampAge = (inSampAge.ageolder || "--") + "/" +
-                                    (inSampAge.age || "--") + "/" +
-                                    (inSampAge.ageyounger || "--");
+                                outSampAge = (inSampAge.ageolder ?? "--") + "/" +
+                                    (inSampAge.age ?? "--") + "/" +
+                                    (inSampAge.ageyounger ?? "--");
                                 outChron.sampAges.push({ sampleId: inSample.sampleid, ageStr: outSampAge });
                             }
                         }
