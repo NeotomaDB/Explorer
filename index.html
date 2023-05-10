@@ -28,7 +28,7 @@
     <script src="https://d3js.org/d3-request.v1.min.js"></script>
     <script>
         var appFolder = "/explorer/";
-        var apiRoot = "https://api.neotomadb.org/v1.5/";
+        var apiRoot = "https://api.neotomadb.org/";
         dojoConfig = {
             isDebug: 1,
             async: 1,
@@ -41,10 +41,11 @@
                 { name: 'neotoma', location: appFolder + 'neotoma' },
                 { name: 'amagimap', location: appFolder + 'amagimap' }
             ],
-            appServicesLocation: apiRoot + "apps",
-            dbServicesLocation: apiRoot + "dbtables",
-            dataServicesLocation: apiRoot + "data",
-            wfsEndPoint: "https://geo.cei.psu.edu/geoserver/cei/ows?",
+            appServicesLocation: apiRoot + "v1.5/apps",
+            dbServicesLocation: apiRoot + "v1.5/dbtables",
+            dataServicesLocation: apiRoot + "v1.5/data",
+            dataServicesLocationV2: apiRoot + "v2.0/data",
+            wfsEndPoint: "https://geo-ub.cei.psu.edu/geoserver/neotoma/ows?",
             map: null,
             localDbConfig: {
                 version: 3,
@@ -74,18 +75,13 @@
                     colors: {
                         0: "#6a3d9a", // purple
                         1: "#006d2c", // green
-                        2: "#de0d0f", // red
-                        3: "#b15928", // brown
-                        4: "#ff7f00", // orange
-                        5: "#e7298a", // pink
-                        6: "#e6ab02", // gold
-                        7: "#666666", // grey
-                        8: "#ffff33", // yellow
-                        9: "#bc80bd", // light purple
-                        10: "#d95f02" // burnt orange
+                        2: "#08519c", // blue
+                        3: "#f768a1", // pink
+                        4: "#e6ab02", // gold
+                        5: "#666666" // grey
                     },
                     currentIndex: 0,
-                    maxIndex:10
+                    maxIndex: 5
                 },
                 layersSelectControl: null,
                 navControl: null,

@@ -1,11 +1,11 @@
-﻿define(["dojo/_base/declare", "dijit/layout/ContentPane", "dijit/_TemplatedMixin", "dojo/text!./template/datasetExplorer.html", "dijit/_WidgetsInTemplateMixin",
+﻿define(["dojo/request", "dojo/_base/declare", "dijit/layout/ContentPane", "dijit/TitlePane", "dijit/_TemplatedMixin", "dojo/text!./template/datasetExplorer.html", "dijit/_WidgetsInTemplateMixin",
    "dojo/request/script", "dojo/_base/lang", "dijit/Tooltip", "dgrid/OnDemandGrid", "dgrid/Grid", "neotoma/widget/_StoreMixin", "dgrid/extensions/DijitRegistry",
    "dojo/store/Memory", "dgrid/ColumnSet", "dgrid/extensions/ColumnResizer", "dojo/dom-style", "dojo/dom-construct", "dojo/dom-class", "dojo/dom-attr", "dojo/on", 
    "dojo/number", "dijit/registry", "dojo/dom", "dojo/has", "dojo/_base/array", "neotoma/util/export", "dojo/aspect", "dojo/_base/config", "dojo/topic", "dojo/when", "dojo/Deferred",
    "neotoma/form/StratigraphicDiagram", 
    "neotoma/widget/TabContainer", "dojox/widget/Standby", "dijit/layout/BorderContainer", "dijit/form/FilteringSelect", "neotoma/form/ChartPane", 
    "dijit/layout/StackContainer", "dijit/form/CheckBox", "dijit/form/Button", "dijit/form/Textarea", "dojo/domReady!"],
-    function (declare, ContentPane, _TemplatedMixin, template, _WidgetsInTemplateMixin, script, lang, Tooltip, OnDemandGrid, Grid, StoreMixin, DijitRegistry, 
+    function (request, declare, ContentPane, titlePane, _TemplatedMixin, template, _WidgetsInTemplateMixin, script, lang, Tooltip, OnDemandGrid, Grid, StoreMixin, DijitRegistry, 
       Memory, ColumnSet, ColumnResizer, domStyle, domConstruct, domClass, domAttr, on, numberUtil, registry, dom, has, array, exExport, aspect, config,topic, when, Deferred) {
         // define widget
         return declare([ContentPane, _TemplatedMixin, _WidgetsInTemplateMixin], {
@@ -108,9 +108,13 @@
                     this.standby.hide();
                 }
             },
-            showSamplesTab: function() {
-                // make sure samples tab is active
-                this.tabContainer.selectChild(this.samplesTab);
+            // showSamplesTab: function() {
+            //     // make sure samples tab is active
+            //     this.tabContainer.selectChild(this.samplesTab);
+            // },
+            showMetadataTab: function() {
+                // make sure metadata tab is active
+                this.tabContainer.selectChild(this.metadataTab);
             },
             currentDatasetId: null,
             resizeChartContainer: function() {
@@ -145,7 +149,7 @@
                     this._datasetType = datasetType;
                     this._databaseName = databaseName;
                     var geoChronTabNames = ["geochronologyTab","siteTab"];
-                    var regularTabNames = ["samplesTab", "siteTab",  "diagramTab", "chronologyTab", "publicationsTab"];
+                    var regularTabNames = ["metadataTab", "samplesTab", "siteTab",  "diagramTab", "chronologyTab", "publicationsTab"];
 
                     // see if geochronologic
                     if (datasetType === "geochronologic") {
@@ -247,99 +251,123 @@
                         dojo.config.diagrammer.clearChart();                   
                     }    
 */    
-                    // send request to Downloads resource
-                    script.get(config.dataServicesLocation + "/Downloads/" + datasetId,
-                        { jsonp: "callback" }
-                    ).then(lang.hitch(this, function (response) {
-                        try {
-                            if (response.success) {
-                                if (response.data.length === 0) {
-                                    alert("No data found for datasetId: " + datasetId);
-                                    // not busy
-                                    this.toggleStandby(false);
-                                    return;
-                                }
-      
-                                var dataset = JSON.stringify(response.data[0]);
-                                this._datasetResponse = JSON.parse(dataset);
-                                var datasetForSD = response.data[0];
+                     
 
-                                // see if first time
-                                var initRun = true;
-                                if (this._samplesGrid) {
+                     
+
+
+                        request.get(config.dataServicesLocationV2 + "/Downloads/" + datasetId, {
+                            handleAs: "json"
+                        }).then(lang.hitch(this, function (response) {
+                     
+                          try {
+                              if (response.status === "success") {
+                                  if (response.data.length === 0) {
+                                      alert("No data found for datasetId: " + datasetId);
+                                      // not busy
+                                      this.toggleStandby(false);
+                                      return;
+                                  }
+
+
+                                  var dataset = JSON.stringify(response.data[0]);
+                                  this._datasetResponse = JSON.parse(dataset);
+                                  var datasetForSD = response.data[0];
+
+                                  //see if first time
+                                  var initRun = true;
+                                  if (this._samplesGrid) {
                                     initRun = false;
-                                }
+                                  }
+    
+                                  //create or update SD content
+                                  // this.diagramTab.processDataset(this._datasetResponse);
 
-                                //create or update SD content
-                                // this.diagramTab.processDataset(this._datasetResponse);
+                                  // make sure samples tab is active
+                                  //this.tabContainer.selectChild(this.samplesTab);
+                                  //make sure metadata tab is active 
+                                  this.tabContainer.selectChild(this.metadataTab);
 
-                                // make sure samples tab is active
-                                this.tabContainer.selectChild(this.samplesTab);
+                                  // set currentDatasetId
+                                  this.currentDatasetId = datasetId;
 
-                                // set currentDatasetId
-                                this.currentDatasetId = datasetId;
+                                  // parse with brian's function
+                                  this._sheetResponse = this._formatSheet(this._datasetResponse.site.collectionunit.dataset.samples);
+                            
+                                  // load samples (header grid)
+                                  this._displaySamples(this._sheetResponse);
 
-                                // parse with brian's function
-                                this._sheetResponse = this._formatSheet(this._datasetResponse.samples);
-                               
-                                // load samples (header grid)
-                                this._displaySamples(this._sheetResponse);
+                                  // load variables (main grid)
+                                  this._displayVariables(this._sheetResponse);
 
-                                // load variables (main grid)
-                                this._displayVariables(this._sheetResponse);
+                                  // load chronologies & retreive additional chronology data; return parsed chronology array
+                                  this._parseChronologies(this._datasetResponse.site.collectionunit.dataset.samples, this._datasetResponse.site.collectionunit.defaultchronology);
 
-                                // load chronologies & retreive additional chronology data; return parsed chronology array
-                                this._parseChronologies(this._datasetResponse.samples, this._datasetResponse.defchronologyid);
+                                  // load site meta data
+                                  //this._loadSiteMetadata(this._datasetResponse.site);
+                                  this._loadDatasetMetadata(this._datasetResponse.site);
 
-                                // load site meta data
-                                this._loadSiteMetadata(this._datasetResponse.site);
+                                  // load publications
+                                  this._loadPublications(datasetId, this._datasetResponse.site.collectionunit.dataset.datasetpi);
 
-                                // load publications
-                                this._loadPublications(datasetId, this._datasetResponse.datasetpis);
+                                  // change title
+                                  this.getParent().set("title", "Dataset ID: " + datasetId + " | " + this._datasetResponse.site.collectionunit.dataset.database);
+                                                            
+                                  // enable tab if appropriate
+                                  var DatasetTypesWithSD = ["pollen", "diatom", "ostracode", "testate amoebae", "vertebrate fauna"];
+                                  // if relevant dataset type and necessary chronology details configure stratigraphic diagrammer
+                                  if ( DatasetTypesWithSD.indexOf(datasetType) > -1 &&
+                                    (datasetForSD.site.collectionunit.defaultchronology) &&
+                                    (
+                                      (datasetForSD.site.collectionunit.dataset.samples[0].ages[0].age || datasetForSD.site.collectionunit.dataset.samples[0].ages[0].age === 0) ||
+                                      (datasetForSD.site.collectionunit.dataset.samples[0].ages[0].ageolder || datasetForSD.site.collectionunit.dataset.samples[0].ages[0].ageolder === 0)
+                                    )
+                                  ) {
+                                      // enable pollen diagram tab
+                                      this.diagramTab.set("disabled", false);
+                                      // process dataset for SD only if one of these dataset types
+                                      this.diagramTab.processDataset(datasetForSD);
+                                          
+                                  } else {
+                                      // disable pollen diagram tab
+                                      this.diagramTab.set("disabled", true);
+                                      console.log("conditions not met")
+                                  }
 
-                                // change title
-                                this.getParent().set("title", "Dataset ID: " + datasetId + " | " + this._datasetResponse.databasename);
-                                                                
-                                // enable tab if appropriate
-                                var DatasetTypesWithSD = ["pollen", "diatom", "ostracode", "testate amoebae", "vertebrate fauna"];
-                                if ( DatasetTypesWithSD.indexOf(datasetType) > -1 && datasetForSD.defchronologyid.length != 0 ) {
-                                        // enable pollen diagram tab
-                                        this.diagramTab.set("disabled", false);
-                                        // process dataset for SD only if one of these dataset types
-                                        this.diagramTab.processDataset(datasetForSD);
-                                       
-                                } else {
-                                        // disable pollen diagram tab
-                                        this.diagramTab.set("disabled", true);
-                                }
+                                  // HACK. 
+                                  if (initRun) {
+                                      // briefly select chron chart tab to try to initialize
+                                      this.tabContainer.selectChild(this.chronologyTab);
 
-                                //HACK. 
-                                if (initRun) {
-                                    // briefly select chron chart tab to try to initialize
-                                    this.tabContainer.selectChild(this.chronologyTab);
+                                      // briefly select pollen diagram tab to try to initialize
+                                      this.tabContainer.selectChild(this.diagramTab);
+                                      
+                                  //HACK. This gets the grids to display on the first search. Otherwise they don't render unless the samplesTab is hidden and shown once
+                                  // Problem started after moving tab container to stack container to have geochron tabs.
+                                      //this.tabContainer.selectChild(this.siteTab);
+                                      this.tabContainer.selectChild(this.samplesTab);
+                                      this.tabContainer.selectChild(this.metadataTab);
+                                  }
 
-                                    // briefly select pollen diagram tab to try to initialize
-                                    this.tabContainer.selectChild(this.diagramTab);
-                                   
-                                //HACK. This gets the grids to display on the first search. Otherwise they don't render unless the samplesTab is hidden and shown once
-                                // Problem started after moving tab container to stack container to have geochron tabs.
-                                    this.tabContainer.selectChild(this.siteTab);
-                                    this.tabContainer.selectChild(this.samplesTab);
-                                }
+                                  // not busy
+                                  this.toggleStandby(false);
+                              } else {
+                                  alert("error in form/DatasetExplorer.loadDataset: " + response.message);
+                                  // not busy
+                                  this.toggleStandby(false);
+                              }
+                          } catch (e) {
+                                
+                              alert("error in form/DatasetExplorer.loadDataset parsing response: " + e.message);
+                              // not busy
+                              this.toggleStandby(false);
+                          }
+                      }), function(e) {
+                          alert("error in form/DatasetExplorer.loadDataset parsing response: " + e.message);
+                          // not busy
+                          this.toggleStandby(false);
+                      });
 
-                                // not busy
-                                this.toggleStandby(false);
-                            } else {
-                                alert("error in form/DatasetExplorer.loadDataset: " + response.message);
-                                // not busy
-                                this.toggleStandby(false);
-                            }
-                        } catch (e) {
-                            alert("error in form/DatasetExplorer.loadDataset parsing response: " + e.message);
-                            // not busy
-                            this.toggleStandby(false);
-                        }
-                    })); // end then function
                   }
                 } catch (e) {
                     alert("error in form/DatasetExplorer.loadDataset" + e.message);
@@ -396,7 +424,7 @@
             },
             _loadPublications: function (datasetId, datasetPIs) {
                 // clear out any previous publications
-                this.publicationsTab.set("content", "");
+                this.publicationsMetadataDiv.set("content", "");
                 // get publications for dataset
                 script.get(config.dataServicesLocation + "/Publications/",
                         { jsonp: "callback", query: {datasetid:datasetId} }
@@ -405,7 +433,7 @@
                             var content = null;
                             var authorsList = null;
                             var authors = null;
-                            var pt = this.publicationsTab;
+                            var pt = this.publicationsMetadataDiv;
 
                             if (resp.success) {
                                 // create string of PI names
@@ -417,7 +445,7 @@
                                 );
 
                                 // add pis
-                                domConstruct.place(domConstruct.create("p", { innerHTML: "PIs: " + pis.join("; "), class: "cite" }), pt.domNode);
+                                // domConstruct.place(domConstruct.create("p", { innerHTML: "PIs: " + pis.join("; "), class: "cite" }), pt.domNode);
 
                                 // add all publications to tab
                                 if (resp.data.length > 0) {
@@ -436,7 +464,7 @@
                         }
                     }));
             },
-            _formatSheet: function (inSamples) {
+            _formatSheet: function(inSamples) {
                 var inSample = null;
                 var inSampleDataArray = null;
                 var inSampleData = null;
@@ -463,15 +491,15 @@
                         outSample["sampleId"] = inSample.sampleid;
                         outSample["sampleName"] = inSample.samplename || "";
                         outSample["unitName"] = inSample.analysisunitname || "";
-                        outSample["depth"] = inSample.analysisunitdepth || "";
-                        outSample["thickness"] = inSample.analysisunitthickness || "";
+                        inSample.depth == null ? outSample["depth"] = "" : outSample["depth"] = inSample.depth;
+                        outSample["thickness"] = inSample.thickness || "";
 
                         // add to outSamples
                         outSamples.push(outSample);
 
                         // create chron objects to hold age data; chron object includes array of sample age strings by sampleId
-                        for (var ci = 0; ci < inSample.sampleages.length; ci++) {
-                            inSampAge = inSample.sampleages[ci];
+                        for (var ci = 0; ci < inSample.ages.length; ci++) {
+                            inSampAge = inSample.ages[ci];
                             if (inSampAge.chronologyid) {
                                 outChron = outChrons["C" + inSampAge.chronologyid];
                                 // create new outChron object if doesn't exist
@@ -484,15 +512,15 @@
                                     outChrons["C" + inSampAge.chronologyid] = outChron;
                                 }
                                 // create string representation of sample age (e.g. AgeOlder/Age/AgeYounger) and add to chron's SampAges array
-                                outSampAge = (inSampAge.ageolder || "--") + "/" +
-                                    (inSampAge.age || "--") + "/" +
-                                    (inSampAge.ageyounger || "--");
+                                outSampAge = (inSampAge.ageolder ?? "--") + "/" +
+                                    (inSampAge.age ?? "--") + "/" +
+                                    (inSampAge.ageyounger ?? "--");
                                 outChron.sampAges.push({ sampleId: inSample.sampleid, ageStr: outSampAge });
                             }
                         }
 
                         // loop through raw SampleData array, create variable objects to hold values for samples
-                        inSampleDataArray = inSample.sampledata;
+                        inSampleDataArray = inSample.datum;
                         var numSampleData = inSampleDataArray.length;
                         var thisValue = null;
                         for (var si = 0; si < numSampleData; si++) {
@@ -506,19 +534,19 @@
                                 varNum += 1;
                                 // create new new Variable stub from inSampleData properties
                                 newVariable = {};
-                                newVariable["name"] = inSampleData.taxonname;
+                                newVariable["name"] = inSampleData.variablename;
                                 //newVariable["group"] = inSampleData.TaxaGroup;
-                                newVariable["group"] = inSampleData.ecolgroupid;
-                                newVariable["element"] = inSampleData.variableelement;
-                                newVariable["units"] = inSampleData.variableunits;
-                                newVariable["context"] = inSampleData.variablecontext || "";
+                                newVariable["group"] = inSampleData.ecologicalgroup;
+                                newVariable["element"] = inSampleData.element;
+                                newVariable["units"] = inSampleData.units;
+                                newVariable["context"] = inSampleData.context || "";
                                 //TODO: handle VariableModifications array
                                 outVariables[varId] = newVariable;
                             }
                             
                             // see if value is presence/absense
                             thisValue = inSampleData.value;
-                            if (inSampleData.variableunits === "present/absent") {
+                            if (inSampleData.units === "present/absent") {
                                 if (thisValue === 1) {
                                     thisValue = "+";
                                 }
@@ -587,10 +615,10 @@
                 for (var key in list) {
                     if (list.hasOwnProperty(key)) {
                         outVar = list[key];
-                        if (outVar.name == inVar.taxonname) {
-                            if (outVar.element == inVar.variableelement) {
-                                if (outVar.units == inVar.variableunits) {
-                                    if ((outVar.context == inVar.variablecontext) || (!outVar.context && !inVar.variablecontext)) {
+                        if (outVar.name == inVar.variablename) {
+                            if (outVar.element == inVar.element) {
+                                if (outVar.units == inVar.units) {
+                                    if ((outVar.context == inVar.context) || (!outVar.context && !inVar.context)) {
                                         return key;
                                     }
                                 }
@@ -965,9 +993,9 @@
             _parseChronologies: function (samples, defaultChronId) {
                 require(["dojo/store/Observable", "dojo/store/Memory", "dojox/charting/Chart", "dojox/charting/themes/Claro", "dojox/charting/StoreSeries", "dojox/charting/plot2d/Indicator","dojox/charting/action2d/MouseZoomAndPan", "dojo/dom-style", "dojox/charting/axis2d/Default", "dojox/charting/plot2d/Default", "dojox/charting/plot2d/Lines","dojox/charting/axis2d/Default","dojox/charting/plot2d/Candlesticks","dojox/charting/plot2d/Grid"],
                     lang.hitch(this, function (Observable, Memory, Chart, theme, StoreSeries, Indicator, MouseZoomAndPan, domStyle) {
-                        
+
                         // hide legend if no ages because there will be no chart
-                        if (samples[0].sampleages[0].age == null || samples[0].sampleages[0].ageolder == null || samples[0].sampleages[0].ageyounger == null) {
+                        if (samples[0].ages[0].age == null || samples[0].ages[0].ageolder == null || samples[0].ages[0].ageyounger == null) {
                             // hide chronology legend, disable tab
                             domStyle.set("chronologyLegend", "visibility", "hidden");
                             this.chronologyTab.set("disabled", true);
@@ -988,7 +1016,7 @@
                         // chronologies vary by sample. find sample index with most.
                         var maxChronologiesBySample = 0;
                         samples.forEach(function(sample, index) {
-                            if (sample.sampleages.length > maxChronologiesBySample) {
+                            if (sample.ages.length > maxChronologiesBySample) {
                                 maxChronologiesBySample = index;
                             }
                             return maxChronologiesBySample;
@@ -997,7 +1025,7 @@
                         for (var i = 0; i < numSamples; i++) {
                             thisSample = samples[i];
                             // look at sample ages to see how many chronologies there are. 1 chron/sample age
-                            sampleAges = thisSample.sampleages;
+                            sampleAges = thisSample.ages;
                             var numAges = sampleAges.length;
                             var thisAge = null;
 
@@ -1027,15 +1055,15 @@
                                     }
                                 }
                                 // add sample to chartData for all records. Make sure has valid depth and age
-                                if ((thisAge.age != null) && (thisSample.analysisunitdepth != null) && (chronologies[ai])) {
+                                if ((thisAge.age != null) && (thisSample.depth != null) && (chronologies[ai])) {
                                     // see if should be min
                                     if (!chronologies[ai].minage) {
                                         chronologies[ai].minage = thisAge.age;
-                                        chronologies[ai].mindepth = thisSample.analysisunitdepth;
+                                        chronologies[ai].mindepth = thisSample.depth;
                                     } else {
                                         if (thisAge.age < chronologies[ai].minage) {
                                             chronologies[ai].minage = thisAge.age;
-                                            chronologies[ai].mindepth = thisSample.analysisunitdepth;
+                                            chronologies[ai].mindepth = thisSample.depth;
                                         }
                                         //if (thisAge.Age < chronologies[ai].MaxDepth) {
                                         //    chronologies[ai].MaxDepth = thisSample.AnalysisUnitDepth;
@@ -1045,11 +1073,11 @@
                                     // set each to max since are in age order
                                     if (!chronologies[ai].maxage) {
                                         chronologies[ai].maxage = thisAge.age;
-                                        chronologies[ai].maxdepth = thisSample.analysisunitdepth
+                                        chronologies[ai].maxdepth = thisSample.depth
                                     } else {
                                         if (thisAge.age > chronologies[ai].maxage) {
                                             chronologies[ai].maxage = thisAge.age;
-                                            chronologies[ai].maxdepth = thisSample.analysisunitdepth;
+                                            chronologies[ai].maxdepth = thisSample.depth;
                                         }
                                     }
 
@@ -1062,7 +1090,7 @@
                                     // add to chart data
                                     chartData[thisAge.chronologyid].push({
                                       SampleID: thisSample.sampleid,
-                                      AnalysisUnitDepth: thisSample.analysisunitdepth,
+                                      AnalysisUnitDepth: thisSample.depth,
                                       Age: thisAge.age
                                     });
                                     // sort data by age to avoid graph rendering issues
@@ -1382,7 +1410,8 @@
                     alert("error in form/DatasetExplorer._displayGeochronDataset: " + e.message);
                 }
             },
-            _loadSiteMetadata: function (site) {
+            //_loadSiteMetadata: function (site) {
+            _loadDatasetMetadata: function (dataset) {
                 //// create content
                 //var content = [];
                 //content.push("<h3>" + site.SiteName + "</h3> Site ID: " + site.SiteID);
@@ -1397,50 +1426,190 @@
                 //this.siteTab.set("content", content.join("<br/>"));
 
                 try {
-                    // clear out any existing data
-                    this.siteTab.set("content", "");
 
-                    // do as table
-                    // create table for site metadata
-                    var table = domConstruct.create("table");
+                    // get lon, lat centroid
+                    function getCentroid (arr) {
+                        var minX, maxX, minY, maxY;
+                        for (var i = 0; i < arr.length; i++) {
+                            minX = (arr[i][0] < minX || minX == null) ? arr[i][0] : minX;
+                            maxX = (arr[i][0] > maxX || maxX == null) ? arr[i][0] : maxX;
+                            minY = (arr[i][1] < minY || minY == null) ? arr[i][1] : minY;
+                            maxY = (arr[i][1] > maxY || maxY == null) ? arr[i][1] : maxY;
+                        }
+                        return [(minX + maxX) / 2, (minY + maxY) / 2];
+                    }
+                    // parse geography
+                    var geography = JSON.parse(dataset.geography);
+                    var coordinates = geography.coordinates;
+                    var centroid;
+                    if (coordinates.length == 2) {
+                        centroid = coordinates;
+                    } else {
+                        centroid = getCentroid(coordinates[0]);
+                    }
+                    var lon = centroid[0];
+                    var lat = centroid[1];
 
-                    // create and rows
-                    var row = domConstruct.create("tr", {class:"fixht"}, table);
-                    domConstruct.place(domConstruct.create("td", {innerHTML:"Site ID", class:"col1"}), row);
-                    domConstruct.place(domConstruct.create("td", {innerHTML:site.siteid, class:"col2"}), row);
-                    var row = domConstruct.create("tr", {class:"fixht"}, table);
-                    domConstruct.place(domConstruct.create("td", {innerHTML: "Longitude", class:"col1"}), row);
-                    domConstruct.place(domConstruct.create("td", {innerHTML: numberUtil.format(site.longitude, {pattern:"#.######"}), class:"col2"}), row);
-                    var row = domConstruct.create("tr", {class:"fixht"}, table);
-                    domConstruct.place(domConstruct.create("td", {innerHTML: "Latitude", class:"col1"}), row);
-                    domConstruct.place(domConstruct.create("td", {innerHTML: numberUtil.format(site.latitude, {pattern:"#.######"}), class:"col2"}), row);
-                    if (site.sitedescription) {
-                        var row = domConstruct.create("tr", {class:"fixht"}, table);
+                    // // clear out any existing data
+                    // this.siteTab.set("content", "");
+
+                    // clear out any existing metadata
+                    this.siteMetadataTableDiv.set("content", "");
+                    this.collectionunitMetadataTableDiv.set("content", "");
+                    this.datasetMetadataTableDiv.set("content", "");
+
+                    // ensure site tab is open by default
+                    this.siteMetadataPane.set("open", true);
+                    this.collectionunitMetadataPane.set("open", false);
+                    this.datasetMetadataPane.set("open", false);
+
+                    // SITE METADATA
+                    // create table for site metadata, add class
+                    var siteMetadataTable = domConstruct.create("table");
+                    domClass.add(siteMetadataTable, "sitemeta");
+
+                    // site name
+                    var row = domConstruct.create("tr", {class:"fixht"}, siteMetadataTable);
+                    domConstruct.place(domConstruct.create("td", {innerHTML: "Name", class:"col1"}), row);
+                    domConstruct.place(domConstruct.create("td", {innerHTML: dataset.sitename, class:"col2"}), row);
+                    // site ID
+                    var row = domConstruct.create("tr", {class:"fixht"}, siteMetadataTable);
+                    domConstruct.place(domConstruct.create("td", {innerHTML: "ID", class:"col1"}), row);
+                    domConstruct.place(domConstruct.create("td", {innerHTML: dataset.siteid, class:"col2"}), row);
+                    // site description
+                    if (dataset.sitedescription) {
+                        var row = domConstruct.create("tr", {class:"fixht"}, siteMetadataTable);
                         domConstruct.place(domConstruct.create("td", {innerHTML:"Description", class:"col1"}), row);
-                        domConstruct.place(domConstruct.create("td", {innerHTML:site.sitedescription, class:"col2"}), row);
+                        domConstruct.place(domConstruct.create("td", {innerHTML: dataset.sitedescription, class:"col2"}), row);
                     }
-                    if (site.sitenotes) {
-                        var row = domConstruct.create("tr", { class: "fixht" }, table);
+                    // site lon,lat
+                    var row = domConstruct.create("tr", {class:"fixht"}, siteMetadataTable);
+                    domConstruct.place(domConstruct.create("td", {innerHTML: "Lon, Lat", class:"col1"}), row);
+                    domConstruct.place(domConstruct.create("td", {innerHTML: numberUtil.format(lon, {pattern:"#.######"}) + ", " + numberUtil.format(lat, {pattern:"#.######"}), class:"col2"}), row);
+                    // site altitude
+                    if (dataset.altitude) {
+                        var row = domConstruct.create("tr", {class:"fixht"}, siteMetadataTable);
+                        domConstruct.place(domConstruct.create("td", {innerHTML: "Altitude", class:"col1"}), row);
+                        domConstruct.place(domConstruct.create("td", {innerHTML: dataset.altitude, class:"col2"}), row);
+                    }
+                    // site notes
+                    if (dataset.notes) {
+                        var row = domConstruct.create("tr", { class: "fixht" }, siteMetadataTable);
                         domConstruct.place(domConstruct.create("td", { innerHTML: "Notes", class: "col1" }), row);
-                        domConstruct.place(domConstruct.create("td", { innerHTML: site.sitenotes, class: "col2" }), row);
+                        domConstruct.place(domConstruct.create("td", { innerHTML: dataset.notes, class: "col2" }), row);
+                    }
+                    // place table
+                    domConstruct.place(siteMetadataTable, this.siteMetadataTableDiv.domNode);
+
+
+                    // COLLECTION UNIT METADATA
+                    // create table for dataset metadata, add class
+                    var collectionunitMetadataTable = domConstruct.create("table");
+                    domClass.add(collectionunitMetadataTable, "sitemeta");
+
+                    // collection unit handle
+                    if (dataset.collectionunit.handle) {
+                        var row = domConstruct.create("tr", {class:"fixht"}, collectionunitMetadataTable);
+                        domConstruct.place(domConstruct.create("td", {innerHTML: "Handle", class:"col1"}), row);
+                        domConstruct.place(domConstruct.create("td", {innerHTML: dataset.collectionunit.handle, class:"col2"}), row);
+                    }
+                    // collection unit type
+                    if (dataset.collectionunit.collunittype) {
+                        var row = domConstruct.create("tr", {class:"fixht"}, collectionunitMetadataTable);
+                        domConstruct.place(domConstruct.create("td", {innerHTML: "Type", class:"col1"}), row);
+                        domConstruct.place(domConstruct.create("td", {innerHTML: dataset.collectionunit.collunittype, class:"col2"}), row);
+                    }
+                    // collection unit date
+                    if (dataset.collectionunit.colldate) {
+                      var row = domConstruct.create("tr", {class:"fixht"}, collectionunitMetadataTable);
+                      domConstruct.place(domConstruct.create("td", {innerHTML: "Collection Date", class:"col1"}), row);
+                      domConstruct.place(domConstruct.create("td", {innerHTML: dataset.collectionunit.colldate, class:"col2"}), row);
+                    }
+                     // collection unit device
+                     if (dataset.collectionunit.collectiondevice) {
+                      var row = domConstruct.create("tr", {class:"fixht"}, collectionunitMetadataTable);
+                      domConstruct.place(domConstruct.create("td", {innerHTML: "Collection Device", class:"col1"}), row);
+                      domConstruct.place(domConstruct.create("td", {innerHTML: dataset.collectionunit.collectiondevice, class:"col2"}), row);
+                    }
+                    // depositional environment
+                    if (dataset.collectionunit.depositionalenvironment) {
+                      var row = domConstruct.create("tr", {class:"fixht"}, collectionunitMetadataTable);
+                      domConstruct.place(domConstruct.create("td", {innerHTML: "Depositional Environment", class:"col1"}), row);
+                      domConstruct.place(domConstruct.create("td", {innerHTML: dataset.collectionunit.depositionalenvironment, class:"col2"}), row);
+                    }
+                    // collection unit notes
+                    if (dataset.collectionunit.notes) {
+                      var row = domConstruct.create("tr", {class:"fixht"}, collectionunitMetadataTable);
+                      domConstruct.place(domConstruct.create("td", {innerHTML: "Notes", class:"col1"}), row);
+                      domConstruct.place(domConstruct.create("td", {innerHTML: dataset.collectionunit.notes, class:"col2"}), row);
+                    }
+                    // place table
+                    domConstruct.place(collectionunitMetadataTable, this.collectionunitMetadataTableDiv.domNode);
+                    
+
+                    // DATASET METADATA
+                    // create table for dataset metadata, add class
+                    var datasetMetadataTable = domConstruct.create("table");
+                    domClass.add(datasetMetadataTable, "sitemeta");
+
+                    // dataset name
+                    if (dataset.collectionunit.dataset.datasetname) {
+                        var row = domConstruct.create("tr", {class:"fixht"}, datasetMetadataTable);
+                        domConstruct.place(domConstruct.create("td", {innerHTML: "Name", class:"col1"}), row);
+                        domConstruct.place(domConstruct.create("td", {innerHTML: dataset.collectionunit.dataset.datasetname, class:"col2"}), row);
+                    }
+                    // dataset ID
+                    var row = domConstruct.create("tr", {class:"fixht"}, datasetMetadataTable);
+                    domConstruct.place(domConstruct.create("td", {innerHTML: "ID", class:"col1"}), row);
+                    domConstruct.place(domConstruct.create("td", {innerHTML: dataset.collectionunit.dataset.datasetid, class:"col2"}), row);
+                    // dataset type
+                    var row = domConstruct.create("tr", {class:"fixht"}, datasetMetadataTable);
+                    domConstruct.place(domConstruct.create("td", {innerHTML: "Type", class:"col1"}), row);
+                    domConstruct.place(domConstruct.create("td", {innerHTML: dataset.collectionunit.dataset.datasettype, class:"col2"}), row);
+                    // database name
+                    if (dataset.collectionunit.dataset.database) {
+                        var row = domConstruct.create("tr", {class:"fixht"}, datasetMetadataTable);
+                        domConstruct.place(domConstruct.create("td", {innerHTML: "Database Name", class:"col1"}), row);
+                        domConstruct.place(domConstruct.create("td", {innerHTML: dataset.collectionunit.dataset.database, class:"col2"}), row);
+                    }
+                    // dataset DOIs
+                    if (dataset.collectionunit.dataset.doi && dataset.collectionunit.dataset.doi.length > 0) {
+                        var dois = [];
+                        var doiLinks = [];
+                        array.forEach(dataset.collectionunit.dataset.doi,
+                            function (doiObj) {
+                                dois.push(doiObj);
+                                doiLinks.push('https://doi.org/'+doiObj);
+                            }
+                        );
+                        for (var i = 0; i < doiLinks.length; i++) {
+                            var row = domConstruct.create("tr", {class:"fixht"}, datasetMetadataTable);
+                            domConstruct.place(domConstruct.create("td", {innerHTML: "DOI:", class:"col1"}), row);
+                            domConstruct.place(domConstruct.create("td", {innerHTML: " <a target='_blank' href='" + doiLinks[i] + "'>"+ dois[i] + "</a>", class:"col2"}), row);
+                        }
+                    }
+                    // dataset PIs
+                    if (dataset.collectionunit.dataset.datasetpi && dataset.collectionunit.dataset.datasetpi.length > 0) {
+                      var pis = [];
+                      array.forEach(dataset.collectionunit.dataset.datasetpi,
+                          function (piObj) {
+                              pis.push(piObj.contactname);
+                          }
+                      );
+                      var row = domConstruct.create("tr", {class:"fixht"}, datasetMetadataTable);
+                      domConstruct.place(domConstruct.create("td", {innerHTML: "PIs", class:"col1"}), row);
+                      domConstruct.place(domConstruct.create("td", {innerHTML: pis.join("; "), class:"col2"}), row);
                     }
 
-                    // add class to table
-                    domClass.add(table, "sitemeta");
+                    // place table
+                    domConstruct.place(datasetMetadataTable, this.datasetMetadataTableDiv.domNode);
 
-                    // create site name header
-                    var header = domConstruct.create("h3", { innerHTML: site.sitename });
-
-                    // add header to contents
-                    domConstruct.place(header, this.siteTab.domNode);
-
-                    // add table to contents
-                    domConstruct.place(table, this.siteTab.domNode);
                 } catch (e) {
-                    alert("error in DatasetExplorer._loadSiteMetadata(): " + e.message);
+                  alert("error in DatasetExplorer._loadDatasetMetadata(): " + e.message);
                 }
             },
             loadGeochronSiteMetadata: function (site) {
+              var currentSiteObj = dojo.config.app.forms.sitePopup.sites[dojo.config.app.forms.sitePopup.siteIndex];
                 try {
                     if (!site) {
                         return;
@@ -1455,22 +1624,22 @@
                     // create and rows
                     var row = domConstruct.create("tr", { class: "fixht" }, table);
                     domConstruct.place(domConstruct.create("td", { innerHTML: "Site ID", class: "col1" }), row);
-                    domConstruct.place(domConstruct.create("td", { innerHTML: site.siteid, class: "col2" }), row);
+                    domConstruct.place(domConstruct.create("td", { innerHTML: currentSiteObj.attributes.siteid, class: "col2" }), row);
                     var row = domConstruct.create("tr", { class: "fixht" }, table);
                     domConstruct.place(domConstruct.create("td", { innerHTML: "Longitude", class: "col1" }), row);
-                    domConstruct.place(domConstruct.create("td", { innerHTML: numberUtil.format(site.longitude, { pattern: "#.######" }), class: "col2" }), row);
+                    domConstruct.place(domConstruct.create("td", { innerHTML: numberUtil.format(currentSiteObj.attributes.longitude, { pattern: "#.######" }), class: "col2" }), row);
                     var row = domConstruct.create("tr", { class: "fixht" }, table);
                     domConstruct.place(domConstruct.create("td", { innerHTML: "Latitude", class: "col1" }), row);
-                    domConstruct.place(domConstruct.create("td", { innerHTML: numberUtil.format(site.latitude, { pattern: "#.######" }), class: "col2" }), row);
+                    domConstruct.place(domConstruct.create("td", { innerHTML: numberUtil.format(currentSiteObj.attributes.latitude, { pattern: "#.######" }), class: "col2" }), row);
                     if (site.sitedescription) {
                         var row = domConstruct.create("tr", { class: "fixht" }, table);
                         domConstruct.place(domConstruct.create("td", { innerHTML: "Description", class: "col1" }), row);
-                        domConstruct.place(domConstruct.create("td", { innerHTML: site.sitedescription, class: "col2" }), row);
+                        domConstruct.place(domConstruct.create("td", { innerHTML: currentSiteObj.attributes.sitedescription, class: "col2" }), row);
                     }
                     if (site.sitenotes) {
                         var row = domConstruct.create("tr", { class: "fixht" }, table);
                         domConstruct.place(domConstruct.create("td", { innerHTML: "Notes", class: "col1" }), row);
-                        domConstruct.place(domConstruct.create("td", { innerHTML: site.sitenotes, class: "col2" }), row);
+                        domConstruct.place(domConstruct.create("td", { innerHTML: currentSiteObj.attributes.sitenotes, class: "col2" }), row);
                     }
 
                     // add class to table
@@ -1478,7 +1647,7 @@
 
                     // create site name header
                     if (site) {
-                        var header = domConstruct.create("h3", { innerHTML: site.sitename });
+                        var header = domConstruct.create("h3", { innerHTML: currentSiteObj.attributes.sitename });
                     }
                     
                     // add header to contents
@@ -1698,7 +1867,7 @@
                                     // enable chronology tab
                                     //this[0].chronologyTab.set("disabled", false);
                                 } catch (e) {
-                                    alert("error getting chron data: " + e.message);
+                                    //alert("error getting chron data: " + e.message);
                                 }
 
                             } else {
