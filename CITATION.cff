@@ -1,14 +1,24 @@
 cff-version: 1.1.0
 message: "If you use this software, please cite it as below."
 authors:
-  - family-names: Stryker
-    given-names: Michael
   - family-names: Nelson
     given-names: "Jonathan K"
     orcid: https://orcid.org/0000-0002-2526-0277
+  - family-names: Anderson
+    given-names: Michael
+  - family-names: Bills
+    given-names: Brian
+  - family-names: Stryker
+    given-names: Michael
+  - family-names: Crawford
+    given-names: Steven
+  - family-names: Blois
+    given-names: Jessica
   - family-names: Goring
     given-names: Simon J
     orcid: https://orcid.org/0000-0002-2700-4605
+  - family-names: Williams
+    given-names: "John W"
 title: "NeotomaDB/Explorer: Neotoma Explorer Version 1.2.0"
 version: v1.2.0
 date-released: 2023-05-10
