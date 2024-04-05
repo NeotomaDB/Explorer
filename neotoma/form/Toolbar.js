@@ -12,6 +12,24 @@
         // define function for when modern range loads
         var modernRangeLoaded = function (response) {
             try {
+                // first, extract geom in well known text (wkt) format
+                var wkt = response.data[0].geom.slice(10);
+                // definte wkt and geojson formaters
+                var wktFormat = new ol.format.WKT();
+                var geoJSONFormat = new ol.format.GeoJSON();
+                // read geom
+                var geom = wktFormat.readFeature(wkt);
+                // write geojson
+                var geoJSON = geoJSONFormat.writeFeatureObject(geom);
+                // integrate properties object with sciname field
+                geoJSON.properties = {};
+                geoJSON.properties.sciname = response.data[0].sciname[0];
+                // define range features
+                var features = geoJSONFormat.readFeatures(geoJSON, {
+                    dataProjection: 'EPSG:4326',
+                    featureProjection: dojo.config.map.getView().getProjection()
+                });
+
                 // make sure layer is on map. If it is already, remove all features before loading new ones
                 var modernRangeSource = new ol.source.Vector({});
                 // define layer style
@@ -42,9 +60,7 @@
                 });
 
                 // add new range
-                var range = response; // jsonp
-                var reader = new ol.format.GeoJSON();
-                modernRangeSource.addFeatures(reader.readFeatures(range));
+                modernRangeSource.addFeatures(features);
                 var modernRangeLayerExtent = modernRangeSource.getExtent();
                 dojo.config.map.getView().fit(modernRangeLayerExtent, { duration: 1000 });
                 //modernRangeStandby.hide();
@@ -335,13 +351,7 @@
                                     // draw on map
                                     //modernRangeStandby.show();
                                     var params = {
-                                        request: 'getfeature',
-                                        outputformat: 'json',
-                                        srsName: 'EPSG:900913',
-                                        service: 'wfs',
-                                        version: '1.1.0',
-                                        typename: 'neotoma:faunranges',
-                                        filter: "<filter><PropertyIsEqualTo><PropertyName>sciname</PropertyName><Literal>" + speciesName + "</Literal></PropertyIsEqualTo></filter>"
+                                        sciname: speciesName
                                     };
 
                                     xhr.get(config.wfsEndPoint,{
