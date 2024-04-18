@@ -152,6 +152,13 @@
                                 dlg.set("_left", 10);
                             }
 
+                            dojo.config.map.getLayers().forEach(function (layer) {
+                                if (layer.get("id") == "Glacial") {
+                                    layer.getSource().clear();
+                                    dojo.config.map.removeLayer(layer);
+                                }
+                            });
+
                             // show if needed
                             if (!hide) {
                                 dlg.show();
@@ -354,7 +361,7 @@
                                         sciname: speciesName
                                     };
 
-                                    xhr.get(config.wfsEndPoint,{
+                                    xhr.get(config.faunalRangesEndPoint,{
                                         handleAs: "json",
                                         headers: {
                                             'content-type': 'application/json'
