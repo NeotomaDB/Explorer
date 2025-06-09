@@ -81,7 +81,7 @@
                                     { datasettype: "ostracode", image: "O.png" },
                                     { datasettype: "water chemistry", image: "W.png" },
                                     { datasettype: "diatom", image: "D.png" },
-                                    { datasettype: "ostracode surface sample", image: "OS.png" },
+                                    { datasettype: "ostracode surface sample", image: "Os.png" },
                                     { datasettype: "diatom surface sample", image: "Ds.png" },
                                     { datasettype: "geochemistry", image: "GC.png" },
                                     { datasettype: "physical sedimentology", image: "S.png" },
@@ -260,15 +260,23 @@
                             }
 
                             var searchParams = urlUtil.getParameterByName("search");
-                            if (searchParams.includes("databaseId")) {
-                              searchParams = JSON.parse(searchParams);
-                              var databaseId = searchParams.metadata.databaseId;
+                            if (searchParams.includes("databaseId") || searchParams.includes("personId")) {
+                                searchParams = JSON.parse(searchParams);
+
+                                var databaseId = searchParams.metadata.databaseId;
+                                var personId = searchParams.metadata.personId;
                             
-                              if (databaseId) {
-                                idsPassed = true;
-                                neotoma.loadDataByDBId(databaseId);
-                              }
-                              
+                                if (typeof databaseId !== 'undefined' && typeof personId !== 'undefined') {
+                                    idsPassed = true;
+                                    neotoma.loadDataByDatabaseIdAndPersonID(databaseId, personId);
+                                } else if (typeof databaseId !== 'undefined' && typeof personId === 'undefined') {
+                                    idsPassed = true;
+                                    neotoma.loadDataByDatabaseId(databaseId);
+                                } else if (typeof databaseId === 'undefined' && typeof personId !== 'undefined') {
+                                    idsPassed = true;
+                                    neotoma.loadDataByPersonId(personId);
+                                }
+
                             }
                             
 

@@ -177,7 +177,83 @@
                     alert("error in app/neotoma.loadDatasets: " + e.message);
                 }
             },
-            loadDataByDBId: function (databaseId) {
+            loadDataByDatabaseIdAndPersonID: function (databaseId, personId) {
+                try {
+                    // make request to data/datasets
+                    script.get(config.appServicesLocation + '/Search?search={"metadata":{"databaseId":"' + databaseId + '", "personId":"' + personId + '"}}',
+                            { jsonp: "callback" }
+                        ).then(lang.hitch(this, function (response) {
+                            try {
+                                if (response.success) {
+                                    // make sure data was returned
+                                    if (response.data.length === 0) {
+                                        alert("No datasets found with database ID: " + databaseId + " and person ID: " + personId + ".");
+                                        return;
+                                    }
+  
+                                    // convert response to Explorer Search response
+                                    var searchResponse = this.databasesToExplorerSearchResponse(response.data);
+  
+                                    // publish topic with new response
+                                    topic.publish("neotoma/search/NewResult", {
+                                        //data: reformattedSites,
+                                        data: searchResponse,
+                                        searchName: "databaseId: " + databaseId + "personID:" + personId,
+                                        request: { databaseid: databaseId, personid: personId },
+                                        symbol: { "shape": "Circle", "size": "medium", "color": "#238b45" }
+                                    }
+                                    );
+                                } else {
+                                    alert(response.message);
+                                }
+                            } catch (e) {
+                                alert("Error in app/neotoma.loadDatasets:" + e.message);
+                            }
+                        }
+                    ));
+                } catch (e) {
+                    alert("error in app/neotoma.loadDatasets: " + e.message);
+                }
+            },
+            loadDataByPersonId: function (personId) {
+                try {
+                    // make request to data/datasets
+                    script.get(config.appServicesLocation + '/Search?search={"metadata":{"personId":"' + personId + '"}}',
+                            { jsonp: "callback" }
+                        ).then(lang.hitch(this, function (response) {
+                            try {
+                                if (response.success) {
+                                    // make sure data was returned
+                                    if (response.data.length === 0) {
+                                        alert("No datasets found with Person ID: " + personId + ".");
+                                        return;
+                                    }
+  
+                                    // convert response to Explorer Search response
+                                    var searchResponse = this.databasesToExplorerSearchResponse(response.data);
+  
+                                    // publish topic with new response
+                                    topic.publish("neotoma/search/NewResult", {
+                                        //data: reformattedSites,
+                                        data: searchResponse,
+                                        searchName: "personId: " + personId,
+                                        request: { personid: personId },
+                                        symbol: { "shape": "Circle", "size": "medium", "color": "#238b45" }
+                                    }
+                                    );
+                                } else {
+                                    alert(response.message);
+                                }
+                            } catch (e) {
+                                alert("Error in app/neotoma.loadDatasets:" + e.message);
+                            }
+                        }
+                    ));
+                } catch (e) {
+                    alert("error in app/neotoma.loadDatasets: " + e.message);
+                }
+            },
+            loadDataByDatabaseId: function (databaseId) {
               try {
                   // make request to data/datasets
                   script.get(config.appServicesLocation + '/Search?search={"metadata":{"databaseId":"' + databaseId + '"}}',
