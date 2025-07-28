@@ -33,7 +33,7 @@
 
                 // create store with model for tree
                 this.store = new JsonRest({
-                    target: config.appServicesLocation + "/DepositionalEnvironments/",
+                    target: config.appServicesLocationV2 + "/depositionalenvironments/root/",
                     idProperty: "depenvtid",
                     mayHaveChildren: function (object) {
                         // see if it has a children property

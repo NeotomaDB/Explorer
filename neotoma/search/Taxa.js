@@ -415,7 +415,7 @@
                 // set message in filtering select
                 if (this.taxonIds.length > 0) {
                     this.taxonName.set({
-                        placeHolder: "Multiple taxa selected",
+                        placeHolder: "One or more taxon selected",
                         value: "",
                         displayedValue: ""
                     });
