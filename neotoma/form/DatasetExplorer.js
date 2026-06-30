@@ -1600,6 +1600,12 @@
                       domConstruct.place(domConstruct.create("td", {innerHTML: "PIs", class:"col1"}), row);
                       domConstruct.place(domConstruct.create("td", {innerHTML: pis.join("; "), class:"col2"}), row);
                     }
+                    // dataset notes
+                    if (dataset.collectionunit.dataset.datasetnotes) {
+                        var row = domConstruct.create("tr", { class: "fixht" }, datasetMetadataTable);
+                        domConstruct.place(domConstruct.create("td", { innerHTML: "Notes", class: "col1" }), row);
+                        domConstruct.place(domConstruct.create("td", { innerHTML: dataset.collectionunit.dataset.datasetnotes, class: "col2" }), row);
+                    }
 
                     // place table
                     domConstruct.place(datasetMetadataTable, this.datasetMetadataTableDiv.domNode);
