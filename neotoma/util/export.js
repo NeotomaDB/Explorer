@@ -12,6 +12,17 @@
                     return;
                 }
 
+                // Helper to escape inner quotes and wrap the value in double quotes
+                function formatCell(val) {
+                    if (val === null || val === undefined) {
+                        return '""';
+                    }
+                    // Convert to string and double up any existing double quotes
+                    var str = String(val).replace(/"/g, '""');
+                    // Wrap the whole cell in double quotes
+                    return '"' + str + '"';
+                }
+
                 // add csv header row
                 var rec1 = data[0];
                 var fields = [];
@@ -20,14 +31,17 @@
                         fields.push(prop);
                     }
                 }
-                csv.push('"' + fields.join('","') + '"');
+                
+                // Process headers safely
+                var quotedHeaders = fields.map(formatCell);
+                csv.push(quotedHeaders.join(","));
 
                 // add data rows
                 var values = null;
                 array.forEach(data, function (jsonRec) {
                     values = [];
                     array.forEach(fields, function (fieldName) {
-                        values.push(jsonRec[fieldName]);
+                        values.push(formatCell(jsonRec[fieldName]));
                     }
                     );
                     csv.push(values.join(","));
