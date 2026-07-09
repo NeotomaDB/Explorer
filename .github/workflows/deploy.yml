@@ -1,0 +1,95 @@
+name: Deploy Neotoma Explorer
+
+on:
+  push:
+    branches: [production, develop]
+
+env:
+  AWS_REGION: us-east-2
+  S3_BUCKET: apps.neotomadb.org
+  CLOUDFRONT_ALIAS: apps.neotomadb.org
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Back up current S3 content
+        run: |
+          echo "Backing up current explorer to s3://${{ env.S3_BUCKET }}/explorer-backup/ ..."
+          aws s3 sync \
+            "s3://${{ env.S3_BUCKET }}/explorer/" \
+            "s3://${{ env.S3_BUCKET }}/explorer-backup/" \
+            --delete
+
+      - name: Sync to S3
+        run: bash push_s3.sh
+
+      - name: Verify S3 content
+        id: verify
+        run: |
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "https://${{ env.CLOUDFRONT_ALIAS }}/explorer/index.html")
+          if [ "$HTTP_CODE" = "200" ]; then
+            echo "Verification passed (HTTP $HTTP_CODE)"
+          else
+            echo "WARNING: Got HTTP $HTTP_CODE from explorer"
+            exit 1
+          fi
+
+      - name: Invalidate CloudFront cache
+        run: |
+          DIST_ID=$(aws cloudfront list-distributions \
+            --query "DistributionList.Items[?Aliases.Items[?@=='${{ env.CLOUDFRONT_ALIAS }}']].Id" \
+            --output text)
+
+          if [ -z "$DIST_ID" ]; then
+            echo "ERROR: Could not find CloudFront distribution for ${{ env.CLOUDFRONT_ALIAS }}"
+            exit 1
+          fi
+
+          echo "Found distribution: $DIST_ID"
+
+          INVALIDATION_ID=$(aws cloudfront create-invalidation \
+            --distribution-id "$DIST_ID" \
+            --paths "/*" \
+            --query "Invalidation.Id" \
+            --output text)
+
+          echo "Created invalidation: $INVALIDATION_ID"
+
+          echo "Waiting for invalidation to complete..."
+          aws cloudfront wait invalidation-completed \
+            --distribution-id "$DIST_ID" \
+            --id "$INVALIDATION_ID"
+
+          echo "Invalidation complete."
+
+      - name: Rollback on failure
+        if: failure()
+        run: |
+          echo "Deployment failed — restoring from backup..."
+          aws s3 sync \
+            "s3://${{ env.S3_BUCKET }}/explorer-backup/" \
+            "s3://${{ env.S3_BUCKET }}/explorer/" \
+            --delete
+          echo "Rollback complete. Previous version restored."
+
+      - name: Notify deployment status
+        if: always()
+        run: |
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "Deployment successful: https://${{ env.CLOUDFRONT_ALIAS }}/explorer/"
+          else
+            echo "Deployment failed — rolled back to previous version"
+          fi
