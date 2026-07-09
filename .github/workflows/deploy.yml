@@ -4,6 +4,10 @@ on:
   push:
     branches: [production, develop]
 
+permissions:
+  id-token: write
+  contents: read
+
 env:
   AWS_REGION: us-east-2
   S3_BUCKET: apps.neotomadb.org
@@ -18,11 +22,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Configure AWS credentials
+      - name: Configure AWS credentials via OIDC
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Back up current S3 content
@@ -37,7 +40,6 @@ jobs:
         run: bash push_s3.sh
 
       - name: Verify S3 content
-        id: verify
         run: |
           HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "https://${{ env.CLOUDFRONT_ALIAS }}/explorer/index.html")
           if [ "$HTTP_CODE" = "200" ]; then
