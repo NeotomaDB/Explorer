@@ -6,6 +6,30 @@
             depEnvtIds: [],
             advancedDepEnvtVisible: false,
             calendarBtnVisible: false,
+            submitDateMode: "any",
+            _formatSubmitDate: function (value) {
+                if (!value) {
+                    return "";
+                }
+                var month = value.getMonth() + 1;
+                var day = value.getDate();
+                return value.getFullYear() + "-" + (month < 10 ? "0" + month : month) + "-" + (day < 10 ? "0" + day : day);
+            },
+            _setSubmitDateDisplayedValue: function (label) {
+                if (this.submitDate.focusNode) {
+                    this.submitDate.focusNode.value = label;
+                }
+            },
+            _updateSubmitDateRangeDisplay: function () {
+                var startDate = this.submitDateStart.get("value");
+                var endDate = this.submitDateEnd.get("value");
+                var label = "Custom";
+
+                if (startDate) {
+                    label = this._formatSubmitDate(startDate) + " to " + (endDate ? this._formatSubmitDate(endDate) : "present");
+                }
+                this._setSubmitDateDisplayedValue(label);
+            },
             clearAll: function () {
                 // clear depositional environment
                 this.depositionalEnvironment.set(
@@ -23,7 +47,10 @@
                 this.siteName.set("value", "");
                 this.personName.set("value", "");
                 this.submitDate.set("value", "any");
-                this.submitDateCalendar.set("value", "");
+                this.submitDateMode = "any";
+                this.submitDateStart.set("value", null);
+                this.submitDateEnd.set("value", null);
+                domClass.add(this.submitDateRangePane, "hide");
 
             },
             handleEnter: function (evt) {
@@ -34,16 +61,22 @@
                 }
             },
             submitDateChanged: function (val) {
-                var btn = this.submitDateCalendarBtn;
+                this.submitDateMode = val || "any";
                 if (val === "custom") {
-                    domClass.remove(btn.domNode, "hide");
+                    domClass.remove(this.submitDateRangePane, "hide");
+                    this._updateSubmitDateRangeDisplay();
                 } else {
-                    // hide button
-                    domClass.add(btn.domNode, "hide");
+                    domClass.add(this.submitDateRangePane, "hide");
+                    this.submitDateStart.set("value", null);
+                    this.submitDateEnd.set("value", null);
                 }
             },
             submitDateFocused: function () {
-                this.submitDate.set("value","any");
+            },
+            submitDateRangeChanged: function () {
+                if (this.submitDateMode === "custom") {
+                    this._updateSubmitDateRangeDisplay();
+                }
             },
             depositionalEnvironmentFocused: function() {
                 this.depositionalEnvironment.set(
@@ -159,7 +192,7 @@
                     }
 
                     // get submit date
-                    switch (this.submitDate.get("value")) {
+                    switch (this.submitDateMode || this.submitDate.get("value")) {
                         case "any":
                             break;
                         case "week":
@@ -172,10 +205,17 @@
                             response.submitDate = date.add(new Date(), "year", -1);
                             break;
                         case "custom":
-                            if (this.submitDateCalendar.get("value")) {
-                                response.submitDate = this.submitDateCalendar.get("value");
+                            var startDate = this.submitDateStart.get("value");
+                            var endDate = this.submitDateEnd.get("value") || new Date();
+                            if (startDate) {
+                                if (endDate < startDate) {
+                                    alert("Submission end date must be the same as or later than the start date.");
+                                    return "stop";
+                                }
+                                response.submitDate = startDate;
+                                response.submitDateEnd = endDate;
                             } else {
-                                alert("Please select a submission date, or change the date type to 'Any'.");
+                                alert("Please select a submission start date, or change the date type to 'Any'.");
                                 return "stop";
                             }
                             break;
