@@ -9,6 +9,51 @@
             minSearchWidth: 360,
             minSearchHeight: 300,
             resizeHandleSize: 8,
+            _getMaxAdvancedHeight: function () {
+                var viewPort = win.getBox();
+                var position = domGeometry.position(this.domNode);
+                var currentAdvancedHeight = domStyle.get(this.advancedPane.domNode, "height") || 0;
+                var dialogHeight = position.h || this.domNode.offsetHeight || 0;
+                var fixedDialogHeight = Math.max(0, dialogHeight - currentAdvancedHeight);
+                var viewportPadding = 24;
+                return Math.max(this.minSearchHeight, viewPort.h - position.y - fixedDialogHeight - viewportPadding);
+            },
+            _resizeSearchForm: function () {
+                if (this.forms && this.forms.resize) {
+                    this.forms.resize();
+                }
+            },
+            _expandAdvancedPaneToFit: function () {
+                try {
+                    if (this.forms.selectedChildWidget !== this.advancedPane) {
+                        return;
+                    }
+
+                    var currentHeight = domStyle.get(this.advancedPane.domNode, "height");
+                    var maxHeight = this._getMaxAdvancedHeight();
+                    var neededHeight = this.advancedPane.domNode.scrollHeight;
+                    var newHeight = Math.min(maxHeight, Math.max(currentHeight, neededHeight, this.minSearchHeight));
+
+                    if (newHeight !== currentHeight) {
+                        this.advancedHeight = newHeight;
+                        domStyle.set(this.advancedPane.domNode, "height", this.advancedHeight + "px");
+                        this._resizeSearchForm();
+                    }
+                } catch (e) {
+                    alert("Error in search/All._expandAdvancedPaneToFit: " + e.message);
+                }
+            },
+            _watchTitlePaneExpansion: function () {
+                var panes = [this.taxaTitlePane, this.timeTitlePane, this.spaceTitlePane, this.metadataTitlePane];
+                array.forEach(panes, lang.hitch(this, function (pane) {
+                    this.own(pane.watch("open", lang.hitch(this, function (name, oldValue, newValue) {
+                        if (newValue) {
+                            setTimeout(lang.hitch(this, this._expandAdvancedPaneToFit), 0);
+                            setTimeout(lang.hitch(this, this._expandAdvancedPaneToFit), 250);
+                        }
+                    })));
+                }));
+            },
             _createSearchToolbarTooltips: function () {
                 try {
                     var tooltips = [
@@ -20,11 +65,15 @@
                         if (!tooltip.widget || !tooltip.widget.domNode) {
                             return;
                         }
-                        this.own(new Tooltip({
-                            connectId: [tooltip.widget.domNode],
-                            label: tooltip.label,
-                            position: ["below-centered", "above-centered"]
-                        }));
+                        this.own(on(tooltip.widget.domNode, "mouseenter", lang.hitch(this, function () {
+                            Tooltip.show(tooltip.label, tooltip.widget.domNode, ["below-centered", "above-centered"]);
+                        })));
+                        this.own(on(tooltip.widget.domNode, "mouseleave", lang.hitch(this, function () {
+                            Tooltip.hide(tooltip.widget.domNode);
+                        })));
+                        this.own(on(tooltip.widget.domNode, "mousedown", lang.hitch(this, function () {
+                            Tooltip.hide(tooltip.widget.domNode);
+                        })));
                     }));
                 } catch (e) {
                     alert("Error in search/All._createSearchToolbarTooltips: " + e.message);
@@ -123,6 +172,7 @@
                             this.timeTitlePane.set("open", true);
                             this.spaceTitlePane.set("open", true);
                             this.metadataTitlePane.set("open", true);
+                            this._expandAdvancedPaneToFit();
                         }
 
                         // show basic search
@@ -275,7 +325,7 @@
                     var startWidth = position.w;
                     var maxRightWidth = viewPort.w - startLeft - this.resizeHandleSize;
                     var maxLeftWidth = startWidth + startLeft - this.resizeHandleSize;
-                    var maxHeight = Math.max(this.minSearchHeight, viewPort.h - position.y - 80);
+                    var maxHeight = this._getMaxAdvancedHeight();
                     var moveHandle = null;
                     var upHandle = null;
 
@@ -325,9 +375,7 @@
                             domStyle.set(this.advancedPane.domNode, "height", this.advancedHeight + "px");
                         }
 
-                        if (this.forms && this.forms.resize) {
-                            this.forms.resize();
-                        }
+                        this._resizeSearchForm();
                     });
 
                     moveHandle = on(this.ownerDocument, "mousemove", resize);
@@ -354,6 +402,7 @@
                 this.inherited(arguments);
                 this._enableResizeHandles();
                 this._createSearchToolbarTooltips();
+                this._watchTitlePaneExpansion();
 
                 // open setting form so it reads and applies any settings
                 mainToolbar.openUserSettings(true);
