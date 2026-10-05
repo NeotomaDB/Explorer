@@ -101,6 +101,7 @@
                                         datasettype: obj.datasettype,
                                         collunithandle: obj.collunithandle,
                                         collunitname: obj.collunitname,
+                                        datasetname: obj.datasetname,
                                         databasename: obj.databasename
                                     }];
 
@@ -732,6 +733,7 @@
                                 datasettype: datasetObj.datasettype,
                                 collunithandle: datasetObj.collunithandle,
                                 collunitname: datasetObj.collunitname,
+                                datasetname: datasetObj.datasetname,
                                 databasename: datasetObj.databasename
                             }
                         );
