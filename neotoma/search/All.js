@@ -1,5 +1,5 @@
-﻿define(["dojo/_base/declare", "neotoma/widget/Dialog", "dijit/_TemplatedMixin", "dojo/text!./template/all.html", "dijit/_WidgetsInTemplateMixin", "dojo/_base/lang", "dojo/store/Memory", "dojo/_base/array", "dojo/dom", "dojo/dom-construct", "dojo/dom-class", "dojo/number", "dijit/popup", "dojo/request/script", "dojo/topic", "dojo/_base/config", "dojo/dom-style", "dojo/on", "dojo/window", "dojo/dom-geometry", "dijit/layout/ContentPane", "dijit/TitlePane", "./Metadata", "./Space", "./Time", "./Taxa", "dijit/form/Button", "dojox/widget/Standby", "dijit/Toolbar"],
-    function (declare, Dialog, _TemplatedMixin, template, _WidgetsInTemplateMixin, lang, Memory, array, dom, domConstruct, domClass, numberUtil, popup, script, topic, config, domStyle, on, win, domGeometry) {
+﻿define(["dojo/_base/declare", "neotoma/widget/Dialog", "dijit/_TemplatedMixin", "dojo/text!./template/all.html", "dijit/_WidgetsInTemplateMixin", "dojo/_base/lang", "dojo/store/Memory", "dojo/_base/array", "dojo/dom", "dojo/dom-construct", "dojo/dom-class", "dojo/number", "dijit/popup", "dojo/request/script", "dojo/topic", "dojo/_base/config", "dojo/dom-style", "dojo/on", "dojo/window", "dojo/dom-geometry", "dijit/Tooltip", "dijit/layout/ContentPane", "dijit/TitlePane", "./Metadata", "./Space", "./Time", "./Taxa", "dijit/form/Button", "dojox/widget/Standby", "dijit/Toolbar"],
+    function (declare, Dialog, _TemplatedMixin, template, _WidgetsInTemplateMixin, lang, Memory, array, dom, domConstruct, domClass, numberUtil, popup, script, topic, config, domStyle, on, win, domGeometry, Tooltip) {
         // define widget
         return declare([Dialog, _TemplatedMixin, _WidgetsInTemplateMixin], {
             templateString: template,
@@ -9,6 +9,27 @@
             minSearchWidth: 360,
             minSearchHeight: 300,
             resizeHandleSize: 8,
+            _createSearchToolbarTooltips: function () {
+                try {
+                    var tooltips = [
+                        { widget: this.toggleSectionsButton, label: "Expand/Collapse all sections" },
+                        { widget: this.clearAllButton, label: "Clear all" }
+                    ];
+
+                    array.forEach(tooltips, lang.hitch(this, function (tooltip) {
+                        if (!tooltip.widget || !tooltip.widget.domNode) {
+                            return;
+                        }
+                        this.own(new Tooltip({
+                            connectId: [tooltip.widget.domNode],
+                            label: tooltip.label,
+                            position: ["below-centered", "above-centered"]
+                        }));
+                    }));
+                } catch (e) {
+                    alert("Error in search/All._createSearchToolbarTooltips: " + e.message);
+                }
+            },
             clearAll: function () {
                 // see which form is open
                 if (this.forms.selectedChildWidget === this.advancedPane) {
@@ -332,6 +353,7 @@
             postCreate: function () {
                 this.inherited(arguments);
                 this._enableResizeHandles();
+                this._createSearchToolbarTooltips();
 
                 // open setting form so it reads and applies any settings
                 mainToolbar.openUserSettings(true);

@@ -8,8 +8,8 @@
 	<div data-dojo-attach-point="containerNode" class="dijitDialogPaneContent">
         <div data-dojo-type="dijit/Toolbar" class="sitePopupToolbar">
             <span name="advancedSearch" title="Advanced search" data-dojo-props="showLabel:true, iconClass:'advSearchButtonIcon'"></span>
-            <button type="button" name="toggleSections" title="Expand/Collapse all sections" data-dojo-props="showLabel:false, iconClass:'toggleButtonIcon'" data-dojo-type="dijit/form/Button" data-dojo-attach-event="onClick:toolbarClick"></button>
-            <button type="button" name="clearAll" title="Clear all" data-dojo-props="showLabel:false, iconClass:'clearAllButtonIcon'" data-dojo-type="dijit/form/Button" data-dojo-attach-event="onClick:toolbarClick"></button>
+            <button type="button" name="toggleSections" title="Expand/Collapse all sections" data-dojo-props="showLabel:false, iconClass:'toggleButtonIcon'" data-dojo-type="dijit/form/Button" data-dojo-attach-point="toggleSectionsButton" data-dojo-attach-event="onClick:toolbarClick"></button>
+            <button type="button" name="clearAll" title="Clear all" data-dojo-props="showLabel:false, iconClass:'clearAllButtonIcon'" data-dojo-type="dijit/form/Button" data-dojo-attach-point="clearAllButton" data-dojo-attach-event="onClick:toolbarClick"></button>
         </div>
         <div data-dojo-type="dijit/layout/StackContainer" data-dojo-attach-point="forms">
             <div data-dojo-type="dijit/layout/ContentPane" data-dojo-attach-point="advancedPane">
