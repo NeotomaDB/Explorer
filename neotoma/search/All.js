@@ -1,11 +1,84 @@
-﻿define(["dojo/_base/declare", "neotoma/widget/Dialog", "dijit/_TemplatedMixin", "dojo/text!./template/all.html", "dijit/_WidgetsInTemplateMixin", "dojo/_base/lang", "dojo/store/Memory", "dojo/_base/array", "dojo/dom", "dojo/dom-construct", "dojo/dom-class", "dojo/number", "dijit/popup", "dojo/request/script", "dojo/topic", "dojo/_base/config", "dojo/dom-style", "dijit/layout/ContentPane", "dijit/TitlePane", "./Metadata", "./Space", "./Time", "./Taxa", "dijit/form/Button", "dojox/widget/Standby", "dijit/Toolbar"],
-    function (declare, Dialog, _TemplatedMixin, template, _WidgetsInTemplateMixin, lang, Memory, array, dom, domConstruct, domClass, numberUtil, popup, script, topic, config, domStyle) {
+﻿define(["dojo/_base/declare", "neotoma/widget/Dialog", "dijit/_TemplatedMixin", "dojo/text!./template/all.html", "dijit/_WidgetsInTemplateMixin", "dojo/_base/lang", "dojo/store/Memory", "dojo/_base/array", "dojo/dom", "dojo/dom-construct", "dojo/dom-class", "dojo/number", "dijit/popup", "dojo/request/script", "dojo/topic", "dojo/_base/config", "dojo/dom-style", "dojo/on", "dojo/window", "dojo/dom-geometry", "dijit/Tooltip", "dijit/layout/ContentPane", "dijit/TitlePane", "./Metadata", "./Space", "./Time", "./Taxa", "dijit/form/Button", "dojox/widget/Standby", "dijit/Toolbar"],
+    function (declare, Dialog, _TemplatedMixin, template, _WidgetsInTemplateMixin, lang, Memory, array, dom, domConstruct, domClass, numberUtil, popup, script, topic, config, domStyle, on, win, domGeometry, Tooltip) {
         // define widget
         return declare([Dialog, _TemplatedMixin, _WidgetsInTemplateMixin], {
             templateString: template,
             searchResults: null,
             searchId: 1,
             advancedHeight: 400,
+            minSearchWidth: 360,
+            minSearchHeight: 300,
+            resizeHandleSize: 8,
+            _getMaxAdvancedHeight: function () {
+                var viewPort = win.getBox();
+                var position = domGeometry.position(this.domNode);
+                var currentAdvancedHeight = domStyle.get(this.advancedPane.domNode, "height") || 0;
+                var dialogHeight = position.h || this.domNode.offsetHeight || 0;
+                var fixedDialogHeight = Math.max(0, dialogHeight - currentAdvancedHeight);
+                var viewportPadding = 24;
+                return Math.max(this.minSearchHeight, viewPort.h - position.y - fixedDialogHeight - viewportPadding);
+            },
+            _resizeSearchForm: function () {
+                if (this.forms && this.forms.resize) {
+                    this.forms.resize();
+                }
+            },
+            _expandAdvancedPaneToFit: function () {
+                try {
+                    if (this.forms.selectedChildWidget !== this.advancedPane) {
+                        return;
+                    }
+
+                    var currentHeight = domStyle.get(this.advancedPane.domNode, "height");
+                    var maxHeight = this._getMaxAdvancedHeight();
+                    var neededHeight = this.advancedPane.domNode.scrollHeight;
+                    var newHeight = Math.min(maxHeight, Math.max(currentHeight, neededHeight, this.minSearchHeight));
+
+                    if (newHeight !== currentHeight) {
+                        this.advancedHeight = newHeight;
+                        domStyle.set(this.advancedPane.domNode, "height", this.advancedHeight + "px");
+                        this._resizeSearchForm();
+                    }
+                } catch (e) {
+                    alert("Error in search/All._expandAdvancedPaneToFit: " + e.message);
+                }
+            },
+            _watchTitlePaneExpansion: function () {
+                var panes = [this.taxaTitlePane, this.timeTitlePane, this.spaceTitlePane, this.metadataTitlePane];
+                array.forEach(panes, lang.hitch(this, function (pane) {
+                    this.own(pane.watch("open", lang.hitch(this, function (name, oldValue, newValue) {
+                        if (newValue) {
+                            setTimeout(lang.hitch(this, this._expandAdvancedPaneToFit), 0);
+                            setTimeout(lang.hitch(this, this._expandAdvancedPaneToFit), 250);
+                        }
+                    })));
+                }));
+            },
+            _createSearchToolbarTooltips: function () {
+                try {
+                    var tooltips = [
+                        { widget: this.toggleSectionsButton, label: "Expand/Collapse all sections" },
+                        { widget: this.clearAllButton, label: "Clear all" }
+                    ];
+
+                    array.forEach(tooltips, lang.hitch(this, function (tooltip) {
+                        if (!tooltip.widget || !tooltip.widget.domNode) {
+                            return;
+                        }
+                        this.own(on(tooltip.widget.domNode, "mouseenter", lang.hitch(this, function () {
+                            Tooltip.show(tooltip.label, tooltip.widget.domNode, ["below-centered", "above-centered"]);
+                        })));
+                        this.own(on(tooltip.widget.domNode, "mouseleave", lang.hitch(this, function () {
+                            Tooltip.hide(tooltip.widget.domNode);
+                        })));
+                        this.own(on(tooltip.widget.domNode, "mousedown", lang.hitch(this, function () {
+                            Tooltip.hide(tooltip.widget.domNode);
+                        })));
+                    }));
+                } catch (e) {
+                    alert("Error in search/All._createSearchToolbarTooltips: " + e.message);
+                }
+            },
             clearAll: function () {
                 // see which form is open
                 if (this.forms.selectedChildWidget === this.advancedPane) {
@@ -99,6 +172,7 @@
                             this.timeTitlePane.set("open", true);
                             this.spaceTitlePane.set("open", true);
                             this.metadataTitlePane.set("open", true);
+                            this._expandAdvancedPaneToFit();
                         }
 
                         // show basic search
@@ -229,8 +303,106 @@
                         break;
                 }
             },
+            _createResizeHandle: function (edge) {
+                return domConstruct.create("div", {
+                    "class": "searchDialogResizeHandle searchDialogResizeHandle" + edge,
+                    title: "Drag to resize search form"
+                }, this.domNode);
+            },
+            _startResize: function (edge, evt) {
+                try {
+                    evt.preventDefault();
+                    evt.stopPropagation();
+
+                    this.bringToFront(this);
+
+                    var viewPort = win.getBox();
+                    var position = domGeometry.position(this.domNode);
+                    var startAdvancedHeight = domStyle.get(this.advancedPane.domNode, "height");
+                    var startX = evt.pageX;
+                    var startY = evt.pageY;
+                    var startLeft = position.x;
+                    var startWidth = position.w;
+                    var maxRightWidth = viewPort.w - startLeft - this.resizeHandleSize;
+                    var maxLeftWidth = startWidth + startLeft - this.resizeHandleSize;
+                    var maxHeight = this._getMaxAdvancedHeight();
+                    var moveHandle = null;
+                    var upHandle = null;
+
+                    domClass.add(this.domNode, "searchDialogResizing");
+
+                    var stopResize = lang.hitch(this, function () {
+                        domClass.remove(this.domNode, "searchDialogResizing");
+
+                        if (moveHandle) {
+                            moveHandle.remove();
+                        }
+                        if (upHandle) {
+                            upHandle.remove();
+                        }
+
+                        var newPosition = domGeometry.position(this.domNode);
+                        this._left = newPosition.x;
+                        this._top = newPosition.y;
+                        this._leftPercent = parseFloat(this._left / win.getBox().w);
+                        this._topPercent = parseFloat(this._top / win.getBox().h);
+                        this._initialWidth = newPosition.w;
+                    });
+
+                    var resize = lang.hitch(this, function (moveEvt) {
+                        var width = startWidth;
+                        var left = startLeft;
+
+                        if (edge === "Right") {
+                            width = Math.min(maxRightWidth, Math.max(this.minSearchWidth, startWidth + moveEvt.pageX - startX));
+                            domStyle.set(this.domNode, "width", width + "px");
+                        } else if (edge === "Left") {
+                            width = Math.min(maxLeftWidth, Math.max(this.minSearchWidth, startWidth - (moveEvt.pageX - startX)));
+                            left = startLeft + (startWidth - width);
+                            left = Math.max(this.resizeHandleSize, left);
+
+                            domStyle.set(this.domNode, {
+                                left: left + "px",
+                                width: width + "px"
+                            });
+
+                            this._relativePosition = {
+                                x: left,
+                                y: position.y
+                            };
+                        } else if (edge === "Bottom") {
+                            this.advancedHeight = Math.min(maxHeight, Math.max(this.minSearchHeight, startAdvancedHeight + moveEvt.pageY - startY));
+                            domStyle.set(this.advancedPane.domNode, "height", this.advancedHeight + "px");
+                        }
+
+                        this._resizeSearchForm();
+                    });
+
+                    moveHandle = on(this.ownerDocument, "mousemove", resize);
+                    upHandle = on(this.ownerDocument, "mouseup", stopResize);
+                } catch (e) {
+                    alert("Error in search/All._startResize: " + e.message);
+                }
+            },
+            _enableResizeHandles: function () {
+                try {
+                    domClass.add(this.domNode, "searchDialogResizable");
+
+                    array.forEach(["Left", "Right", "Bottom"], lang.hitch(this, function (edge) {
+                        var handle = this._createResizeHandle(edge);
+                        this.own(on(handle, "mousedown", lang.hitch(this, function (evt) {
+                            this._startResize(edge, evt);
+                        })));
+                    }));
+                } catch (e) {
+                    alert("Error in search/All._enableResizeHandles: " + e.message);
+                }
+            },
             postCreate: function () {
                 this.inherited(arguments);
+                this._enableResizeHandles();
+                this._createSearchToolbarTooltips();
+                this._watchTitlePaneExpansion();
 
                 // open setting form so it reads and applies any settings
                 mainToolbar.openUserSettings(true);

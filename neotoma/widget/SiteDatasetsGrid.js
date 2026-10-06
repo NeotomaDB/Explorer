@@ -37,8 +37,9 @@
                     renderCell: lang.hitch(this,function (row, value, node, options) {
                         try {
                             var datasetLabel = row.collunithandle;
-                            if (row.collunitname) {
-                                datasetLabel += "_" + row.collunitname;
+                            var datasetName = row.datasetname || row.DatasetName;
+                            if (datasetName) {
+                                datasetLabel += "_" + datasetName;
                             }
 
                             // create dataset description
@@ -46,6 +47,9 @@
                             description.push("Database: " + row.databasename);
                             description.push("Dataset type: " + row.datasettype);
                             description.push("Dataset ID: " + row.datasetid);
+                            if (datasetName) {
+                                description.push("Dataset name: " + datasetName);
+                            }
                             
                             //var content = [];
                             //content.push('<a title="' + description.join("\n") + '" href="javascript:mainToolbar.showDatasetExplorer(' + row.DatasetID + ',\'' + row.DatasetType + '\',\'' + row.DatabaseName + '\');">' + datasetLabel + '</a>');

@@ -37,8 +37,12 @@
                     <option value="year">Last Year</option>
                     <option value="custom">Custom</option>
                 </select>
-                <!--<input type="text" data-dojo-type="dijit/form/DateTextBox" data-dojo-props="style:'width:110px;', required:false, placeholder:'', contraints:{datePattern:'MM/DD/YYYY'}" data-dojo-attach-point="submitDate" data-dojo-attach-event="onKeyPress:handleEnter"/>-->
-                <button type="button" class="hide" data-dojo-type="dijit/form/Button" data-dojo-props="iconClass:'calendarIcon', showLabel:false, title:'Select submission date'" data-dojo-attach-point="submitDateCalendarBtn" data-dojo-attach-event="onClick:submitDateCalendarClick"></button>
+                <div class="hide" data-dojo-attach-point="submitDateRangePane" style="margin-top:4px;">
+                    <label for="${id}_submitDateStart">Start</label>
+                    <input id="${id}_submitDateStart" type="text" data-dojo-type="dijit/form/DateTextBox" data-dojo-props="style:'width:105px;', required:false, placeHolder:'YYYY-MM-DD', constraints:{datePattern:'yyyy-MM-dd'}" data-dojo-attach-point="submitDateStart" data-dojo-attach-event="onChange:submitDateRangeChanged, onKeyPress:handleEnter"/>
+                    <label for="${id}_submitDateEnd">End</label>
+                    <input id="${id}_submitDateEnd" type="text" data-dojo-type="dijit/form/DateTextBox" data-dojo-props="style:'width:105px;', required:false, placeHolder:'present', constraints:{datePattern:'yyyy-MM-dd'}" data-dojo-attach-point="submitDateEnd" data-dojo-attach-event="onChange:submitDateRangeChanged, onKeyPress:handleEnter"/>
+                </div>
             </td>
         </tr>
     </table>

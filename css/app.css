@@ -313,20 +313,28 @@ a img {
 }
 
 .sitepop.dsToggle {
-    display: inline;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
     float: left;
 }
-.sitepop.dsToggle div {
-    display: inline;
-    padding: 0;
+.sitepop.dsToggle .dstToggleButton {
+    border: 1px solid #7ea6c9;
+    border-radius: 3px;
+    color: #245b85;
     cursor: pointer;
     font-size: .9em;
-    color: #808080;
-    vertical-align: top;
+    line-height: 1.2;
+    padding: 2px 6px;
+    background-color: #fff;
+}
+.sitepop.dsToggle .dstToggleButton:hover {
+    background-color: #eaf4fd;
 }
 .sitepop.dsToggle .dstActive {
     font-weight: bold;
-    color: #555454;
+    color: #1d2f3f;
+    background-color: #d8eafa;
 }
 
 .sitePopupToolbar {
@@ -557,9 +565,85 @@ p.cite {
     border-radius:5px 5px 8px 8px;
 }
 
+.sitePopupResizable {
+    min-width: 320px;
+    max-width: 560px;
+}
+
+.sitePopupResizeHandle {
+    position: absolute;
+    z-index: 5;
+}
+
+.sitePopupResizeHandleLeft {
+    bottom: 8px;
+    cursor: ew-resize;
+    left: -4px;
+    top: 28px;
+    width: 8px;
+}
+
+.sitePopupResizeHandleRight {
+    bottom: 8px;
+    cursor: ew-resize;
+    right: -4px;
+    top: 28px;
+    width: 8px;
+}
+
+.sitePopupResizeHandleBottom {
+    bottom: -4px;
+    cursor: ns-resize;
+    height: 8px;
+    left: 8px;
+    right: 8px;
+}
+
+.sitePopupResizing {
+    user-select: none;
+}
+
+.searchDialogResizable {
+    min-width: 360px;
+}
+
+.searchDialogResizeHandle {
+    position: absolute;
+    z-index: 5;
+}
+
+.searchDialogResizeHandleLeft {
+    bottom: 0;
+    cursor: ew-resize;
+    left: -4px;
+    top: 0;
+    width: 8px;
+}
+
+.searchDialogResizeHandleRight {
+    bottom: 0;
+    cursor: ew-resize;
+    right: -4px;
+    top: 0;
+    width: 8px;
+}
+
+.searchDialogResizeHandleBottom {
+    bottom: -4px;
+    cursor: ns-resize;
+    height: 8px;
+    left: 0;
+    right: 0;
+}
+
+.searchDialogResizing {
+    user-select: none;
+}
+
 .siteDatasetsGrid {
     margin: 0 15px 20px 20px;
-    max-height: 200px;
+    min-height: 90px;
+    max-height: 320px;
     overflow-y: auto !important;
 }
 .siteDatasetsGrid .field-datasettype {

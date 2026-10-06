@@ -2,13 +2,13 @@
  "dojo/text!./template/toolbar.html", "dojo/_base/lang", "dojo/topic", "dojo/_base/array",
   "dijit/registry", "dojo/dom-class", "dojo/dom-geometry", "dojo/request/script", "dojo/dom-construct",
    "neotoma/util/export", "neotoma/app/neotoma", "dojo/on", "dojo/_base/config", "dijit/popup",
-    "dojo/has","dojo/request/xhr", "dijit/form/Button", "dijit/Toolbar", "neotoma/widget/BaseLayerButton",
+    "dojo/has","dojo/request/xhr", "dijit/Tooltip", "dojo/dom-attr", "dijit/form/Button", "dijit/Toolbar", "neotoma/widget/BaseLayerButton",
      "neotoma/form/UserSettings", "neotoma/form/Tokens", "dijit/form/DropDownButton", "dijit/TooltipDialog"],
     function (declare, Toolbar, _TemplatedMixin, _WidgetsInTemplateMixin,
      template, lang, topic, array,
       registry, domClass, domGeometry, script, domConstruct,
        exExport, neotoma, on, config, popup,
-        has, xhr) {
+        has, xhr, Tooltip, domAttr) {
         // define function for when modern range loads
         var modernRangeLoaded = function (response) {
             try {
@@ -89,6 +89,58 @@
         // define widget
         return declare([Toolbar, _TemplatedMixin, _WidgetsInTemplateMixin], {
             templateString: template,
+            postCreate: function () {
+                this.inherited(arguments);
+                this._createToolbarTooltips();
+            },
+            _createToolbarTooltips: function () {
+                try {
+                    array.forEach(registry.findWidgets(this.domNode), lang.hitch(this, function (widget) {
+                        var node = widget.domNode;
+                        if (!node) {
+                            return;
+                        }
+
+                        var title = widget.get ? widget.get("title") : "";
+                        var titleNodes = [node, widget.focusNode, widget.buttonNode, widget.srcNodeRef, widget._popupStateNode];
+
+                        if (!title) {
+                            array.some(titleNodes, function (titleNode) {
+                                title = titleNode ? domAttr.get(titleNode, "title") : "";
+                                return !!title;
+                            });
+                        }
+
+                        if (!title) {
+                            return;
+                        }
+
+                        if (!node.id) {
+                            node.id = widget.id;
+                        }
+
+                        array.forEach(titleNodes, function (titleNode) {
+                            if (!titleNode) {
+                                return;
+                            }
+                            if (domAttr.get(titleNode, "title") === title) {
+                                domAttr.remove(titleNode, "title");
+                            }
+                            if (!domAttr.get(titleNode, "aria-label")) {
+                                domAttr.set(titleNode, "aria-label", title);
+                            }
+                        });
+
+                        this.own(new Tooltip({
+                            connectId: [node.id],
+                            label: title,
+                            position: ["below-centered", "above-centered"]
+                        }));
+                    }));
+                } catch (e) {
+                    alert("Error in form/Toolbar._createToolbarTooltips: " + e.message);
+                }
+            },
             toolbarClick: function (evt) {
                 //console.log("evt.currentTarget.name: " + evt.currentTarget.name);
                 switch (evt.currentTarget.name) {
@@ -649,15 +701,17 @@
             },
             tokensShow: function () {
                 //alert("settingsShow");
-                this.settingsForm.show();
 
             },
             tokensHide: function () {
                 //alert("settingsHide");
-                this.settingsForm.hide();
             },
             tokensCloseClick: function () {
-                popup.close(this.settingsTTDialog);
+                if (this.tokensDropDownButton && this.tokensDropDownButton.closeDropDown) {
+                    this.tokensDropDownButton.closeDropDown();
+                } else {
+                    popup.close(this.tokensTTDialog);
+                }
             }
         });
     });

@@ -1,11 +1,123 @@
-﻿define(["dojo/_base/declare", "neotoma/widget/Dialog", "dijit/_TemplatedMixin", "dojo/text!./template/sitePopup.html", "dijit/_WidgetsInTemplateMixin", "dojo/_base/lang", "dojo/store/Memory", "dojo/_base/array", "dojo/dom", "dojo/dom-construct", "dojo/dom-class", "dojo/number", "dijit/popup", "dojo/request/script", "dijit/layout/ContentPane", "dojo/on", "neotoma/util/layer", "neotoma/app/neotoma", "dojo/_base/config", "neotoma/widget/SiteDatasetsGrid", "dijit/Toolbar", "dijit/form/Button"],
-    function (declare, Dialog, _TemplatedMixin, template, _WidgetsInTemplateMixin, lang, Memory, array, dom, domConstruct, domClass, numberUtil, popup, script, ContentPane, on, layerUtil, neotoma, config) {
+﻿define(["dojo/_base/declare", "neotoma/widget/Dialog", "dijit/_TemplatedMixin", "dojo/text!./template/sitePopup.html", "dijit/_WidgetsInTemplateMixin", "dojo/_base/lang", "dojo/store/Memory", "dojo/_base/array", "dojo/dom", "dojo/dom-construct", "dojo/dom-class", "dojo/dom-style", "dojo/window", "dojo/dom-geometry", "dojo/number", "dijit/popup", "dojo/request/script", "dijit/layout/ContentPane", "dojo/on", "neotoma/util/layer", "neotoma/app/neotoma", "dojo/_base/config", "neotoma/widget/SiteDatasetsGrid", "dijit/Toolbar", "dijit/form/Button"],
+    function (declare, Dialog, _TemplatedMixin, template, _WidgetsInTemplateMixin, lang, Memory, array, dom, domConstruct, domClass, domStyle, win, domGeometry, numberUtil, popup, script, ContentPane, on, layerUtil, neotoma, config) {
         // define widget
         return declare([Dialog, _TemplatedMixin, _WidgetsInTemplateMixin], {
             templateString: template,
             sites: null,
             siteIndex: null,
             bbLayer: null,
+            minSitePanelWidth: 320,
+            maxSitePanelWidth: 560,
+            minSiteDatasetsHeight: 90,
+            maxSiteDatasetsHeight: 320,
+            resizeHandleSize: 8,
+            _createResizeHandle: function (edge) {
+                return domConstruct.create("div", {
+                    "class": "sitePopupResizeHandle sitePopupResizeHandle" + edge,
+                    title: "Drag to resize site panel"
+                }, this.domNode);
+            },
+            _resizeSiteDatasetsGrid: function () {
+                if (this.siteDatasetsGrid && this.siteDatasetsGrid.resize) {
+                    this.siteDatasetsGrid.resize();
+                }
+            },
+            _getMaxSitePanelWidth: function (left) {
+                var viewPort = win.getBox();
+                return Math.max(this.minSitePanelWidth, Math.min(this.maxSitePanelWidth, viewPort.w - left - this.resizeHandleSize));
+            },
+            _getMaxSiteDatasetsHeight: function () {
+                var viewPort = win.getBox();
+                var position = domGeometry.position(this.domNode);
+                var currentGridHeight = domStyle.get(this.siteDatasetsGrid.domNode, "height") || 0;
+                var fixedDialogHeight = Math.max(0, position.h - currentGridHeight);
+                var viewportPadding = 24;
+                return Math.max(this.minSiteDatasetsHeight, Math.min(this.maxSiteDatasetsHeight, viewPort.h - position.y - fixedDialogHeight - viewportPadding));
+            },
+            _startResize: function (edge, evt) {
+                try {
+                    evt.preventDefault();
+                    evt.stopPropagation();
+                    this.bringToFront(this);
+
+                    var position = domGeometry.position(this.domNode);
+                    var startX = evt.pageX;
+                    var startY = evt.pageY;
+                    var startLeft = position.x;
+                    var startWidth = position.w;
+                    var startGridHeight = domStyle.get(this.siteDatasetsGrid.domNode, "height") || this.siteDatasetsGrid.domNode.offsetHeight || this.minSiteDatasetsHeight;
+                    var maxRightWidth = this._getMaxSitePanelWidth(startLeft);
+                    var maxLeftWidth = Math.max(this.minSitePanelWidth, Math.min(this.maxSitePanelWidth, startWidth + startLeft - this.resizeHandleSize));
+                    var maxGridHeight = this._getMaxSiteDatasetsHeight();
+                    var moveHandle = null;
+                    var upHandle = null;
+
+                    domClass.add(this.domNode, "sitePopupResizing");
+
+                    var stopResize = lang.hitch(this, function () {
+                        domClass.remove(this.domNode, "sitePopupResizing");
+                        if (moveHandle) {
+                            moveHandle.remove();
+                        }
+                        if (upHandle) {
+                            upHandle.remove();
+                        }
+
+                        var newPosition = domGeometry.position(this.domNode);
+                        this._left = newPosition.x;
+                        this._top = newPosition.y;
+                        this._leftPercent = parseFloat(this._left / win.getBox().w);
+                        this._topPercent = parseFloat(this._top / win.getBox().h);
+                        this._initialWidth = newPosition.w;
+                    });
+
+                    var resize = lang.hitch(this, function (moveEvt) {
+                        moveEvt.preventDefault();
+
+                        var width = startWidth;
+                        var left = startLeft;
+
+                        if (edge === "Right") {
+                            width = Math.min(maxRightWidth, Math.max(this.minSitePanelWidth, startWidth + moveEvt.pageX - startX));
+                            domStyle.set(this.domNode, "width", width + "px");
+                        } else if (edge === "Left") {
+                            width = Math.min(maxLeftWidth, Math.max(this.minSitePanelWidth, startWidth - (moveEvt.pageX - startX)));
+                            left = Math.max(this.resizeHandleSize, startLeft + (startWidth - width));
+                            domStyle.set(this.domNode, {
+                                left: left + "px",
+                                width: width + "px"
+                            });
+                            this._relativePosition = {
+                                x: left,
+                                y: position.y
+                            };
+                        } else if (edge === "Bottom") {
+                            var height = Math.min(maxGridHeight, Math.max(this.minSiteDatasetsHeight, startGridHeight + moveEvt.pageY - startY));
+                            domStyle.set(this.siteDatasetsGrid.domNode, "height", height + "px");
+                        }
+
+                        this._resizeSiteDatasetsGrid();
+                    });
+
+                    moveHandle = on(this.ownerDocument, "mousemove", resize);
+                    upHandle = on(this.ownerDocument, "mouseup", stopResize);
+                } catch (e) {
+                    alert("Error in dialog/SitePopup._startResize: " + e.message);
+                }
+            },
+            _enableResizeHandles: function () {
+                try {
+                    domClass.add(this.domNode, "sitePopupResizable");
+                    array.forEach(["Left", "Right", "Bottom"], lang.hitch(this, function (edge) {
+                        var handle = this._createResizeHandle(edge);
+                        this.own(on(handle, "mousedown", lang.hitch(this, function (evt) {
+                            this._startResize(edge, evt);
+                        })));
+                    }));
+                } catch (e) {
+                    alert("Error in dialog/SitePopup._enableResizeHandles: " + e.message);
+                }
+            },
             toolbarClick: function(evt) {
                 switch (evt.currentTarget.name) {
                     case "zoomToSite":
@@ -181,12 +293,11 @@
                     domConstruct.place(domConstruct.create("td", {innerHTML:"Datasets", class:"col1"}), row);
                     var cell = domConstruct.create("td", {class:"col2"}, row);
                     var div = domConstruct.create("div", {class:"sitepop dsToggle"}, cell);
-                    var cp = new ContentPane({id:"dstMatch", content:"Matching", class:"dstActive"});
+                    var cp = new ContentPane({id:"dstMatch", content:"Search matches", class:"dstToggleButton dstActive"});
                     on(cp, "click", lang.hitch(this, this.showMatchingDatasets));
                     cp.domNode.title = "Show datasets matching search criteria";
                     cp.placeAt(div);
-                    domConstruct.place("<span style='padding:0 4px; vertical-align: top;'>|</span>", div);
-                    var cp = new ContentPane({id:"dstAll", content:"All @ site"});
+                    var cp = new ContentPane({id:"dstAll", content:"All site datasets", class:"dstToggleButton"});
                     on(cp, "click", lang.hitch(this, this.showAllDatasets));
                     cp.domNode.title = "Show any/all datasets at site";
                     cp.placeAt(div);
@@ -352,6 +463,7 @@
             },
             postCreate: function () {
                 this.inherited(arguments);
+                this._enableResizeHandles();
                 // set in app object
                 dojo.config.app.forms.sitePopup = this;
             }
