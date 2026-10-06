@@ -701,15 +701,17 @@
             },
             tokensShow: function () {
                 //alert("settingsShow");
-                this.settingsForm.show();
 
             },
             tokensHide: function () {
                 //alert("settingsHide");
-                this.settingsForm.hide();
             },
             tokensCloseClick: function () {
-                popup.close(this.settingsTTDialog);
+                if (this.tokensDropDownButton && this.tokensDropDownButton.closeDropDown) {
+                    this.tokensDropDownButton.closeDropDown();
+                } else {
+                    popup.close(this.tokensTTDialog);
+                }
             }
         });
     });

@@ -2,7 +2,7 @@
     function (declare, onDemandGrid, DijitRegistry, domConstruct, topic, lang) {
         return declare([onDemandGrid,DijitRegistry], {
             columns: {
-                id: { label: "aa Access Token" },
+                id: { label: "Access Token" },
                 remove: {
                     label: " ",
                     renderCell: function (object, data, cell) {

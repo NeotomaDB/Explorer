@@ -16,15 +16,9 @@
         <button type="button" title="View user guide" data-dojo-type="dijit/form/Button" id="toolbar.help" data-dojo-props="showLabel:false, iconClass:'helpIcon'" onclick="window.open('./help/Neotoma%20Explorer.html', 'help');">Help</button>
         
         <button type="button" name="toolbar.about" data-dojo-type="dijit/form/Button" data-dojo-props="showLabel:true" data-dojo-attach-event="onClick:toolbarClick" style="float:right;">About</button>
-        <div title="Set user options" data-dojo-type="dijit/form/DropDownButton" data-dojo-props="showLabel:false, iconClass:'userSettingsIcon'" style="float:right;">
-            <div data-dojo-type="dijit/TooltipDialog" data-dojo-attach-point="settingTTDialog" data-dojo-attach-event="onShow:settingsShow, onHide:settingsHide">
-                <div data-dojo-type="neotoma/form/UserSettings" data-dojo-attach-point="settingsForm" style="height:300px;width:275px;"></div>
-                <button type="button" data-dojo-type="dijit/form/Button" data-dojo-attach-event="onClick:settingsCloseClick">Close</button>
-            </div>
-        </div>
-        <div title="Access Embargoed Data" data-dojo-type="dijit/form/DropDownButton" data-dojo-props="showLabel:false, iconClass:'keyIcon'" style="float:right;">
+        <div title="Access Embargoed Data" data-dojo-type="dijit/form/DropDownButton" data-dojo-props="showLabel:false, iconClass:'keyIcon'" data-dojo-attach-point="tokensDropDownButton" style="float:right;">
             <div data-dojo-type="dijit/TooltipDialog" data-dojo-attach-point="tokensTTDialog" data-dojo-attach-event="onShow:tokensShow, onHide:tokensHide">
-                <div data-dojo-type="neotoma/form/Tokens" data-dojo-attach-point="tokensForm" style="height:300px;width:275px;"></div>
+                <div data-dojo-type="neotoma/form/Tokens" data-dojo-attach-point="tokensForm" style="height:210px;width:275px;"></div>
                 <button type="button" data-dojo-type="dijit/form/Button" data-dojo-attach-event="onClick:tokensCloseClick">Close</button>
             </div>
         </div>       

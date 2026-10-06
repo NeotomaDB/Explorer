@@ -37,9 +37,6 @@
                     renderCell: lang.hitch(this,function (row, value, node, options) {
                         try {
                             var datasetLabel = row.collunithandle;
-                            if (row.collunitname) {
-                                datasetLabel += "_" + row.collunitname;
-                            }
                             var datasetName = row.datasetname || row.DatasetName;
                             if (datasetName) {
                                 datasetLabel += "_" + datasetName;
