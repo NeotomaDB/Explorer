@@ -325,12 +325,69 @@
                     //alert("error in SitePopup.displaySite: " + e.message);
                 }
             },
+            _getUniqueDatasets: function (data) {
+                var seen = {};
+                var unique = [];
+                array.forEach(data || [], function (dataset) {
+                    if (!dataset || dataset.datasetid == null) {
+                        unique.push(dataset);
+                        return;
+                    }
+
+                    var datasetId = dataset.datasetid.toString();
+                    if (!seen[datasetId]) {
+                        seen[datasetId] = true;
+                        unique.push(dataset);
+                    }
+                });
+                return unique;
+            },
+            _prepareDatasetLabels: function (data) {
+                var labelCounts = {};
+                var prepared = [];
+
+                // Display rules:
+                // - Named and unique: CollectionUnitHandle_DatasetName
+                // - Missing dataset name: CollectionUnitHandle (ID: datasetid)
+                // - Same name with different IDs: CollectionUnitHandle_DatasetName (ID: datasetid)
+                // - Duplicate dataset IDs are removed before labels are generated.
+                array.forEach(data, function (dataset) {
+                    var collectionUnitHandle = dataset.collunithandle || dataset.CollUnitHandle || "";
+                    var datasetName = dataset.datasetname || dataset.DatasetName;
+                    var baseLabel = collectionUnitHandle;
+
+                    if (datasetName) {
+                        baseLabel += "_" + datasetName;
+                        labelCounts[baseLabel] = (labelCounts[baseLabel] || 0) + 1;
+                    }
+
+                    prepared.push({
+                        dataset: dataset,
+                        datasetName: datasetName,
+                        baseLabel: baseLabel
+                    });
+                });
+
+                return array.map(prepared, function (item) {
+                    var label = item.baseLabel;
+                    var datasetId = item.dataset.datasetid;
+
+                    if (!item.datasetName || labelCounts[item.baseLabel] > 1) {
+                        label += " (ID: " + datasetId + ")";
+                    }
+
+                    return lang.mixin({}, item.dataset, {
+                        _displayDatasetLabel: label
+                    });
+                });
+            },
             setDatasets: function (data) {
+                var uniqueDatasets = this._getUniqueDatasets(data);
                 this.siteDatasetsGrid.set("store",
                     new Memory(
                         {
                             idProperty: "datasetid",
-                            data: data
+                            data: this._prepareDatasetLabels(uniqueDatasets)
                         }
                     )
                 );
