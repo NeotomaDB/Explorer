@@ -98,9 +98,22 @@
     </script>
     <script src="./js/dojo/1.9.3/dojo/dojo.js"></script>
     <script>
+        var appModule = null;
+        var mapsReady = false;
+        var parserReady = false;
+        var appStarted = false;
+
+        function startAppWhenReady() {
+            if (!appStarted && appModule && mapsReady && parserReady) {
+                appStarted = true;
+                appModule.pageReady();
+            }
+        }
+
         try {
             require(["dojo/parser", "dojo/request/script", "neotoma/app/app" ,"dijit/layout/BorderContainer", "dijit/layout/ContentPane", "dijit/layout/AccordionContainer", "dijit/layout/StackContainer", "dijit/form/CheckBox", "dijit/form/Button", "dijit/form/TextBox", "dijit/Toolbar", "dijit/ToolbarSeparator", "dijit/TitlePane", "neotoma/widget/Dialog", "dijit/form/Select", "dojox/widget/Standby", "dijit/layout/StackContainer", "dijit/layout/StackController", "dijit/RadioMenuItem", "dijit/form/ComboButton", "dijit/DropDownMenu", "dojox/widget/Toaster", "neotoma/form/Toolbar", "neotoma/widget/MapPane", "neotoma/form/Tables","neotoma/form/Tables2", "dijit/form/FilteringSelect", "neotoma/widget/SearchResultsGrid", "dojo/domReady!"],
                 function (parser, script, appUtil) {
+                    appModule = appUtil;
                     parser.parse().then(
                         function () {
                             try {
@@ -109,6 +122,8 @@
                             } catch (e) {
                                 alert("Error in parsing function in index.html: " + e.message)
                             }
+                            parserReady = true;
+                            startAppWhenReady();
                         }
                     );
                 }
@@ -120,8 +135,9 @@
         function googleLoaded() {
             require(["neotoma/app/app"],
                 function (appUtil) {
-                    //call pageReady
-                    appUtil.pageReady();
+                    appModule = appUtil;
+                    mapsReady = true;
+                    startAppWhenReady();
                 }
             );
         }

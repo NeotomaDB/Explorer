@@ -66,6 +66,14 @@
                         try {
                             //alert("in pageReady() require function");
 
+                            // Do not rely on the browser-created global for the element id.
+                            // The parser replaces that global with a widget only after parsing,
+                            // so an early callback can otherwise return the plain DOM node.
+                            var mainToolbar = registry.byId("mainToolbar");
+                            if (!mainToolbar) {
+                                throw new Error("The main toolbar widget is not ready.");
+                            }
+
                             // create icon store
                             dojo.config.app.iconStore = new Memory({
                                 idProperty: "datasettype",
