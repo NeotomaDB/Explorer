@@ -36,11 +36,8 @@
                     //},
                     renderCell: lang.hitch(this,function (row, value, node, options) {
                         try {
-                            var datasetLabel = row.collunithandle;
                             var datasetName = row.datasetname || row.DatasetName;
-                            if (datasetName) {
-                                datasetLabel += "_" + datasetName;
-                            }
+                            var datasetLabel = row._displayDatasetLabel || row.collunithandle;
 
                             // create dataset description
                             var description = [];
