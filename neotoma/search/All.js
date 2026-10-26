@@ -400,6 +400,8 @@
             },
             postCreate: function () {
                 this.inherited(arguments);
+                // Move the existing row while Metadata keeps its widget reference and search logic.
+                domConstruct.place(this.metadataPane.databaseRow, this.databaseRowPlaceholder, "replace");
                 this._enableResizeHandles();
                 this._createSearchToolbarTooltips();
                 this._watchTitlePaneExpansion();

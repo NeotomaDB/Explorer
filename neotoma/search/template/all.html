@@ -20,6 +20,7 @@
                             <select data-dojo-type="dijit/form/FilteringSelect" data-dojo-props="style:'width:198px', required:false, searchAttr:'datasettype', invalidMessage:'Not a valid dataset type.'" data-dojo-attach-point="datasetType" data-dojo-attach-event="onChange:datasetTypeChanged"></select>
                         </td>
                     </tr>
+                    <tr data-dojo-attach-point="databaseRowPlaceholder"></tr>
                 </table>
                 <div data-dojo-type="dijit/TitlePane" data-dojo-props="title:'Taxa', open:true" data-dojo-attach-point="taxaTitlePane" >
                     <div data-dojo-type="neotoma/search/Taxa" data-dojo-attach-point="taxaPane"></div>
