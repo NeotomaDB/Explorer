@@ -11,9 +11,9 @@
             <td class="colSF1">Collection type</td>
             <td class="colSF2"><select data-dojo-type="neotoma/widget/FilteringSelect" data-dojo-props="required:false, placeholder:'', searchAttr:'colltype', invalidMessage:'Collection type not found'" data-dojo-attach-point="collectionType" data-dojo-attach-event="onKeyPress:handleEnter"></select></td>
         </tr>
-        <tr class="fixht">
-            <td class="colSF1">Database</td>
-            <td class="colSF2"><select data-dojo-type="neotoma/widget/FilteringSelect" data-dojo-props="required:false, placeholder:'', searchAttr:'databasename', fetchProperties:{sort:[{attribute:'databasename',descending:false}]}, invalidMessage:'Database not found'" data-dojo-attach-point="database" data-dojo-attach-event="onKeyPress:handleEnter"></select></td>
+        <tr class="fixht" data-dojo-attach-point="databaseRow">
+            <td class="col1">Database</td>
+            <td class="col2"><select data-dojo-type="neotoma/widget/FilteringSelect" data-dojo-props="style:'width:198px', required:false, placeholder:'', searchAttr:'databasename', fetchProperties:{sort:[{attribute:'databasename',descending:false}]}, invalidMessage:'Database not found'" data-dojo-attach-point="database" data-dojo-attach-event="onKeyPress:handleEnter"></select></td>
         </tr>
         <tr class="fixht">
             <td class="colSF1">Sample keyword</td>

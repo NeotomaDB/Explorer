@@ -677,12 +677,36 @@ div.selectedDatasets {
     border: none;
 }
 
-/*.accessTokensGrid .field-id {
-    width: 80px;
-}*/
+.accessTokensGrid .field-id {
+    min-width: 120px;
+    width: 120px;
+    box-sizing: border-box;
+    white-space: nowrap;
+}
+
+.accessTokensGrid .dgrid-column-id {
+    min-width: 120px;
+    width: 120px;
+}
+
+.accessTokensGrid .dgrid-header {
+    left: 0;
+    right: 0;
+}
+
+.accessTokensGrid .dgrid-header-scroll {
+    display: none;
+}
+
+.accessTokensGrid .dgrid-header .dgrid-column-id {
+    overflow: visible;
+    padding-left: 3px;
+    text-indent: 0;
+}
 
 .accessTokensGrid .field-remove {
-    width: 18px;
+    min-width: 24px;
+    width: 24px;
 }
 
 .dijitToasterContainer {
